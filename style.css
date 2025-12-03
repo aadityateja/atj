@@ -81,25 +81,18 @@ footer {
     font-size: 0.6rem;
     opacity: 0.8;
 }
-/* Fix tagline link colors */
-.tagline a,
-.tagline a:link,
-.tagline a:visited,
-.tagline a:hover,
-.tagline a:active {
-    color: red !important;
-    text-decoration: underline;
-}
-
-/* Hover underline */
 .tagline a {
-    border-bottom: 2px solid transparent;
-    transition: 0.2s;
+    color: white !important;        /* always white */
+    text-decoration: underline;     /* always underlined */
+    font-weight: bold;
 }
 
-.tagline a:hover {
-    border-bottom: 2px solid white;
+.tagline a:visited,
+.tagline a:active {
+    color: white !important;        /* prevent browser default purple/blue */
 }
+
+
 
 
 /* Mobile version - stack vertically */
