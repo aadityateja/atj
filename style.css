@@ -88,6 +88,16 @@ footer {
         flex-direction: column;
         text-align: center;
     }
+    .taglink {
+    border-bottom: 2px solid transparent;
+    transition: 0.2s;
+    font-weight: bold;
+}
+
+.taglink:hover {
+    border-bottom: 2px solid white;
+}
+
 
     .right {
         max-width: 90%;
