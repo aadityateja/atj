@@ -81,22 +81,33 @@ footer {
     font-size: 0.6rem;
     opacity: 0.8;
 }
+/* Fix tagline link colors */
+.tagline a,
+.tagline a:link,
+.tagline a:visited,
+.tagline a:hover,
+.tagline a:active {
+    color: white !important;
+    text-decoration: none;
+}
+
+/* Hover underline */
+.tagline a {
+    border-bottom: 2px solid transparent;
+    transition: 0.2s;
+}
+
+.tagline a:hover {
+    border-bottom: 2px solid white;
+}
+
 
 /* Mobile version - stack vertically */
 @media (max-width: 750px) {
     .main {
         flex-direction: column;
         text-align: center;
-    }
-    .taglink {
-    border-bottom: 2px solid transparent;
-    transition: 0.2s;
-    font-weight: bold;
-}
-
-.taglink:hover {
-    border-bottom: 2px solid white;
-}
+    
 
 
     .right {
