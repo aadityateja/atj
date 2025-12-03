@@ -1,64 +1,92 @@
+/* Blue background */
 body {
     margin: 0;
+    background: #007BFF; /* blue */
+    color: white;
     font-family: "Press Start 2P", cursive;
-    background: #fafafa;
-    color: #222;
 }
 
-.container {
-    max-width: 650px;
-    margin: 60px auto;
-    text-align: center;
+/* Main layout container */
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;  /* center vertically */
+    padding: 40px;
+    gap: 60px;          /* spacing between left and right */
 }
 
-/* Photo card like devin.la */
+/* Left side - photo */
+.left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Photo card */
 .photo-card {
-    width: 260px;               /* change this to make photo bigger/smaller */
-    height: 320px;              /* rectangle shape */
-    margin: 0 auto 30px auto;   /* center it */
-    overflow: hidden;           /* hide cropped edges */
-    border-radius: 12px;        /* rounded corners like devin.la */
-    border: 3px solid #000;     /* classy border */
+    width: 260px;
+    height: 320px;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 4px solid white;
 }
 
 .profile-photo {
     width: 100%;
     height: 100%;
-    object-fit: cover;          /* fills rectangle cleanly */
+    object-fit: cover;
 }
 
-/* Name + tagline */
+/* Right side text neatly aligned */
+.right {
+    max-width: 400px;
+}
+
+/* Title */
 h1 {
-    font-size: 2.4rem;
-    margin-bottom: 10px;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
 }
 
+/* Tagline */
 .tagline {
-    font-size: 1.2rem;
-    color: #555;
-    margin-bottom: 30px;
+    font-size: 0.9rem;
+    margin-bottom: 40px;
 }
 
 /* Links */
 .links a {
     display: inline-block;
-    margin: 10px;
-    padding: 10px 20px;
-    border-radius: 10px;
-    border: 2px solid #000;
+    margin: 10px 10px 0 0;
+    padding: 12px 20px;
+    border: 2px solid white;
+    color: white;
     text-decoration: none;
-    color: #000;
-    font-weight: bold;
+    border-radius: 8px;
     transition: 0.2s;
 }
 
 .links a:hover {
-    background: #000;
-    color: #fff;
+    background: white;
+    color: #007BFF;
 }
 
 /* Footer */
 footer {
     margin-top: 40px;
-    color: #666;
+    font-size: 0.6rem;
+    opacity: 0.8;
+}
+
+/* Mobile version - stack vertically */
+@media (max-width: 750px) {
+    .main {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .right {
+        max-width: 90%;
+    }
 }
