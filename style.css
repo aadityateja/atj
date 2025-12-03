@@ -65,7 +65,7 @@ h1 {
     padding: 12px 20px;
     border: 2px solid white;
     color: white;
-    text-decoration: none;
+    text-decoration: underline;
     border-radius: 8px;
     transition: 0.2s;
 }
@@ -109,7 +109,7 @@ footer {
         text-align: center;
     
 
-
+    }
     .right {
         max-width: 90%;
     }
