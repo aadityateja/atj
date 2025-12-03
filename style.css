@@ -96,14 +96,22 @@ footer {
 
 
 /* Mobile version - stack vertically */
+/* Stack tagline links vertically on mobile */
 @media (max-width: 750px) {
     .main {
         flex-direction: column;
         text-align: center;
-    
-
     }
+
     .right {
         max-width: 90%;
+    }
+
+    /* Make tagline links vertical on mobile */
+    .tagline {
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* spacing between Researcher and Storyteller */
+        align-items: center; /* center them */
     }
 }
