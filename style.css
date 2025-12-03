@@ -87,8 +87,8 @@ footer {
 .tagline a:visited,
 .tagline a:hover,
 .tagline a:active {
-    color: white !important;
-    text-decoration: none;
+    color: red !important;
+    text-decoration: underline;
 }
 
 /* Hover underline */
