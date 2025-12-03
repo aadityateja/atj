@@ -1,7 +1,11 @@
 /* Blue background */
 body {
     margin: 0;
+        padding: 0;
+
     background: #007BFF; /* blue */
+        height: 100vh;       /* make the page fixed height */
+
     color: white;
     font-family: "Press Start 2P", cursive;
 }
@@ -12,7 +16,6 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;  /* center vertically */
-    padding: 40px;
     gap: 60px;          /* spacing between left and right */
 }
 
@@ -57,7 +60,7 @@ h1 {
 
 /* Links */
 .links a {
-    display: inline-block;
+    display: flex;
     margin: 10px 10px 0 0;
     padding: 12px 20px;
     border: 2px solid white;
