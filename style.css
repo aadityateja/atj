@@ -121,12 +121,7 @@ footer {
 }
 
 .about-page {
-    font-family: "Advanced Pixel 7"; 
-    font-size: 16px;       /* adjust as needed */
-    line-height: 1.6;
-    margin: 3cm;           /* optional: margin around text */
-    max-width: 900px;      /* limits paragraph width */
-    text-align: left;
+    font-family: "Advanced Pixel 7", cursive; 
 }
 
 @font-face {
