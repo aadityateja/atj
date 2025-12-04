@@ -105,7 +105,12 @@ footer {
 }
 
 .about-page {
-font-family: "Roboto", Arial, sans-serif;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 20px;          /* Adjust if you want larger or smaller */
+    line-height: 1.6;         /* Better readability */
+    margin: 3cm;              /* 3 cm margin all around */
+    max-width: 800px;         /* Prevents too-wide text on large screens */
+    text-align: left;         /* Ensures text starts from left */
 }
 
 
