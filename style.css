@@ -101,6 +101,9 @@ footer {
 .name-link:hover {
     text-decoration: underline;   /* underline on hover */
 }
+body {
+    cursor: url("assets/pixel-cursor.png") 0 0, auto;
+}
 
 
 
