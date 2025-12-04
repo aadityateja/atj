@@ -121,7 +121,7 @@ footer {
 }
 
 .about-page {
-    font-family: "Advanced Pixel 7", monospace; /* fallback to monospace if font fails */
+    font-family: "Advanced Pixel 7"; /* fallback to monospace if font fails */
     font-size: 16px;       /* adjust as needed */
     line-height: 1.6;
     margin: 3cm;           /* optional: margin around text */
