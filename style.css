@@ -119,6 +119,13 @@ footer {
     margin-bottom: 25px;
     text-align: left;
 }
+@font-face {
+    font-family: "Advanced Pixel 7";
+    src: url("fonts/AdvancedPixel7.woff2") format("woff2"),
+         url("fonts/AdvancedPixel7.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
 
 
 /* Mobile version - stack vertically */
