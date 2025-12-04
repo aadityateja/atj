@@ -108,7 +108,7 @@ footer {
 .about-container {
     max-width: 900px;
     margin: 3cm auto;       /* 3 cm margin top/bottom + centered */
-    font-size: 20px;
+    font-size: 30px;
     line-height: 1.6;
     text-align: left;
 }
