@@ -121,7 +121,7 @@ footer {
 }
 
 .about-page {
-    font-family: "Advanced Pixel 7"; /* fallback to monospace if font fails */
+    font-family: "Advanced Pixel 7"; 
     font-size: 16px;       /* adjust as needed */
     line-height: 1.6;
     margin: 3cm;           /* optional: margin around text */
@@ -131,8 +131,8 @@ footer {
 
 @font-face {
     font-family: "Advanced Pixel 7";
-    src: url("fonts/advanced_pixel-7.tff") format("tff"),
-         url("fonts/advanced_pixel-7.tff") format("tff");
+    src: url("fonts/advanced_pixel-7.ttf") format("ttf"),
+         url("fonts/advanced_pixel-7.ttf") format("ttf");
     font-weight: normal;
     font-style: normal;
 }
