@@ -104,13 +104,20 @@ footer {
     text-decoration: underline;   /* underline on hover */
 }
 
-.about-page {
-    font-family: "Times New Roman", Times, serif;
-    font-size: 35px;          /* Adjust if you want larger or smaller */
-    line-height: 3.6;         /* Better readability */
-    margin: 0.5cm;              /* 3 cm margin all around */
-    max-width: 800px;         /* Prevents too-wide text on large screens */
-    text-align: center;         /* Ensures text starts from left */
+
+.about-container {
+    max-width: 900px;
+    margin: 3cm auto;       /* 3 cm margin top/bottom + centered */
+    font-size: 20px;
+    line-height: 1.6;
+    text-align: left;
+}
+
+.about-container h1 {
+    font-family: "Press Start 2P", monospace; /* Same retro heading font */
+    font-size: 28px;
+    margin-bottom: 25px;
+    text-align: left;
 }
 
 
