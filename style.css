@@ -131,8 +131,8 @@ footer {
 
 @font-face {
     font-family: "Advanced Pixel 7";
-    src: url("fonts/advanced_pixe-7.tff") format("tff"),
-         url("fonts/advanced_pixe-7.tff") format("tff");
+    src: url("fonts/advanced_pixel-7.tff") format("tff"),
+         url("fonts/advanced_pixel-7.tff") format("tff");
     font-weight: normal;
     font-style: normal;
 }
