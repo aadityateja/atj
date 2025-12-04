@@ -119,6 +119,16 @@ footer {
     margin-bottom: 25px;
     text-align: left;
 }
+
+.about-page {
+    font-family: "Advanced Pixel 7", monospace; /* fallback to monospace if font fails */
+    font-size: 16px;       /* adjust as needed */
+    line-height: 1.6;
+    margin: 3cm;           /* optional: margin around text */
+    max-width: 900px;      /* limits paragraph width */
+    text-align: left;
+}
+
 @font-face {
     font-family: "Advanced Pixel 7";
     src: url("fonts/AdvancedPixel7.woff2") format("woff2"),
