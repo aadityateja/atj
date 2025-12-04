@@ -92,6 +92,15 @@ footer {
     color: white !important;        /* prevent browser default purple/blue */
 }
 
+.name-link {
+    color: white;
+    text-decoration: none;     /* no underline initially */
+    font-family: 'Press Start 2P', cursive;
+}
+
+.name-link:hover {
+    text-decoration: underline;   /* underline on hover */
+}
 
 
 
