@@ -104,6 +104,9 @@ footer {
     text-decoration: underline;   /* underline on hover */
 }
 
+.about-page {
+    font-family: "Times New Roman", Times, serif;
+}
 
 
 /* Mobile version - stack vertically */
