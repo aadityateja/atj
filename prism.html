@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prism Simulation</title>
+    <style>
+        body {
+            background-color: #111;
+            color: white;
+            font-family: sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        canvas {
+            border: 1px solid white;
+            background: #000;
+            display: block;
+            margin: 20px auto;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Light Prism Simulation</h1>
+    <canvas id="prismCanvas" width="800" height="400"></canvas>
+    <button id="startBtn">Start</button>
+
+    <script>
+        const canvas = document.getElementById('prismCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Prism coordinates
+        const prism = { x: 400, y: 150, width: 100, height: 100 };
+        const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
+        let animationFrame;
+
+        // Draw triangular prism
+        function drawPrism() {
+            ctx.fillStyle = '#888';
+            ctx.beginPath();
+            ctx.moveTo(prism.x, prism.y);
+            ctx.lineTo(prism.x + prism.width, prism.y + prism.height / 2);
+            ctx.lineTo(prism.x, prism.y + prism.height);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Draw incoming white light
+        function drawLight(x) {
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x, prism.y + prism.height / 2);
+            ctx.lineTo(prism.x, prism.y + prism.height / 2);
+            ctx.stroke();
+        }
+
+        // Draw separated colors after prism
+        function drawSeparatedLight() {
+            const startX = prism.x + prism.width;
+            const startY = prism.y + prism.height / 2;
+            colors.forEach((color, i) => {
+                const angle = (i - 3) * 0.05; // spread factor
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(startX + 200, startY + 200 * angle);
+                ctx.stroke();
+            });
+        }
+
+        // Animation
+        function animateLight() {
+            let lightX = 0;
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawPrism();
+
+                if (lightX < prism.x) {
+                    drawLight(lightX);
+                    lightX += 5; // speed of light
+                } else {
+                    drawSeparatedLight();
+                }
+                animationFrame = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        document.getElementById('startBtn').addEventListener('click', () => {
+            cancelAnimationFrame(animationFrame);
+            animateLight();
+        });
+    </script>
+</body>
+</html>
