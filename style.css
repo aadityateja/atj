@@ -1,4 +1,9 @@
 /* Blue background */
+@font-face {
+    font-family: 'MyCustomFont';
+    src: url('assets/fonts/MyFont.ttf') format('truetype');
+}
+
 body {
     margin: 0;
         padding: 0;
@@ -7,7 +12,8 @@ body {
         height: 100vh;       /* make the page fixed height */
 
     color: white;
-    font-family: "Press Start 2P", cursive;
+    font-family: 'MyCustomFont';
+
         cursor: url("assets/pixel-cursor.png") 0 0, auto;
 
 }
