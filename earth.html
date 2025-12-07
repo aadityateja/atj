@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Earth Simulation • Aditya S</title>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+        .earth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .earth {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background-image: url('assets/file.jpg');
+            background-size: cover;
+            animation: rotateEarth 12s linear infinite;
+            border: 4px solid white;
+        }
+
+        @keyframes rotateEarth {
+            from {
+                background-position: 0 0;
+            }
+            to {
+                background-position: -2000px 0;
+            }
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 20px;
+            padding: 6px 14px;
+            border: 2px solid white;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+        .back-button:hover {
+            background: white;
+            color: #007BFF;
+        }
+    </style>
+
+</head>
+
+<body class="about-page">
+
+    <a href="index.html" class="back-button">← Back</a>
+
+    <div class="earth-container">
+        <div class="earth"></div>
+    </div>
+
+</body>
+</html>
