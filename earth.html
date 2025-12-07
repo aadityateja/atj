@@ -120,18 +120,12 @@
     const loader = new THREE.TextureLoader(loadingManager);
 
     const colorMap = loader.load('assets/2k_earth_daymap.jpg');
-    const normalMap = loader.load('assets/2k_earth_nightmap.jpg'); // optional
-    const specMap = loader.load('assets/2k_earth_clouds.jpg');     // optional
-
+   
     // ensure correct color space
     colorMap.encoding = THREE.sRGBEncoding;
 
     const earthMaterial = new THREE.MeshPhongMaterial({
       map: colorMap,
-      normalMap: normalMap || null,
-      specularMap: specMap || null,
-      shininess: 10,
-      specular: new THREE.Color(0x333333),
     });
 
     const earth = new THREE.Mesh(geometry, earthMaterial);
