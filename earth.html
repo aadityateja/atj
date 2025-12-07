@@ -119,9 +119,9 @@
     const loadingManager = new THREE.LoadingManager();
     const loader = new THREE.TextureLoader(loadingManager);
 
-    const colorMap = loader.load('assets/earth.jpg');
-    const normalMap = loader.load('assets/earth-normal.jpg'); // optional
-    const specMap = loader.load('assets/earth-spec.jpg');     // optional
+    const colorMap = loader.load('assets/2k_earth_daymap.jpg');
+    const normalMap = loader.load('assets/2k_earth_nightmap.jpg'); // optional
+    const specMap = loader.load('assets/2k_earth_clouds.jpg');     // optional
 
     // ensure correct color space
     colorMap.encoding = THREE.sRGBEncoding;
