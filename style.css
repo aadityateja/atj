@@ -133,6 +133,24 @@ footer {
     font-family: 'MyCustomFont';
 }
 
+.back-button {
+    display: inline-block;
+    margin-bottom: 20px;
+    font-size: 20px;
+    text-decoration: none;
+    color: white;
+    font-family: 'MyCustomFont';
+    border: 2px solid white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.back-button:hover {
+    background: white;
+    color: #007BFF;
+}
+
 
 
 
