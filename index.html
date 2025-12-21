@@ -6,10 +6,12 @@
     <title>Aditya S</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" href="assets/android-icon-192x192.png" type="image/png">
+<button id="bgBtn">Change Background</button>
 
 </head>
 
 <body>
+<button id="bgBtn">Change Background</button>
 
     <div class="main">
 
@@ -37,6 +39,23 @@
         </div>
 
     </div>
+<script>
+    const themes = [
+        { bg: "blue", text: "white" },
+        { bg: "black", text: "white" },
+        { bg: "white", text: "black" },
+        { bg: "red", text: "white" }
+    ];
+
+    let currentIndex = 0;
+
+    document.getElementById("bgBtn").addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % themes.length;
+        document.body.style.backgroundColor = themes[currentIndex].bg;
+        document.body.style.color = themes[currentIndex].text;
+    });
+</script>
+
 
 </body>
 </html>
