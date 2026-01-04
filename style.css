@@ -18,6 +18,31 @@ body {
 
 }
 
+/* DEFAULT THEME (BLUE) */
+body {
+    background-color: blue;
+    color: white;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+body.theme-black,
+body.theme-black * {
+    background-color: black;
+    color: white !important;
+}
+
+body.theme-white,
+body.theme-white * {
+    background-color: white;
+    color: black !important;
+}
+
+body.theme-red,
+body.theme-red * {
+    background-color: red;
+    color: white !important;
+}
+
+
 /* Main layout container */
 .main {
     display: flex;
