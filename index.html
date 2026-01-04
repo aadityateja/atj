@@ -41,11 +41,13 @@
 <script>
     const themes = ["blue", "black", "white", "red"];
     let currentIndex = 0;
-
     const body = document.body;
 
     document.getElementById("bgBtn").addEventListener("click", () => {
-        body.classList.remove(...themes.map(t => `theme-${t}`));
+        body.className = body.className
+            .split(" ")
+            .filter(c => !c.startsWith("theme-"))
+            .join(" ");
 
         currentIndex = (currentIndex + 1) % themes.length;
         body.classList.add(`theme-${themes[currentIndex]}`);
