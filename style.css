@@ -8,7 +8,7 @@ body {
     margin: 0;
         padding: 0;
 
-    background: #007BFF; /* blue */
+    background: #4da3ff; /* blue */
         height: 100vh;       /* make the page fixed height */
 
     color: white;
@@ -117,7 +117,7 @@ h1 {
 
 .links a:hover {
     background: white;
-    color: #007BFF;
+    color: #4da3ff;
 }
 
 /* Footer */
@@ -184,7 +184,7 @@ footer {
 
 .back-button:hover {
     background: white;
-    color: #007BFF;
+    color: #4da3ff;
 }
 
 .bg-btn {
