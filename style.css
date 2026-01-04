@@ -203,7 +203,8 @@ footer {
 
 /* Default */
 body {
-    transition: background-color 0.4s ease, color 0.4s ease;
+    background-color: #6EC1E4;  
+    transition: background-color 0.6s ease, color 0.6s ease;
 }
 
 /* =========================
@@ -231,15 +232,6 @@ body.theme-white { background-color: white; }
 body.theme-black { background-color: black; }
 body.theme-red   { background-color: red; }
 
-/* =========================
-   FIX TAG LINKS FOR THEMES
-   ========================= */
-
-/* Default (blue, black, red backgrounds) */
-.taglink {
-    color: inherit;
-    border: 1px solid currentColor;
-}
 
 
 
