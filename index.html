@@ -41,11 +41,13 @@
 
     </div>
 <script>
-    const themes = [ "black", "white", "red"];
+    const themes = ["blue", "black", "white", "red"];
     let currentIndex = 0;
     const body = document.body;
 
-    document.getElementById("bgBtn").addEventListener("click", () => {
+    document.getElementById("bgBtn").addEventListener("click", (e) => {
+        e.preventDefault();
+
         body.className = body.className
             .split(" ")
             .filter(c => !c.startsWith("theme-"))
@@ -55,6 +57,7 @@
         body.classList.add(`theme-${themes[currentIndex]}`);
     });
 </script>
+
 
 
 
