@@ -179,10 +179,6 @@ body.theme-white * {
     color: #000 !important;
 }
 
-body.theme-blue,
-body.theme-blue * {
-    color: #fff !important;
-}
 
 body.theme-black,
 body.theme-black * {
@@ -196,7 +192,6 @@ body.theme-red * {
 
 /* Backgrounds */
 body.theme-white { background-color: white; }
-body.theme-blue  { background-color: blue; }
 body.theme-black { background-color: black; }
 body.theme-red   { background-color: red; }
 
