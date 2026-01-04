@@ -231,6 +231,27 @@ body.theme-white { background-color: white; }
 body.theme-black { background-color: black; }
 body.theme-red   { background-color: red; }
 
+/* =========================
+   FIX TAG LINKS FOR THEMES
+   ========================= */
+
+/* Default (blue, black, red backgrounds) */
+.taglink {
+    color: inherit;
+    border: 1px solid currentColor;
+}
+
+/* WHITE THEME OVERRIDES */
+body.theme-white .taglink {
+    color: #000 !important;
+    border-color: #000 !important;
+}
+
+/* Optional hover */
+.taglink:hover {
+    opacity: 0.7;
+}
+
 
 /* Mobile version - stack vertically */
 /* Stack tagline links vertically on mobile */
