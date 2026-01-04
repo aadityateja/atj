@@ -241,16 +241,6 @@ body.theme-red   { background-color: red; }
     border: 1px solid currentColor;
 }
 
-/* WHITE THEME OVERRIDES */
-body.theme-white .taglink {
-    color: #000 !important;
-    border-color: #000 !important;
-}
-
-/* Optional hover */
-.taglink:hover {
-    opacity: 0.7;
-}
 
 
 /* Mobile version - stack vertically */
