@@ -151,17 +151,20 @@ footer {
     color: #007BFF;
 }
 
-#bgBtn {
+.bg-btn {
+    font-family: inherit;   /* same font as website */
+    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1px solid currentColor;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
     position: fixed;
     top: 20px;
     right: 20px;
-    padding: 10px 16px;
-    font-size: 14px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    z-index: 1000;
 }
+
 
 
 
