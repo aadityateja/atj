@@ -165,6 +165,42 @@ footer {
     right: 20px;
 }
 
+/* Default */
+body {
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* THEMES */
+.theme-blue {
+    background-color: blue;
+    color: white;
+}
+
+.theme-black {
+    background-color: black;
+    color: white;
+}
+
+.theme-red {
+    background-color: red;
+    color: white;
+}
+
+.theme-white {
+    background-color: white;
+    color: black;
+}
+
+/* FORCE all text & links to follow theme */
+body,
+body * {
+    color: inherit;
+}
+
+/* Optional: links styling */
+a {
+    text-decoration: none;
+}
 
 
 
