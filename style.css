@@ -203,7 +203,7 @@ footer {
 
 /* Default */
 body {
-    background-color: #6EC1E4;  
+    background-color: #A7D8F5;  
     transition: background-color 0.6s ease, color 0.6s ease;
 }
 
@@ -211,20 +211,17 @@ body {
    THEME COLORS (FINAL FIX)
    ========================= */
 
-body.theme-white,
-body.theme-white * {
-    color: #000 !important;
+body.theme-white {
+    color: #000 ;
 }
 
 
-body.theme-black,
-body.theme-black * {
-    color: #fff !important;
+body.theme-black {
+    color: #fff ;
 }
 
-body.theme-red,
-body.theme-red * {
-    color: #fff !important;
+body.theme-red {
+    color: #fff ;
 }
 
 /* Backgrounds */
