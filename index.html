@@ -30,7 +30,6 @@
             <div class="links">
                 <a href="https://www.linkedin.com/in/aadityateja/">LinkedIn</a>
                 <a href="#">CV</a>
-             <a href="#" id="bgBtn">Theme</a>
 
             </div>
 
@@ -41,22 +40,26 @@
 
     </div>
 <script>
-    const themes = ["blue", "black", "white", "red"];
+    const themes = ["black", "white", "red", "default"];
     let currentIndex = 0;
     const body = document.body;
 
     document.getElementById("bgBtn").addEventListener("click", (e) => {
         e.preventDefault();
 
-        body.className = body.className
-            .split(" ")
-            .filter(c => !c.startsWith("theme-"))
-            .join(" ");
+        // Remove any existing theme
+        body.classList.remove("theme-black", "theme-white", "theme-red");
 
         currentIndex = (currentIndex + 1) % themes.length;
-        body.classList.add(`theme-${themes[currentIndex]}`);
+        const theme = themes[currentIndex];
+
+        if (theme !== "default") {
+            body.classList.add(`theme-${theme}`);
+        }
+        // else: default blue is restored automatically
     });
 </script>
+
 
 
 
