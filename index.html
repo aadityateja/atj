@@ -39,21 +39,19 @@
 
     </div>
 <script>
-    const themes = [
-        { bg: "blue", text: "white" },
-        { bg: "black", text: "white" },
-        { bg: "white", text: "black" },
-        { bg: "red", text: "white" }
-    ];
-
+    const themes = ["blue", "black", "white", "red"];
     let currentIndex = 0;
 
+    const body = document.body;
+
     document.getElementById("bgBtn").addEventListener("click", () => {
+        body.classList.remove(...themes.map(t => `theme-${t}`));
+
         currentIndex = (currentIndex + 1) % themes.length;
-        document.body.style.backgroundColor = themes[currentIndex].bg;
-        document.body.style.color = themes[currentIndex].text;
+        body.classList.add(`theme-${themes[currentIndex]}`);
     });
 </script>
+
 
 
 </body>
