@@ -1,71 +1,82 @@
-/* Blue background */
+/* =========================
+   FONT
+   ========================= */
 @font-face {
     font-family: 'MyCustomFont';
     src: url('fonts/HoneyRoom.ttf') format('truetype');
 }
 
+/* =========================
+   THEME SYSTEM (AUTHORITATIVE)
+   ========================= */
 body {
+    --bg: #A7D8F5;     /* default light blue */
+    --text: #ffffff;
+
     margin: 0;
-        padding: 0;
+    padding: 0;
+    min-height: 100vh;
 
-    background: #4da3ff; /* blue */
-        height: 100vh;       /* make the page fixed height */
+    background-color: var(--bg);
+    color: var(--text);
 
-    color: white;
     font-family: 'MyCustomFont';
+    cursor: url("assets/pixel-cursor.png") 0 0, auto;
 
-        cursor: url("assets/pixel-cursor.png") 0 0, auto;
-
+    transition: background-color 0.6s ease, color 0.6s ease;
 }
 
-/* DEFAULT THEME (BLUE) */
-body {
-    background-color: blue;
-    color: white;
-    transition: background-color 0.4s ease, color 0.4s ease;
-}
-body.theme-black,
-body.theme-black * {
-    background-color: black;
-    color: white !important;
+/* Theme overrides — ONLY variables */
+body.theme-black {
+    --bg: #000000;
+    --text: #ffffff;
 }
 
-body.theme-white,
-body.theme-white * {
-    background-color: white;
-    color: black !important;
+body.theme-white {
+    --bg: #ffffff;
+    --text: #000000;
 }
 
-body.theme-red,
-body.theme-red * {
-    background-color: red;
-    color: white !important;
+body.theme-red {
+    --bg: #e53935;
+    --text: #ffffff;
 }
 
+/* FORCE everything to follow text color */
+body * {
+    color: inherit;
+}
 
-/* Main layout container */
+/* =========================
+   MAIN LAYOUT
+   ========================= */
 .main {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;  /* center vertically */
-    gap: 60px;          /* spacing between left and right */
+    min-height: 100vh;
+    gap: 60px;
 }
 
-/* Left side - photo */
 .left {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Photo card */
+.right {
+    max-width: 400px;
+}
+
+/* =========================
+   PHOTO
+   ========================= */
 .photo-card {
     width: 260px;
     height: 320px;
     overflow: hidden;
     border-radius: 12px;
-    border: 4px solid white;
+    border: 4px solid currentColor;
 }
 
 .profile-photo {
@@ -74,186 +85,126 @@ body.theme-red * {
     object-fit: cover;
 }
 
-/* Right side text neatly aligned */
-.right {
-    max-width: 400px;
-}
-
-/* Title */
+/* =========================
+   TEXT
+   ========================= */
 h1 {
     font-size: 2.4rem;
     margin-bottom: 20px;
 }
 
-/* Tagline */
+.name-link {
+    text-decoration: none;
+}
+
+.name-link:hover {
+    text-decoration: underline;
+}
+
 .tagline {
     font-size: 1.4rem;
     margin-bottom: 40px;
 }
 
-/* Links */
-.links a {
-    display: flex;
-    margin: 10px 10px 0 0;
-    padding: 12px 20px;
-    border: 2px solid white;
-    color: white;
-    font-size: 1.4rem;
+/* Researcher / Storyteller — CLEAN */
+.tagline a {
     text-decoration: none;
-    border-radius: 8px;
-    transition: 0.2s;
+    font-weight: 500;
 }
 
+.tagline a:hover {
+    text-decoration: underline;
+}
+
+/* =========================
+   LINKS (LinkedIn / CV / Theme)
+   ========================= */
+.links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.links a {
+    padding: 12px 20px;
+    border: 2px solid currentColor;
+    border-radius: 8px;
+
+    font-size: 1.4rem;
+    font-family: inherit;
+    text-decoration: none;
+
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.links a:hover {
+    opacity: 0.7;
+}
+
+/* Top-right positioning */
 .top-links {
     position: absolute;
     top: 20px;
     right: 30px;
 }
 
-/* Prevent page jump */
+/* Theme toggle */
 #bgBtn {
     cursor: pointer;
 }
 
-.links a {
-    font-family: inherit;
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* Footer */
+/* =========================
+   FOOTER
+   ========================= */
 footer {
     margin-top: 40px;
     font-size: 0.6rem;
     opacity: 0.8;
 }
-.tagline a {
-    color: white !important;        /* always white */
-    text-decoration: underline;     /* always underlined */
-    font-weight: bold;
-}
 
-.tagline a:visited,
-.tagline a:active {
-    color: white !important;        /* prevent browser default purple/blue */
-}
-
-.name-link {
-    color: white;
-    text-decoration: none;     /* no underline initially */
-    font-family: 'MyCustomFont';
-}
-
-.name-link:hover {
-    text-decoration: underline;   /* underline on hover */
-}
-
-
-.about-container {
-    max-width: 900px;
-    margin: 3cm auto;       /* 3 cm margin top/bottom + centered */
-    font-size: 30px;
-    line-height: 1.6;
-    text-align: left;
-}
-
-.about-container h1 {
-    font-family: 'MyCustomFont';
-    font-size: 38px;
-    margin-bottom: 25px;
-    text-align: left;
-        font-weight: normal;   
-
-}
-
+/* =========================
+   ABOUT PAGE
+   ========================= */
 .about-page {
     font-family: 'MyCustomFont';
 }
 
+.about-container {
+    max-width: 900px;
+    margin: 3cm auto;
+    font-size: 30px;
+    line-height: 1.6;
+}
+
+.about-container h1 {
+    font-size: 38px;
+    margin-bottom: 25px;
+    font-weight: normal;
+}
+
+/* Back button */
 .back-button {
     display: inline-block;
     margin-bottom: 20px;
     font-size: 20px;
+
     text-decoration: none;
-    color: white;
-    font-family: 'MyCustomFont';
-    border: 2px solid white;
+    border: 2px solid currentColor;
     padding: 6px 14px;
     border-radius: 8px;
-    transition: 0.2s;
+
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .back-button:hover {
-    background: white;
-    color: #4da3ff;
-}
-
-.bg-btn {
-    font-family: inherit;   /* same font as website */
-    font-size: 14px;
-    padding: 8px 14px;
-    border-radius: 20px;
-    border: 1px solid currentColor;
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-}
-
-/* Default */
-body {
-    background-color: #A7D8F5;  
-    transition: background-color 0.6s ease, color 0.6s ease;
+    background-color: currentColor;
+    color: var(--bg);
 }
 
 /* =========================
-   THEME COLORS (FINAL FIX)
+   MOBILE
    ========================= */
-
-body.theme-white {
-    color: #000 ;
-}
-
-
-body.theme-black {
-    color: #fff ;
-}
-
-body.theme-red {
-    color: #fff ;
-}
-
-/* Backgrounds */
-body.theme-white { background-color: white; }
-body.theme-black { background-color: black; }
-body.theme-red   { background-color: red; }
-
-/* =========================
-   THEME TOGGLE LINK FIX
-   ========================= */
-
-#bgBtn {
-    font-family: inherit;     /* same font as site */
-    font-size: inherit;
-    font-weight: inherit;
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;          /* show hand on hover */
-}
-
-/* Hover effect (same as other links) */
-#bgBtn:hover {
-    opacity: 0.7;
-}
-
-
-
-
-/* Mobile version - stack vertically */
-/* Stack tagline links vertically on mobile */
 @media (max-width: 750px) {
     .main {
         flex-direction: column;
@@ -264,11 +215,10 @@ body.theme-red   { background-color: red; }
         max-width: 90%;
     }
 
-    /* Make tagline links vertical on mobile */
     .tagline {
         display: flex;
         flex-direction: column;
-        gap: 10px; /* spacing between Researcher and Storyteller */
-        align-items: center; /* center them */
+        gap: 10px;
+        align-items: center;
     }
 }
