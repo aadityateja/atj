@@ -170,38 +170,35 @@ body {
     transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* THEMES */
-.theme-blue {
-    background-color: blue;
-    color: white;
+/* =========================
+   THEME COLORS (FINAL FIX)
+   ========================= */
+
+body.theme-white,
+body.theme-white * {
+    color: #000 !important;
 }
 
-.theme-black {
-    background-color: black;
-    color: white;
+body.theme-blue,
+body.theme-blue * {
+    color: #fff !important;
 }
 
-.theme-red {
-    background-color: red;
-    color: white;
+body.theme-black,
+body.theme-black * {
+    color: #fff !important;
 }
 
-.theme-white {
-    background-color: white;
-    color: black;
+body.theme-red,
+body.theme-red * {
+    color: #fff !important;
 }
 
-/* FORCE all text & links to follow theme */
-body,
-body * {
-    color: inherit;
-}
-
-/* Optional: links styling */
-a {
-    text-decoration: none;
-}
-
+/* Backgrounds */
+body.theme-white { background-color: white; }
+body.theme-blue  { background-color: blue; }
+body.theme-black { background-color: black; }
+body.theme-red   { background-color: red; }
 
 
 /* Mobile version - stack vertically */
