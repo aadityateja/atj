@@ -79,6 +79,17 @@ h1 {
     transition: 0.2s;
 }
 
+.top-links {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+}
+
+/* Prevent page jump */
+#bgBtn {
+    cursor: pointer;
+}
+
 .links a:hover {
     background: white;
     color: #007BFF;
