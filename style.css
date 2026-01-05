@@ -149,6 +149,30 @@ h1 {
     right: 30px;
 }
 
+.icon-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    color: inherit;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.icon-btn:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
+}
+
+.icon-btn:focus {
+    outline: none;
+}
+
+
 /* Theme toggle */
 #bgBtn {
     cursor: pointer;
