@@ -41,26 +41,20 @@
         </div>
 
     </div>
-<script>
-    const themes = ["black", "white", "red", "default"];
-    let currentIndex = 0;
-    const body = document.body;
+const themes = ["", "theme-black", "theme-white", "theme-red"];
+    let currentThemeIndex = 0;
 
-    document.getElementById("bgBtn").addEventListener("click", (e) => {
-        e.preventDefault();
+    const bgBtn = document.getElementById("bgBtn");
 
-        // Remove any existing theme
-        body.classList.remove("theme-black", "theme-white", "theme-red");
+    bgBtn.addEventListener("click", () => {
+        document.body.className = "";
+        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
 
-        currentIndex = (currentIndex + 1) % themes.length;
-        const theme = themes[currentIndex];
-
-        if (theme !== "default") {
-            body.classList.add(`theme-${theme}`);
+        if (themes[currentThemeIndex] !== "") {
+            document.body.classList.add(themes[currentThemeIndex]);
         }
-        // else: default blue is restored automatically
     });
-</script>
+    </script>
 
 
 
