@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A live countdown to the Sun's future red giant phase, with a scientifically accurate note about its white dwarf fate." />
+    <title>Sun Countdown - Aditya S</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="assets/android-icon-192x192.png" type="image/png">
+</head>
+<body class="cosmic-page">
+    <main class="cosmic-shell">
+        <a href="index.html" class="back-button">Back</a>
+
+        <section class="sun-hero" aria-labelledby="sun-title">
+            <div class="sun-orbit" aria-hidden="true">
+                <div class="sun-core"></div>
+            </div>
+
+            <div class="sun-copy">
+                <p class="cosmic-kicker">Solar fate countdown</p>
+                <h1 id="sun-title">Time Until the Sun Becomes a Red Giant</h1>
+                <p class="sun-intro">
+                    The Sun will not collapse into a neutron star or explode as a supernova. It is expected to expand into a red giant in about 5 billion years, then eventually become a white dwarf.
+                </p>
+            </div>
+        </section>
+
+        <section class="countdown-panel" aria-label="Countdown to the Sun's red giant phase">
+            <div class="countdown-grid" id="countdown">
+                <div class="time-block">
+                    <span id="years">--</span>
+                    <small>years</small>
+                </div>
+                <div class="time-block">
+                    <span id="days">--</span>
+                    <small>days</small>
+                </div>
+                <div class="time-block">
+                    <span id="hours">--</span>
+                    <small>hours</small>
+                </div>
+                <div class="time-block">
+                    <span id="minutes">--</span>
+                    <small>minutes</small>
+                </div>
+                <div class="time-block">
+                    <span id="seconds">--</span>
+                    <small>seconds</small>
+                </div>
+            </div>
+
+            <div class="fate-line">
+                <span>Main sequence</span>
+                <span>Red giant</span>
+                <span>Planetary nebula</span>
+                <span>White dwarf</span>
+            </div>
+        </section>
+
+        <section class="science-note">
+            <h2>What Actually Happens?</h2>
+            <p>
+                Neutron stars and supernovae come from much more massive stars. The Sun's quieter ending is still immense: it will swell, shed its outer layers into space, and leave behind a dense white dwarf core.
+            </p>
+            <p class="source-links">
+                Sources: <a href="https://science.nasa.gov/sun/facts/" target="_blank" rel="noopener">NASA Sun Facts</a> and <a href="https://science.nasa.gov/universe/stars/types/" target="_blank" rel="noopener">NASA Star Types</a>
+            </p>
+        </section>
+    </main>
+
+    <script>
+        const secondsPerYear = 31556952n;
+        const secondsPerDay = 86400n;
+        const secondsPerHour = 3600n;
+        const secondsPerMinute = 60n;
+        const startUnixSeconds = 1767225600n;
+        const targetUnixSeconds = startUnixSeconds + (5000000000n * secondsPerYear);
+
+        const yearsEl = document.getElementById("years");
+        const daysEl = document.getElementById("days");
+        const hoursEl = document.getElementById("hours");
+        const minutesEl = document.getElementById("minutes");
+        const secondsEl = document.getElementById("seconds");
+
+        function formatBigInt(value) {
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function updateCountdown() {
+            const nowUnixSeconds = BigInt(Math.floor(Date.now() / 1000));
+            let remaining = targetUnixSeconds - nowUnixSeconds;
+
+            if (remaining < 0n) {
+                remaining = 0n;
+            }
+
+            const years = remaining / secondsPerYear;
+            remaining %= secondsPerYear;
+
+            const days = remaining / secondsPerDay;
+            remaining %= secondsPerDay;
+
+            const hours = remaining / secondsPerHour;
+            remaining %= secondsPerHour;
+
+            const minutes = remaining / secondsPerMinute;
+            const seconds = remaining % secondsPerMinute;
+
+            yearsEl.textContent = formatBigInt(years);
+            daysEl.textContent = days.toString();
+            hoursEl.textContent = hours.toString().padStart(2, "0");
+            minutesEl.textContent = minutes.toString().padStart(2, "0");
+            secondsEl.textContent = seconds.toString().padStart(2, "0");
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
