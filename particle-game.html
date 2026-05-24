@@ -1,72 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Particle Catcher</title>
+const c = document.getElementById("game");
+const ctx = c.getContext("2d");
 
-<style>
-body {
-    text-align: center;
-    font-family: Arial, sans-serif;
-    background: #111;
-    color: white;
-}
+// ---------------- AUDIO ----------------
+const bgMusic = new Audio("assets/untitled.mp3");
+bgMusic.loop = true;
+bgMusic.volume = 0.4;
 
-canvas {
-    border: 2px solid white;
-    background: black;
-    display: block;
-    margin: auto;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 18px;
-    margin: 10px;
-}
-</style>
-</head>
-
-<body>
-
-<h1>⚛️ Particle Catcher</h1>
-
-<div id="menu">
-    <button onclick="startGame()">Start Game</button>
-</div>
-
-<div id="hud" style="display:none;">
-    <p>⏱ Time: <span id="timer">10</span></p>
-    <p>
-        u: <span id="u">0</span> |
-        d: <span id="d">0</span> |
-        e: <span id="e">0</span>
-    </p>
-</div>
-
-<canvas id="game" width="800" height="500"></canvas>
-
-<div id="over" style="display:none;">
-    <h2>💥 Game Over</h2>
-    <p id="score"></p>
-    <button onclick="location.reload()">Play Again</button>
-</div>
-
-<script>
-
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+const catchSound = new Audio("assets/hit.mp3");
+catchSound.volume = 0.7;
 
 // ---------------- GAME STATE ----------------
 let player, particles, score;
-let time = 10;
+let time = 30;
 let running = false;
 
 let targetX = 350;
 
 // ---------------- INPUT ----------------
 document.addEventListener("mousemove", function(e){
-    let rect = canvas.getBoundingClientRect();
+    let rect = c.getBoundingClientRect();
     targetX = e.clientX - rect.left - player.w/2;
 });
 
@@ -76,50 +28,49 @@ function reset(){
     particles = [];
     score = {u:0,d:0,e:0};
 
-    document.getElementById("u").innerText = 0;
-    document.getElementById("d").innerText = 0;
-    document.getElementById("e").innerText = 0;
+    document.getElementById("u").innerText=0;
+    document.getElementById("d").innerText=0;
+    document.getElementById("e").innerText=0;
 }
 
 // ---------------- SPAWN ----------------
 function spawn(){
-    const types = ["u","d","e"];
+    const types=["u","d","e"];
 
     particles.push({
-        x: Math.random()*760,
-        y: 0,
-        t: types[Math.floor(Math.random()*3)],
-        s: 2 + Math.random()*3
+        x:Math.random()*760,
+        y:0,
+        t:types[Math.floor(Math.random()*3)],
+        s:2+Math.random()*3
     });
 }
 
 // ---------------- UPDATE ----------------
 function update(){
 
-    // smooth mouse follow
     player.x += (targetX - player.x) * 0.2;
-
     player.x = Math.max(0, Math.min(700, player.x));
 
     for(let i=particles.length-1;i>=0;i--){
-        let p = particles[i];
-        p.y += p.s;
+        let p=particles[i];
+        p.y+=p.s;
 
         // collision
         if(
-            p.x > player.x &&
-            p.x < player.x + player.w &&
-            p.y > player.y
+            p.x>player.x &&
+            p.x<player.x+player.w &&
+            p.y>player.y
         ){
             score[p.t]++;
-            document.getElementById(p.t).innerText = score[p.t];
+            document.getElementById(p.t).innerText=score[p.t];
+
+            catchSound.currentTime = 0;
+            catchSound.play();
+
             particles.splice(i,1);
         }
 
-        // remove if out
-        if(p.y > 500){
-            particles.splice(i,1);
-        }
+        if(p.y>500) particles.splice(i,1);
     }
 }
 
@@ -127,71 +78,64 @@ function update(){
 function draw(){
     ctx.clearRect(0,0,800,500);
 
-    // player
-    ctx.fillStyle = "white";
-    ctx.fillRect(player.x, player.y, player.w, player.h);
+    ctx.fillStyle="white";
+    ctx.fillRect(player.x,player.y,player.w,player.h);
 
-    // particles
     particles.forEach(p=>{
         ctx.fillStyle =
-            p.t==="u" ? "blue" :
-            p.t==="d" ? "green" : "orange";
+            p.t==="u"?"blue":
+            p.t==="d"?"green":"orange";
 
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 15, 0, Math.PI*2);
+        ctx.arc(p.x,p.y,15,0,Math.PI*2);
         ctx.fill();
 
-        ctx.fillStyle = "white";
-        ctx.fillText(p.t, p.x-5, p.y+5);
+        ctx.fillStyle="white";
+        ctx.fillText(p.t,p.x-5,p.y+5);
     });
 }
 
 // ---------------- START ----------------
 function startGame(){
 
-    document.getElementById("menu").style.display = "none";
-    document.getElementById("hud").style.display = "block";
+    document.getElementById("menu").style.display="none";
+    document.getElementById("hud").style.display="block";
 
     reset();
-    running = true;
+    running=true;
 
-    // game loop
+    // 🎵 START MUSIC (important user gesture rule)
+    bgMusic.currentTime = 0;
+    bgMusic.play();
+
     let gameLoop = setInterval(()=>{
-        if(running){
-            update();
-            draw();
-        }
+        if(running){update();draw();}
     },16);
 
-    // spawn loop
     let spawnLoop = setInterval(()=>{
         if(running) spawn();
     },700);
 
-    // timer
     let timerLoop = setInterval(()=>{
         if(running){
             time--;
-            document.getElementById("timer").innerText = time;
+            document.getElementById("timer").innerText=time;
 
-            if(time <= 0){
-                running = false;
+            if(time<=0){
+                running=false;
+
+                bgMusic.pause();
 
                 clearInterval(gameLoop);
                 clearInterval(spawnLoop);
                 clearInterval(timerLoop);
 
-                document.getElementById("hud").style.display = "none";
-                document.getElementById("over").style.display = "block";
+                document.getElementById("hud").style.display="none";
+                document.getElementById("over").style.display="block";
 
-                document.getElementById("score").innerHTML =
-                    `u = ${score.u}<br>d = ${score.d}<br>e = ${score.e}`;
+                document.getElementById("score").innerHTML=
+                `u=${score.u}<br>d=${score.d}<br>e=${score.e}`;
             }
         }
     },1000);
 }
-
-</script>
-
-</body>
-</html>
