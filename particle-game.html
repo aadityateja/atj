@@ -2,27 +2,32 @@ const c = document.getElementById("game");
 const ctx = c.getContext("2d");
 
 // ---------------- AUDIO ----------------
-const bgMusic = new Audio("assets/untitled.mp3");
+const bgMusic = new Audio("./assets/untitled.mp3");
 bgMusic.loop = true;
 bgMusic.volume = 0.4;
 
-const catchSound = new Audio("assets/hit.mp3");
+const catchSound = new Audio("./assets/hit.mp3");
 catchSound.volume = 0.7;
 
 // ---------------- GAME STATE ----------------
-let player, particles, score;
+let player = {x:350,y:450,w:100,h:20};
+let particles = [];
+let score = {u:0,d:0,e:0};
+
 let time = 30;
 let running = false;
 
 let targetX = 350;
 
-// ---------------- INPUT ----------------
+// ---------------- INPUT (SAFE) ----------------
 document.addEventListener("mousemove", function(e){
+    if(!player) return;
+
     let rect = c.getBoundingClientRect();
     targetX = e.clientX - rect.left - player.w/2;
 });
 
-// ---------------- INIT ----------------
+// ---------------- RESET ----------------
 function reset(){
     player = {x:350,y:450,w:100,h:20};
     particles = [];
@@ -64,6 +69,7 @@ function update(){
             score[p.t]++;
             document.getElementById(p.t).innerText=score[p.t];
 
+            // 🔊 sound fix (restart sound)
             catchSound.currentTime = 0;
             catchSound.play();
 
@@ -95,7 +101,7 @@ function draw(){
     });
 }
 
-// ---------------- START ----------------
+// ---------------- START GAME ----------------
 function startGame(){
 
     document.getElementById("menu").style.display="none";
@@ -104,9 +110,12 @@ function startGame(){
     reset();
     running=true;
 
-    // 🎵 START MUSIC (important user gesture rule)
+    // 🎵 AUDIO MUST START INSIDE CLICK
     bgMusic.currentTime = 0;
-    bgMusic.play();
+
+    bgMusic.play().catch(err=>{
+        console.log("Music blocked:", err);
+    });
 
     let gameLoop = setInterval(()=>{
         if(running){update();draw();}
