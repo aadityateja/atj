@@ -9,6 +9,16 @@
 /* =========================
    THEME SYSTEM (AUTHORITATIVE)
    ========================= */
+
+body {
+    text-align: center;
+    background: #111;
+    color: white;
+
+    /* IMPORTANT: inherit site font */
+    font-family: inherit;
+}
+
 body {
     --bg: #5FA8D3;
     --text: #ffffff;
@@ -180,14 +190,7 @@ h1 {
     transition: opacity 0.3s ease;
 }
 
-body {
-    text-align: center;
-    background: #111;
-    color: white;
 
-    /* IMPORTANT: inherit site font */
-    font-family: inherit;
-}
 .photo-overlay {
     position: absolute;
     top: 0;
