@@ -60,7 +60,6 @@ let df = [];
 function loadData() {
   let e = document.getElementById("energySelect").value;
 
-  // placeholder synthetic loader (we’ll replace with real data loader)
   fetch(`data/zdc_${e}.json`)
     .then(res => res.json())
     .then(data => {
