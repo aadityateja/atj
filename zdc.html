@@ -2,16 +2,16 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>ZDC Analysis Dashboard</title>
+  <title>ZDC Detector Dashboard</title>
 
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
   <style>
     body {
       font-family: Arial;
-      margin: 20px;
       background: #0b0f19;
       color: white;
+      margin: 20px;
     }
 
     .panel {
@@ -21,7 +21,7 @@
       border-radius: 10px;
     }
 
-    button, select {
+    select, button, input {
       padding: 8px;
       margin: 5px;
     }
@@ -32,67 +32,180 @@
 
 <h1>⚛️ ZDC Detector Analysis Dashboard</h1>
 
+<!-- ENERGY FILTER -->
 <div class="panel">
-  <h3>📂 Dataset Selector</h3>
+  <h3>🎛 Energy Filter</h3>
 
+  <select id="energySelect" onchange="applyFilter()">
+    <option value="all">All Energies</option>
+    <option value="50">50 GeV</option>
+    <option value="100">100 GeV</option>
+    <option value="200">200 GeV</option>
+  </select>
 
-  <button onclick="loadData()">Load Dataset</button>
+  <button onclick="loadData()">Reload Data</button>
 </div>
 
+<!-- STATS -->
 <div class="panel">
   <h3>📊 Statistics</h3>
   <div id="stats"></div>
 </div>
 
+<!-- GLOBAL PLOTS -->
 <div class="panel">
-  <h3>📈 HCAL Energy Distribution</h3>
+  <h3>📈 Energy Distributions</h3>
   <div id="plot1"></div>
 </div>
 
+<!-- EVENT VIEWER -->
+<div class="panel">
+  <h3>🎯 Event Physics Explorer</h3>
+
+  <input id="eventId" type="number" placeholder="Event ID" />
+  <button onclick="showEvent()">Analyze Event</button>
+
+  <div id="eventText"></div>
+</div>
+
+<div class="panel">
+  <h3>📊 Event Energy Breakdown</h3>
+  <div id="eventPlot"></div>
+</div>
+
+<div class="panel">
+  <h3>📉 HCAL Shower Profile (Layers)</h3>
+  <div id="layerPlot"></div>
+</div>
+
 <script>
+
 let df = [];
+let filteredDF = [];
 
+/* =========================
+   LOAD DATA
+========================= */
 function loadData() {
-  console.log("Loading unified dataset...");
-
   fetch("data/zdc_web.json")
     .then(res => res.json())
     .then(data => {
       df = data;
+      filteredDF = data;
 
       console.log("Loaded events:", df.length);
 
       computeStats();
       plot();
     })
-    .catch(err => {
-      console.error("Failed to load dataset:", err);
-    });
+    .catch(err => console.error("Load error:", err));
 }
 
+/* =========================
+   FILTER ENERGY
+========================= */
+function applyFilter() {
+  let e = document.getElementById("energySelect").value;
+
+  if (e === "all") {
+    filteredDF = df;
+  } else {
+    filteredDF = df.filter(d => d.beam_energy == parseInt(e));
+  }
+
+  computeStats();
+  plot();
+}
+
+/* =========================
+   STATS
+========================= */
 function computeStats() {
-  let hcal = df.map(d => d.hcal_e_sum);
-  let si = df.map(d => d.si_e_sum);
+
+  let hcal = filteredDF.map(d => d.hcal_e_sum);
+  let si = filteredDF.map(d => d.si_e_sum);
 
   let mean = arr => arr.reduce((a,b)=>a+b,0)/arr.length;
 
   document.getElementById("stats").innerHTML = `
-    <p>Events: ${df.length}</p>
-    <p>Avg HCAL Energy: ${mean(hcal).toFixed(4)}</p>
-    <p>Avg SI Energy: ${mean(si).toFixed(4)}</p>
+    <p><b>Events:</b> ${filteredDF.length}</p>
+    <p><b>Avg HCAL Energy:</b> ${mean(hcal).toFixed(4)}</p>
+    <p><b>Avg SI Energy:</b> ${mean(si).toFixed(4)}</p>
   `;
 }
 
+/* =========================
+   GLOBAL PLOTS
+========================= */
 function plot() {
-  let hcal = df.map(d => d.hcal_e_sum);
 
-  Plotly.newPlot("plot1", [{
-    x: hcal,
-    type: "histogram"
-  }], {
-    title: "HCAL Energy Distribution"
+  let hcal = filteredDF.map(d => d.hcal_e_sum);
+  let si = filteredDF.map(d => d.si_e_sum);
+
+  Plotly.newPlot("plot1", [
+    { x: hcal, type: "histogram", name: "HCAL" },
+    { x: si, type: "histogram", name: "WSi" }
+  ], {
+    title: "Energy Distribution",
+    barmode: "overlay"
   });
 }
+
+/* =========================
+   EVENT VIEWER
+========================= */
+function showEvent() {
+
+  let id = parseInt(document.getElementById("eventId").value);
+
+  if (isNaN(id) || id < 0 || id >= filteredDF.length) {
+    alert("Invalid Event ID");
+    return;
+  }
+
+  let ev = filteredDF[id];
+
+  document.getElementById("eventText").innerHTML = `
+    <h4>Event ${id}</h4>
+    <p>Beam Energy: ${ev.beam_energy} GeV</p>
+    <p>HCAL Energy: ${ev.hcal_e_sum}</p>
+    <p>WSi Energy: ${ev.si_e_sum}</p>
+    <p>HCAL Hits: ${ev.hcal_n_hits}</p>
+    <p>WSi Hits: ${ev.si_n_hits}</p>
+  `;
+
+  // Energy comparison
+  Plotly.newPlot("eventPlot", [{
+    x: ["HCAL", "WSi"],
+    y: [ev.hcal_e_sum, ev.si_e_sum],
+    type: "bar"
+  }], {
+    title: "Event Energy Breakdown"
+  });
+
+  // Layer profile
+  let layers = [];
+  for (let i = 1; i <= 64; i++) {
+    let key = `hcal_layer_${i}_e`;
+    layers.push(ev[key] || 0);
+  }
+
+  Plotly.newPlot("layerPlot", [{
+    x: [...Array(64).keys()],
+    y: layers,
+    type: "scatter"
+  }], {
+    title: "HCAL Shower Profile",
+    xaxis: { title: "Layer" },
+    yaxis: { title: "Energy" }
+  });
+}
+
+/* =========================
+   INIT
+========================= */
+loadData();
+
 </script>
 
 </body>
