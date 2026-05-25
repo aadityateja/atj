@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>ZDC Full Analysis Dashboard</title>
+  <title>ZDC CERN-Level Analysis Dashboard</title>
 
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
@@ -30,7 +30,7 @@
 
 <body>
 
-<h1>⚛️ ZDC Full Calorimeter Analysis Lab</h1>
+<h1>⚛️ ZDC CERN-Level Calorimeter Framework</h1>
 
 <!-- ================= FILTER ================= -->
 <div class="panel">
@@ -43,19 +43,24 @@
     <option value="200">200 GeV</option>
   </select>
 
-  <button onclick="loadData()">Reload Data</button>
+  <button onclick="loadData()">Reload</button>
 </div>
 
 <!-- ================= SUMMARY ================= -->
 <div class="panel">
-  <h3>📊 Detector Summary</h3>
+  <h3>📊 Detector Summary (CERN-style)</h3>
   <div id="summary"></div>
 </div>
 
 <!-- ================= GLOBAL PLOTS ================= -->
 <div class="panel">
-  <h3>📈 Energy Distributions</h3>
+  <h3>📈 Energy & Hits Distributions</h3>
   <div id="globalPlot"></div>
+</div>
+
+<div class="panel">
+  <h3>📊 HCAL vs WSi Correlation</h3>
+  <div id="corrPlot"></div>
 </div>
 
 <!-- ================= EVENT ================= -->
@@ -69,7 +74,7 @@
 </div>
 
 <div class="panel">
-  <h3>📊 Event Energy Comparison</h3>
+  <h3>📊 Event Energy Breakdown</h3>
   <div id="eventPlot"></div>
 </div>
 
@@ -80,7 +85,7 @@
 
 <!-- ================= ML ================= -->
 <div class="panel">
-  <h3>🧠 ML Energy Reconstruction (BDT-like)</h3>
+  <h3>🧠 ML Energy Reconstruction (CERN-style regression)</h3>
 
   <button onclick="trainModel()">Train Model</button>
   <button onclick="runPrediction()">Run Prediction</button>
@@ -89,7 +94,7 @@
   <div id="mlPlot"></div>
 </div>
 
-<!-- ================= PHYSICS PERFORMANCE ================= -->
+<!-- ================= PERFORMANCE ================= -->
 <div class="panel">
   <h3>📉 Physics Performance</h3>
   <div id="perfPlot"></div>
@@ -97,15 +102,18 @@
 
 <script>
 
+/* ================= DATA ================= */
 let df = [];
 let filteredDF = [];
 
-let model = {
-  w1: 0,
-  w2: 0,
-  b: 0,
-  trained: false
-};
+let model = { w1:0, w2:0, b:0, trained:false };
+
+/* ================= SAFE MEAN ================= */
+function mean(arr) {
+  let clean = arr.filter(x => x !== undefined && !isNaN(x));
+  if (clean.length === 0) return 0;
+  return clean.reduce((a,b)=>a+b,0)/clean.length;
+}
 
 /* ================= LOAD ================= */
 function loadData() {
@@ -115,7 +123,8 @@ function loadData() {
       df = data;
       filteredDF = data;
       updateAll();
-    });
+    })
+    .catch(err => console.error("Load error:", err));
 }
 
 /* ================= FILTER ================= */
@@ -132,34 +141,60 @@ function applyFilter() {
 /* ================= UPDATE ================= */
 function updateAll() {
   summary();
-  plotGlobal();
+  globalPlots();
 }
 
 /* ================= SUMMARY ================= */
 function summary() {
 
-  let mean = a => a.reduce((x,y)=>x+y,0)/a.length;
+  let hcalE = filteredDF.map(d => d.hcal_e_sum || 0);
+  let wsiE  = filteredDF.map(d => d.si_e_sum || 0);
 
-  let hcal = filteredDF.map(d => d.hcal_e_sum);
-  let wsi  = filteredDF.map(d => d.si_e_sum);
+  let hcalHits = filteredDF.map(d => d.hcal_n_hits || 0);
+  let wsiHits  = filteredDF.map(d => d.si_n_hits || 0);
+
+  let totalE = hcalE.map((v,i)=>v + (wsiE[i]||0));
 
   document.getElementById("summary").innerHTML = `
-    <p>Events: ${filteredDF.length}</p>
+    <p><b>Events:</b> ${filteredDF.length}</p>
 
-    <p>HCAL Avg: ${mean(hcal).toFixed(4)} GeV | ${(mean(hcal)*1000).toFixed(2)} MeV</p>
-    <p>WSi Avg: ${mean(wsi).toFixed(4)} GeV | ${(mean(wsi)*1000).toFixed(2)} MeV</p>
+    <p><b>HCAL Avg Energy:</b> ${mean(hcalE).toFixed(4)} GeV</p>
+    <p><b>WSi Avg Energy:</b> ${mean(wsiE).toFixed(4)} GeV</p>
+    <p><b>Total Avg Energy:</b> ${mean(totalE).toFixed(4)} GeV</p>
+
+    <hr>
+
+    <p><b>Avg HCAL Hits:</b> ${mean(hcalHits).toFixed(2)}</p>
+    <p><b>Avg WSi Hits:</b> ${mean(wsiHits).toFixed(2)}</p>
   `;
 }
 
-/* ================= GLOBAL ================= */
-function plotGlobal() {
+/* ================= GLOBAL PLOTS ================= */
+function globalPlots() {
+
+  let hcalE = filteredDF.map(d => d.hcal_e_sum || 0);
+  let wsiE  = filteredDF.map(d => d.si_e_sum || 0);
+  let total = hcalE.map((v,i)=>v+(wsiE[i]||0));
 
   Plotly.newPlot("globalPlot", [
-    { x: filteredDF.map(d=>d.hcal_e_sum), type:"histogram", name:"HCAL" },
-    { x: filteredDF.map(d=>d.si_e_sum), type:"histogram", name:"WSi" }
+    { x: hcalE, type:"histogram", name:"HCAL" },
+    { x: wsiE, type:"histogram", name:"WSi" },
+    { x: total, type:"histogram", name:"TOTAL" }
   ], {
-    title:"Energy Distribution",
-    barmode:"overlay"
+    barmode:"overlay",
+    title:"Energy Distributions",
+    xaxis:{title:"Energy (GeV)"}
+  });
+
+  Plotly.newPlot("corrPlot", [{
+    x: hcalE,
+    y: wsiE,
+    mode:"markers",
+    type:"scatter"
+  }], {
+    title:"HCAL vs WSi Correlation",
+    xaxis:{title:"HCAL Energy"},
+    yaxis:{title:"WSi Energy"}
   });
 }
 
@@ -167,23 +202,24 @@ function plotGlobal() {
 function showEvent() {
 
   let id = parseInt(document.getElementById("eventId").value);
+
+  if (isNaN(id) || id < 0 || id >= filteredDF.length) return;
+
   let ev = filteredDF[id];
 
-  if (!ev) return;
-
   document.getElementById("eventText").innerHTML = `
-    <p>Beam: ${ev.beam_energy} GeV</p>
-    <p>HCAL: ${ev.hcal_e_sum}</p>
-    <p>WSi: ${ev.si_e_sum}</p>
+    <p><b>Beam:</b> ${ev.beam_energy} GeV</p>
+    <p><b>HCAL:</b> ${ev.hcal_e_sum}</p>
+    <p><b>WSi:</b> ${ev.si_e_sum}</p>
   `;
 
   Plotly.newPlot("eventPlot", [{
     x:["HCAL","WSi"],
-    y:[ev.hcal_e_sum, ev.si_e_sum],
+    y:[ev.hcal_e_sum||0, ev.si_e_sum||0],
     type:"bar"
   }]);
 
-  let layers = [];
+  let layers=[];
   for(let i=1;i<=64;i++){
     layers.push(ev[`hcal_layer_${i}_e`] || 0);
   }
@@ -192,20 +228,24 @@ function showEvent() {
     x:[...Array(64).keys()],
     y:layers,
     type:"scatter"
-  }]);
+  }], {
+    title:"HCAL Shower Profile",
+    xaxis:{title:"Layer"},
+    yaxis:{title:"Energy Deposit"}
+  });
 }
 
-/* ================= ML TRAIN ================= */
+/* ================= ML ================= */
 function trainModel() {
 
-  let X1 = filteredDF.map(d => d.hcal_e_sum);
-  let X2 = filteredDF.map(d => d.si_e_sum);
-  let Y  = filteredDF.map(d => d.beam_energy);
+  let X1 = filteredDF.map(d => d.hcal_e_sum || 0);
+  let X2 = filteredDF.map(d => d.si_e_sum || 0);
+  let Y  = filteredDF.map(d => d.beam_energy || 0);
 
-  let w1=0.5,w2=0.5,b=0;
-  let lr=0.001;
+  let w1=0.3,w2=0.3,b=0;
+  let lr=0.0005;
 
-  for(let e=0;e<200;e++){
+  for(let e=0;e<150;e++){
     for(let i=0;i<X1.length;i++){
       let p = w1*X1[i] + w2*X2[i] + b;
       let err = p - Y[i];
@@ -216,14 +256,16 @@ function trainModel() {
     }
   }
 
-  model = {w1,w2,b,trained:true};
+  model={w1,w2,b,trained:true};
 
   document.getElementById("mlStats").innerHTML =
-    `Model trained<br>w1=${w1.toFixed(3)} w2=${w2.toFixed(3)}`;
+    `Model trained ✔<br>w1=${w1.toFixed(3)} w2=${w2.toFixed(3)}`;
 }
 
 /* ================= PREDICT ================= */
 function runPrediction() {
+
+  if(!model.trained) return;
 
   let trueE=[], predE=[];
 
@@ -236,37 +278,16 @@ function runPrediction() {
   Plotly.newPlot("mlPlot", [{
     x:trueE,y:predE,mode:"markers",type:"scatter"
   }], {
-    title:"True vs Predicted Energy"
+    title:"True vs Reconstructed Energy"
   });
 
-  /* ================= RESOLUTION ================= */
   let res = Math.sqrt(
     predE.map((p,i)=>Math.pow((p-trueE[i])/trueE[i],2))
     .reduce((a,b)=>a+b,0)/predE.length
   );
 
   document.getElementById("mlStats").innerHTML +=
-    `<p>Resolution: ${res.toFixed(4)}</p>`;
-
-  /* ================= LINEARITY ================= */
-  let uniq = [...new Set(trueE)];
-  let linX=[], linY=[];
-
-  uniq.forEach(e=>{
-    let idx = trueE.map((v,i)=>v===e?predE[i]:null).filter(x=>x!==null);
-    linX.push(e);
-    linY.push(idx.reduce((a,b)=>a+b,0)/idx.length);
-  });
-
-  Plotly.newPlot("perfPlot", [{
-    x: linX,
-    y: linY,
-    type:"scatter"
-  }], {
-    title:"Linearity (True vs Reco Energy)",
-    xaxis:{title:"True Energy"},
-    yaxis:{title:"Reco Energy"}
-  });
+    `<br>Resolution: ${res.toFixed(4)}`;
 }
 
 /* ================= INIT ================= */
