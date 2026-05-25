@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>ZDC Detector Analysis Dashboard</title>
+  <title>ZDC Full Analysis Dashboard</title>
 
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
@@ -30,59 +30,69 @@
 
 <body>
 
-<h1>⚛️ ZDC Calorimeter Analysis Dashboard</h1>
+<h1>⚛️ ZDC Full Calorimeter Analysis Lab</h1>
 
-<!-- ================= ENERGY FILTER ================= -->
+<!-- ================= FILTER ================= -->
 <div class="panel">
-  <h3>🎛 Energy Scale Selection</h3>
+  <h3>🎛 Energy Selection</h3>
 
   <select id="energySelect" onchange="applyFilter()">
-    <option value="all">All (50/100/200 GeV)</option>
+    <option value="all">All Energies</option>
     <option value="50">50 GeV</option>
     <option value="100">100 GeV</option>
     <option value="200">200 GeV</option>
   </select>
 
-  <button onclick="loadData()">Reload</button>
+  <button onclick="loadData()">Reload Data</button>
 </div>
 
-<!-- ================= GLOBAL SUMMARY ================= -->
+<!-- ================= SUMMARY ================= -->
 <div class="panel">
-  <h3>📊 Total Detector Summary</h3>
+  <h3>📊 Detector Summary</h3>
   <div id="summary"></div>
 </div>
 
 <!-- ================= GLOBAL PLOTS ================= -->
 <div class="panel">
-  <h3>📈 HCAL & WSi Energy Distributions</h3>
+  <h3>📈 Energy Distributions</h3>
   <div id="globalPlot"></div>
 </div>
 
-<!-- ================= EVENT VIEWER ================= -->
+<!-- ================= EVENT ================= -->
 <div class="panel">
   <h3>🎯 Event Explorer (0–1000)</h3>
 
-  <input id="eventId" type="number" min="0" max="1000" placeholder="Event ID (0–1000)" />
+  <input id="eventId" type="number" min="0" max="1000" placeholder="Event ID" />
   <button onclick="showEvent()">Analyze Event</button>
 
   <div id="eventText"></div>
 </div>
 
-<!-- ================= EVENT PLOTS ================= -->
 <div class="panel">
-  <h3>📊 Event Energy Breakdown</h3>
+  <h3>📊 Event Energy Comparison</h3>
   <div id="eventPlot"></div>
 </div>
 
 <div class="panel">
-  <h3>📉 HCAL Shower Profile (Layers)</h3>
+  <h3>📉 Shower Profile (HCAL Layers)</h3>
   <div id="layerPlot"></div>
 </div>
 
-<!-- ================= ML PLACEHOLDER ================= -->
+<!-- ================= ML ================= -->
 <div class="panel">
-  <h3>🧠 ML / BDT Section (Next Upgrade)</h3>
-  <p>Will include: XGBoost training, energy prediction, resolution plots</p>
+  <h3>🧠 ML Energy Reconstruction (BDT-like)</h3>
+
+  <button onclick="trainModel()">Train Model</button>
+  <button onclick="runPrediction()">Run Prediction</button>
+
+  <div id="mlStats"></div>
+  <div id="mlPlot"></div>
+</div>
+
+<!-- ================= PHYSICS PERFORMANCE ================= -->
+<div class="panel">
+  <h3>📉 Physics Performance</h3>
+  <div id="perfPlot"></div>
 </div>
 
 <script>
@@ -90,124 +100,172 @@
 let df = [];
 let filteredDF = [];
 
-/* ================= LOAD DATA ================= */
+let model = {
+  w1: 0,
+  w2: 0,
+  b: 0,
+  trained: false
+};
+
+/* ================= LOAD ================= */
 function loadData() {
   fetch("data/zdc_web.json")
-    .then(res => res.json())
+    .then(r => r.json())
     .then(data => {
       df = data;
       filteredDF = data;
-
       updateAll();
     });
 }
 
-/* ================= FILTER ENERGY ================= */
+/* ================= FILTER ================= */
 function applyFilter() {
   let e = document.getElementById("energySelect").value;
 
-  if (e === "all") {
-    filteredDF = df;
-  } else {
-    filteredDF = df.filter(d => d.beam_energy == parseInt(e));
-  }
+  filteredDF = (e === "all")
+    ? df
+    : df.filter(d => d.beam_energy == parseInt(e));
 
   updateAll();
 }
 
-/* ================= UPDATE ALL ================= */
+/* ================= UPDATE ================= */
 function updateAll() {
-  computeSummary();
+  summary();
   plotGlobal();
 }
 
-/* ================= SUMMARY (GeV + MeV) ================= */
-function computeSummary() {
+/* ================= SUMMARY ================= */
+function summary() {
+
+  let mean = a => a.reduce((x,y)=>x+y,0)/a.length;
 
   let hcal = filteredDF.map(d => d.hcal_e_sum);
-  let wsi = filteredDF.map(d => d.si_e_sum);
-
-  let mean = arr => arr.reduce((a,b)=>a+b,0)/arr.length;
-
-  let hcalMean = mean(hcal);
-  let wsiMean = mean(wsi);
+  let wsi  = filteredDF.map(d => d.si_e_sum);
 
   document.getElementById("summary").innerHTML = `
-    <p><b>Events:</b> ${filteredDF.length}</p>
+    <p>Events: ${filteredDF.length}</p>
 
-    <p><b>HCAL Avg Energy:</b> ${hcalMean.toFixed(4)} GeV
-       | ${(hcalMean*1000).toFixed(2)} MeV</p>
-
-    <p><b>WSi Avg Energy:</b> ${wsiMean.toFixed(4)} GeV
-       | ${(wsiMean*1000).toFixed(2)} MeV</p>
+    <p>HCAL Avg: ${mean(hcal).toFixed(4)} GeV | ${(mean(hcal)*1000).toFixed(2)} MeV</p>
+    <p>WSi Avg: ${mean(wsi).toFixed(4)} GeV | ${(mean(wsi)*1000).toFixed(2)} MeV</p>
   `;
 }
 
-/* ================= GLOBAL PLOT ================= */
+/* ================= GLOBAL ================= */
 function plotGlobal() {
 
-  let hcal = filteredDF.map(d => d.hcal_e_sum);
-  let wsi = filteredDF.map(d => d.si_e_sum);
-
   Plotly.newPlot("globalPlot", [
-    { x: hcal, type: "histogram", name: "HCAL" },
-    { x: wsi, type: "histogram", name: "WSi" }
+    { x: filteredDF.map(d=>d.hcal_e_sum), type:"histogram", name:"HCAL" },
+    { x: filteredDF.map(d=>d.si_e_sum), type:"histogram", name:"WSi" }
   ], {
-    title: "Energy Distribution (HCAL vs WSi)",
-    barmode: "overlay",
-    xaxis: { title: "Energy (GeV)" },
-    yaxis: { title: "Events" }
+    title:"Energy Distribution",
+    barmode:"overlay"
   });
 }
 
-/* ================= EVENT ANALYSIS ================= */
+/* ================= EVENT ================= */
 function showEvent() {
 
   let id = parseInt(document.getElementById("eventId").value);
-
-  if (isNaN(id) || id < 0 || id > 1000 || id >= filteredDF.length) {
-    alert("Enter valid event ID (0–1000)");
-    return;
-  }
-
   let ev = filteredDF[id];
 
+  if (!ev) return;
+
   document.getElementById("eventText").innerHTML = `
-    <p><b>Event:</b> ${id}</p>
-    <p><b>Beam Energy:</b> ${ev.beam_energy} GeV</p>
-
-    <p><b>HCAL:</b> ${ev.hcal_e_sum} GeV | ${(ev.hcal_e_sum*1000).toFixed(2)} MeV</p>
-    <p><b>WSi:</b> ${ev.si_e_sum} GeV | ${(ev.si_e_sum*1000).toFixed(2)} MeV</p>
-
-    <p><b>HCAL Hits:</b> ${ev.hcal_n_hits}</p>
-    <p><b>WSi Hits:</b> ${ev.si_n_hits}</p>
+    <p>Beam: ${ev.beam_energy} GeV</p>
+    <p>HCAL: ${ev.hcal_e_sum}</p>
+    <p>WSi: ${ev.si_e_sum}</p>
   `;
 
-  /* BAR PLOT */
   Plotly.newPlot("eventPlot", [{
-    x: ["HCAL", "WSi"],
-    y: [ev.hcal_e_sum, ev.si_e_sum],
-    type: "bar"
-  }], {
-    title: "Event Energy Comparison",
-    yaxis: { title: "Energy (GeV)" }
-  });
+    x:["HCAL","WSi"],
+    y:[ev.hcal_e_sum, ev.si_e_sum],
+    type:"bar"
+  }]);
 
-  /* LAYER PROFILE */
   let layers = [];
-  for (let i = 1; i <= 64; i++) {
-    let key = `hcal_layer_${i}_e`;
-    layers.push(ev[key] || 0);
+  for(let i=1;i<=64;i++){
+    layers.push(ev[`hcal_layer_${i}_e`] || 0);
   }
 
   Plotly.newPlot("layerPlot", [{
-    x: [...Array(64).keys()],
-    y: layers,
-    type: "scatter"
+    x:[...Array(64).keys()],
+    y:layers,
+    type:"scatter"
+  }]);
+}
+
+/* ================= ML TRAIN ================= */
+function trainModel() {
+
+  let X1 = filteredDF.map(d => d.hcal_e_sum);
+  let X2 = filteredDF.map(d => d.si_e_sum);
+  let Y  = filteredDF.map(d => d.beam_energy);
+
+  let w1=0.5,w2=0.5,b=0;
+  let lr=0.001;
+
+  for(let e=0;e<200;e++){
+    for(let i=0;i<X1.length;i++){
+      let p = w1*X1[i] + w2*X2[i] + b;
+      let err = p - Y[i];
+
+      w1 -= lr*err*X1[i];
+      w2 -= lr*err*X2[i];
+      b  -= lr*err;
+    }
+  }
+
+  model = {w1,w2,b,trained:true};
+
+  document.getElementById("mlStats").innerHTML =
+    `Model trained<br>w1=${w1.toFixed(3)} w2=${w2.toFixed(3)}`;
+}
+
+/* ================= PREDICT ================= */
+function runPrediction() {
+
+  let trueE=[], predE=[];
+
+  filteredDF.forEach(d=>{
+    let p = model.w1*d.hcal_e_sum + model.w2*d.si_e_sum + model.b;
+    trueE.push(d.beam_energy);
+    predE.push(p);
+  });
+
+  Plotly.newPlot("mlPlot", [{
+    x:trueE,y:predE,mode:"markers",type:"scatter"
   }], {
-    title: "HCAL Longitudinal Shower Profile",
-    xaxis: { title: "Layer" },
-    yaxis: { title: "Energy Deposit" }
+    title:"True vs Predicted Energy"
+  });
+
+  /* ================= RESOLUTION ================= */
+  let res = Math.sqrt(
+    predE.map((p,i)=>Math.pow((p-trueE[i])/trueE[i],2))
+    .reduce((a,b)=>a+b,0)/predE.length
+  );
+
+  document.getElementById("mlStats").innerHTML +=
+    `<p>Resolution: ${res.toFixed(4)}</p>`;
+
+  /* ================= LINEARITY ================= */
+  let uniq = [...new Set(trueE)];
+  let linX=[], linY=[];
+
+  uniq.forEach(e=>{
+    let idx = trueE.map((v,i)=>v===e?predE[i]:null).filter(x=>x!==null);
+    linX.push(e);
+    linY.push(idx.reduce((a,b)=>a+b,0)/idx.length);
+  });
+
+  Plotly.newPlot("perfPlot", [{
+    x: linX,
+    y: linY,
+    type:"scatter"
+  }], {
+    title:"Linearity (True vs Reco Energy)",
+    xaxis:{title:"True Energy"},
+    yaxis:{title:"Reco Energy"}
   });
 }
 
