@@ -58,14 +58,20 @@
 let df = [];
 
 function loadData() {
-  let e = document.getElementById("energySelect").value;
+  console.log("Loading unified dataset...");
 
-  fetch(`data/zdc_${e}.json`)
+  fetch("data/zdc_web.json")
     .then(res => res.json())
     .then(data => {
       df = data;
+
+      console.log("Loaded events:", df.length);
+
       computeStats();
       plot();
+    })
+    .catch(err => {
+      console.error("Failed to load dataset:", err);
     });
 }
 
