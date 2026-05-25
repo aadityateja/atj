@@ -1,1 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ZDC Analysis Dashboard</title>
 
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial;
+      margin: 20px;
+      background: #0b0f19;
+      color: white;
+    }
+
+    .panel {
+      background: #151c2c;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+    }
+
+    button, select {
+      padding: 8px;
+      margin: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>⚛️ ZDC Detector Analysis Dashboard</h1>
+
+<div class="panel">
+  <h3>📂 Dataset Selector</h3>
+
+  <select id="energySelect">
+    <option value="50">50 GeV</option>
+    <option value="100">100 GeV</option>
+    <option value="200">200 GeV</option>
+  </select>
+
+  <button onclick="loadData()">Load Dataset</button>
+</div>
+
+<div class="panel">
+  <h3>📊 Statistics</h3>
+  <div id="stats"></div>
+</div>
+
+<div class="panel">
+  <h3>📈 HCAL Energy Distribution</h3>
+  <div id="plot1"></div>
+</div>
+
+<script>
+let df = [];
+
+function loadData() {
+  let e = document.getElementById("energySelect").value;
+
+  // placeholder synthetic loader (we’ll replace with real data loader)
+  fetch(`data/zdc_${e}.json`)
+    .then(res => res.json())
+    .then(data => {
+      df = data;
+      computeStats();
+      plot();
+    });
+}
+
+function computeStats() {
+  let hcal = df.map(d => d.hcal_e_sum);
+  let si = df.map(d => d.si_e_sum);
+
+  let mean = arr => arr.reduce((a,b)=>a+b,0)/arr.length;
+
+  document.getElementById("stats").innerHTML = `
+    <p>Events: ${df.length}</p>
+    <p>Avg HCAL Energy: ${mean(hcal).toFixed(4)}</p>
+    <p>Avg SI Energy: ${mean(si).toFixed(4)}</p>
+  `;
+}
+
+function plot() {
+  let hcal = df.map(d => d.hcal_e_sum);
+
+  Plotly.newPlot("plot1", [{
+    x: hcal,
+    type: "histogram"
+  }], {
+    title: "HCAL Energy Distribution"
+  });
+}
+</script>
+
+</body>
+</html>
