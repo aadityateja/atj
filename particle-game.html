@@ -1,150 +1,497 @@
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
 <title>DRAVYA — Quantum Particle Detector</title>
 
 <style>
 
-@font-face {
-    font-family: 'Carbon';
-    src: url('./fonts/HoneyRoom.ttf') format('truetype');
+/* =========================
+   FONT
+========================= */
+
+@font-face{
+    font-family:'Carbon';
+    src:url('./fonts/HoneyRoom.ttf')
+    format('truetype');
 }
+
+/* =========================
+   RESET
+========================= */
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    overflow:hidden;
     font-family:'Carbon',sans-serif;
 }
 
 body{
+
     background:black;
     color:white;
+
     width:100vw;
     height:100vh;
+
+    overflow:hidden;
+
+    animation:fadeIn 1.5s ease;
 }
 
-/* CANVAS */
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
+    }
+}
+
+@keyframes pulse{
+
+    0%{
+        text-shadow:0 0 5px white;
+    }
+
+    50%{
+        text-shadow:0 0 25px white;
+    }
+
+    100%{
+        text-shadow:0 0 5px white;
+    }
+}
+
+@keyframes quantumSpin{
+
+    from{
+        transform:rotate(0deg);
+    }
+
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+/* =========================
+   CANVAS
+========================= */
 
 canvas{
+
     position:absolute;
+
     top:0;
     left:0;
 }
 
-/* HUD */
+/* =========================
+   HUD
+========================= */
 
 #hud{
+
     position:absolute;
+
     top:20px;
     left:20px;
-    border:2px solid white;
-    padding:14px 18px;
-    background:rgba(0,0,0,0.55);
+
+    border:1px solid rgba(255,255,255,0.25);
+
+    padding:16px;
+
+    background:rgba(255,255,255,0.04);
+
+    backdrop-filter:blur(12px);
+
     z-index:10;
-    line-height:1.7;
-    min-width:180px;
+
+    min-width:190px;
+
+    line-height:1.8;
+
+    box-shadow:
+    0 0 20px rgba(255,255,255,0.05);
 }
 
-/* TITLE */
+/* =========================
+   TITLE
+========================= */
 
 #title{
+
     position:absolute;
+
     top:20px;
     right:20px;
-    font-size:28px;
+
+    font-size:30px;
+
     z-index:10;
+
+    animation:pulse 2s infinite;
 }
 
-/* MENU */
+/* =========================
+   DESKTOP BUTTON
+========================= */
+
+#desktopModeBtn{
+
+    position:absolute;
+
+    bottom:20px;
+    right:20px;
+
+    z-index:50;
+}
+
+/* =========================
+   MENU
+========================= */
 
 #menu{
+
     position:absolute;
+
     width:100%;
     height:100%;
+
     display:flex;
+
     justify-content:center;
     align-items:center;
+
     background:black;
+
     z-index:20;
 }
 
-/* BUTTONS */
+/* =========================
+   BUTTONS
+========================= */
 
 button{
+
     border:2px solid white;
+
     background:black;
+
     color:white;
-    padding:18px 40px;
-    font-size:24px;
+
+    padding:18px 34px;
+
+    font-size:22px;
+
     cursor:pointer;
-    transition:0.2s;
+
+    transition:0.3s;
+
+    letter-spacing:1px;
 }
 
 button:hover{
+
     background:white;
+
     color:black;
+
+    transform:scale(1.05);
 }
 
-/* GAMEOVER */
+/* =========================
+   GAMEOVER / LEVEL2
+========================= */
 
 #gameover{
+
     position:absolute;
+
     width:100%;
     height:100%;
+
     display:none;
-    justify-content:center;
-    align-items:center;
+
     flex-direction:column;
+
+    align-items:center;
+
+    overflow-y:auto;
+
     background:rgba(0,0,0,0.96);
+
     z-index:30;
-    text-align:center;
-    padding:20px;
+
+    padding:40px;
 }
 
 #gameover h1{
+
     font-size:44px;
-    margin-bottom:20px;
+
+    margin-bottom:30px;
 }
 
-#summary{
+/* =========================
+   INVENTORY
+========================= */
+
+#inventory{
+
+    display:flex;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+}
+
+.particleBox{
+
+    width:220px;
+
+    border:2px solid rgba(255,255,255,0.25);
+
+    background:rgba(255,255,255,0.03);
+
+    backdrop-filter:blur(10px);
+
+    padding:20px;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+    text-align:center;
+}
+
+.particleBox:hover{
+
+    transform:translateY(-6px)
+    scale(1.03);
+
+    background:white;
+
+    color:black;
+}
+
+.particleBox h2{
+
+    margin-bottom:12px;
+
+    font-size:24px;
+}
+
+.particleBox div{
+
+    font-size:42px;
+}
+
+/* =========================
+   SELECTED
+========================= */
+
+#selectedArea{
+
+    margin-top:50px;
+
+    text-align:center;
+}
+
+#selectedParticles{
+
+    margin-top:20px;
+
+    display:flex;
+
+    gap:18px;
+
+    justify-content:center;
+
+    min-height:80px;
+
+    flex-wrap:wrap;
+}
+
+.selectedParticle{
+
+    width:70px;
+    height:70px;
+
+    border-radius:50%;
+
+    border:2px solid white;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    font-size:30px;
+
+    animation:quantumSpin 3s linear infinite;
+
+    box-shadow:
+    0 0 25px rgba(255,255,255,0.2);
+}
+
+/* =========================
+   FUSION CHAMBER
+========================= */
+
+#nucleonChamber{
+
+    margin-top:50px;
+
+    display:flex;
+
+    justify-content:center;
+}
+
+#fusionCircle{
+
+    width:240px;
+    height:240px;
+
+    border-radius:50%;
+
+    border:3px solid white;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    font-size:54px;
+
+    transition:0.4s;
+
+    box-shadow:
+    0 0 50px rgba(255,255,255,0.12);
+}
+
+#fusionCircle.active{
+
+    transform:scale(1.08);
+
+    box-shadow:
+    0 0 80px white;
+}
+
+/* =========================
+   RESULTS
+========================= */
+
+#fusionResult{
+
+    margin-top:35px;
+
+    font-size:34px;
+
+    text-align:center;
+
+    min-height:60px;
+}
+
+/* =========================
+   STATS
+========================= */
+
+#matterStats{
+
+    margin-top:40px;
+
+    display:flex;
+
+    gap:30px;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
     font-size:22px;
-    line-height:1.8;
 }
 
-/* MOBILE */
+/* =========================
+   MOBILE
+========================= */
 
 @media(max-width:768px){
 
     #hud{
+
         top:10px;
         left:10px;
-        font-size:14px;
-        padding:10px;
+
         min-width:140px;
+
+        font-size:14px;
     }
 
     #title{
+
         top:10px;
         right:10px;
+
         font-size:18px;
+    }
+
+    #inventory{
+
+        flex-direction:column;
+
+        align-items:center;
+    }
+
+    .particleBox{
+
+        width:90%;
+    }
+
+    #fusionCircle{
+
+        width:180px;
+        height:180px;
+
+        font-size:40px;
+    }
+
+    #matterStats{
+
+        flex-direction:column;
+
+        gap:16px;
     }
 
     button{
-        font-size:18px;
-        padding:14px 24px;
-    }
 
-    #gameover h1{
-        font-size:30px;
-    }
+        font-size:16px;
 
-    #summary{
-        font-size:18px;
+        padding:14px 22px;
     }
+}
+
+/* =========================
+   FORCE DESKTOP
+========================= */
+
+.forceDesktop{
+
+    min-width:1400px;
 }
 
 </style>
@@ -155,30 +502,151 @@ button:hover{
 <!-- MENU -->
 
 <div id="menu">
-    <button onclick="startGame()">START DETECTOR ⚛</button>
+
+    <button onclick="startGame()">
+        START DETECTOR ⚛
+    </button>
+
 </div>
 
 <!-- HUD -->
 
 <div id="hud">
-TIME: <span id="timer">30</span><br><br>
 
-U QUARK: <span id="u">0</span><br>
-D QUARK: <span id="d">0</span><br>
-ELECTRON: <span id="e">0</span>
+TIME:
+<span id="timer">30</span>
+
+<br><br>
+
+U QUARK:
+<span id="u">0</span>
+
+<br>
+
+D QUARK:
+<span id="d">0</span>
+
+<br>
+
+ELECTRON:
+<span id="e">0</span>
+
 </div>
 
 <!-- TITLE -->
 
-<div id="title">⚛ DRAVYA</div>
+<div id="title">
 
-<!-- GAMEOVER -->
+⚛ DRAVYA
+
+</div>
+
+<!-- DESKTOP BUTTON -->
+
+<button id="desktopModeBtn"
+onclick="toggleDesktopMode()">
+
+DESKTOP MODE
+
+</button>
+
+<!-- LEVEL 2 -->
 
 <div id="gameover">
 
-    <h1>LEVEL COMPLETE ⚛</h1>
+    <h1>
+        NUCLEON CONSTRUCTION ⚛
+    </h1>
 
-    <div id="summary"></div>
+    <!-- INVENTORY -->
+
+    <div id="inventory">
+
+        <div class="particleBox"
+        onclick="selectParticle('u')">
+
+            <h2>UP QUARK</h2>
+
+            <div id="uCount">0</div>
+
+        </div>
+
+        <div class="particleBox"
+        onclick="selectParticle('d')">
+
+            <h2>DOWN QUARK</h2>
+
+            <div id="dCount">0</div>
+
+        </div>
+
+        <div class="particleBox"
+        onclick="selectParticle('e')">
+
+            <h2>ELECTRON</h2>
+
+            <div id="eCount">0</div>
+
+        </div>
+
+    </div>
+
+    <!-- SELECTED -->
+
+    <div id="selectedArea">
+
+        <h2>
+            SELECTED PARTICLES
+        </h2>
+
+        <div id="selectedParticles"></div>
+
+    </div>
+
+    <!-- FUSION -->
+
+    <div id="nucleonChamber">
+
+        <div id="fusionCircle">
+
+            ⚛
+
+        </div>
+
+    </div>
+
+    <!-- RESULT -->
+
+    <div id="fusionResult"></div>
+
+    <!-- STATS -->
+
+    <div id="matterStats">
+
+        <div>
+            PROTONS:
+            <span id="protonCount">0</span>
+        </div>
+
+        <div>
+            NEUTRONS:
+            <span id="neutronCount">0</span>
+        </div>
+
+        <div>
+            FREE QUARKS:
+            <span id="freeQuarks">0</span>
+        </div>
+
+    </div>
+
+    <br><br>
+
+    <button onclick="restartGame()">
+
+        RESTART DETECTOR
+
+    </button>
 
 </div>
 
@@ -189,71 +657,106 @@ ELECTRON: <span id="e">0</span>
 <script>
 
 /* =========================
-    CANVAS
+   CANVAS
 ========================= */
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+const canvas =
+document.getElementById("game");
+
+const ctx =
+canvas.getContext("2d");
 
 function resizeCanvas(){
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width =
+    window.innerWidth;
+
+    canvas.height =
+    window.innerHeight;
 }
 
 resizeCanvas();
 
-window.addEventListener("resize",resizeCanvas);
+window.addEventListener(
+"resize",
+resizeCanvas
+);
 
 /* =========================
-    AUDIO
+   AUDIO
 ========================= */
 
-const bgMusic = new Audio("./assets/untitled.mp3");
+const bgMusic =
+new Audio("./assets/untitled.mp3");
+
 bgMusic.loop = true;
+
 bgMusic.volume = 0.4;
 
-const catchSound = new Audio("./assets/hit.mp3");
+const catchSound =
+new Audio("./assets/hit.mp3");
+
 catchSound.volume = 0.7;
 
 /* =========================
-    STATE
+   STATE
 ========================= */
 
 let particles = [];
-let score;
+
 let running = false;
+
 let timer = 30;
+
+let score;
 
 let detector = {};
 
-let targetX = window.innerWidth/2;
+let targetX =
+window.innerWidth/2;
+
+let selectedParticles = [];
+
+let protons = 0;
+
+let neutrons = 0;
 
 /* =========================
-    CONTROLS
+   CONTROLS
 ========================= */
 
-document.addEventListener("mousemove",(e)=>{
+document.addEventListener(
+"mousemove",
+(e)=>{
+
     targetX = e.clientX;
 });
 
-/* TOUCH */
+document.addEventListener(
+"touchmove",
+(e)=>{
 
-document.addEventListener("touchmove",(e)=>{
-
-    targetX = e.touches[0].clientX;
+    targetX =
+    e.touches[0].clientX;
 
 },{passive:true});
 
 /* =========================
-    RESET
+   RESET
 ========================= */
 
 function reset(){
 
     particles = [];
 
+    selectedParticles = [];
+
+    protons = 0;
+
+    neutrons = 0;
+
     score = {
+
         u:0,
         d:0,
         e:0
@@ -261,86 +764,117 @@ function reset(){
 
     timer = 30;
 
-    const isMobile = window.innerWidth < 768;
+    const isMobile =
+    window.innerWidth < 768;
 
     detector = {
+
         x:window.innerWidth/2,
-        y:window.innerHeight - (isMobile ? 120 : 160),
+
+        y:window.innerHeight -
+        (isMobile ? 120 : 160),
+
         w:isMobile ? 90 : 120,
+
         h:isMobile ? 90 : 120,
+
         flash:0
     };
 
-    document.getElementById("u").innerText = 0;
-    document.getElementById("d").innerText = 0;
-    document.getElementById("e").innerText = 0;
+    document.getElementById("u")
+    .innerText = 0;
 
-    document.getElementById("timer").innerText = timer;
+    document.getElementById("d")
+    .innerText = 0;
+
+    document.getElementById("e")
+    .innerText = 0;
+
+    document.getElementById("timer")
+    .innerText = timer;
 }
 
 /* =========================
-    PARTICLE SPAWN
+   SPAWN
 ========================= */
 
 function spawnParticle(){
 
     particles.push({
 
-        x:Math.random()*window.innerWidth,
+        x:Math.random()
+        *window.innerWidth,
 
         y:-20,
 
         r:12,
 
-        actual:["u","d","e"][Math.floor(Math.random()*3)],
+        actual:
+        ["u","d","e"]
+        [Math.floor(
+        Math.random()*3)],
 
-        speed:2 + Math.random()*3,
+        speed:
+        2 + Math.random()*3,
 
         glow:0,
 
-        phase:Math.random()*Math.PI*2
+        phase:
+        Math.random()
+        *Math.PI*2
     });
 }
 
 /* =========================
-    UPDATE
+   UPDATE
 ========================= */
 
 function update(){
 
-    detector.x += (targetX - detector.x)*0.1;
+    detector.x +=
+    (targetX-detector.x)*0.1;
 
     particles.forEach((p,i)=>{
 
         p.y += p.speed;
 
-        let left = detector.x - detector.w/2;
-        let right = detector.x + detector.w/2;
-        let top = detector.y;
+        let left =
+        detector.x-detector.w/2;
 
-        /* COLLISION */
+        let right =
+        detector.x+detector.w/2;
+
+        let top =
+        detector.y;
 
         if(
+
             p.x > left &&
             p.x < right &&
             p.y > top
+
         ){
 
             score[p.actual]++;
 
-            document.getElementById(p.actual).innerText = score[p.actual];
-
-            p.glow = 30;
+            document.getElementById(
+            p.actual
+            ).innerText =
+            score[p.actual];
 
             detector.flash = 8;
 
-            catchSound.currentTime = 0;
+            catchSound.currentTime=0;
+
             catchSound.play();
 
             particles.splice(i,1);
         }
 
-        if(p.y > window.innerHeight){
+        if(
+            p.y >
+            window.innerHeight
+        ){
 
             particles.splice(i,1);
         }
@@ -348,52 +882,130 @@ function update(){
 }
 
 /* =========================
-    BACKGROUND
+   BACKGROUND
 ========================= */
 
 function drawBackground(){
 
-    ctx.fillStyle = "black";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="black";
 
-    /* GRID */
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
 
-    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    let gap = 60;
+
+    let time =
+    Date.now()*0.0004;
+
+    ctx.strokeStyle =
+    "rgba(255,255,255,0.08)";
+
     ctx.lineWidth = 1;
 
-    let gap = 50;
+    /* VERTICAL */
 
-    for(let x=0;x<canvas.width;x+=gap){
+    for(
+
+        let x=-200;
+
+        x<canvas.width+200;
+
+        x+=gap
+
+    ){
 
         ctx.beginPath();
-        ctx.moveTo(x,0);
-        ctx.lineTo(x,canvas.height);
+
+        for(
+
+            let y=0;
+
+            y<canvas.height;
+
+            y+=10
+
+        ){
+
+            let wave =
+            Math.sin(
+            y*0.01+time
+            )*20;
+
+            ctx.lineTo(
+                x+wave,
+                y
+            );
+        }
+
         ctx.stroke();
     }
 
-    for(let y=0;y<canvas.height;y+=gap){
+    /* HORIZONTAL */
+
+    for(
+
+        let y=-200;
+
+        y<canvas.height+200;
+
+        y+=gap
+
+    ){
 
         ctx.beginPath();
-        ctx.moveTo(0,y);
-        ctx.lineTo(canvas.width,y);
+
+        for(
+
+            let x=0;
+
+            x<canvas.width;
+
+            x+=10
+
+        ){
+
+            let wave =
+            Math.cos(
+            x*0.01+time
+            )*20;
+
+            ctx.lineTo(
+                x,
+                y+wave
+            );
+        }
+
         ctx.stroke();
     }
 }
 
 /* =========================
-    DETECTOR
+   DETECTOR
 ========================= */
 
 function drawDetector(){
 
+    ctx.shadowBlur = 20;
+
+    ctx.shadowColor = "white";
+
     if(detector.flash > 0){
 
-        ctx.fillStyle = "white";
+        ctx.fillStyle="white";
 
         ctx.fillRect(
-            detector.x - detector.w/2,
+
+            detector.x
+            -detector.w/2,
+
             detector.y,
+
             detector.w,
+
             detector.h
         );
 
@@ -401,81 +1013,124 @@ function drawDetector(){
 
     } else {
 
-        ctx.strokeStyle = "white";
-        ctx.lineWidth = 3;
+        ctx.strokeStyle="white";
+
+        ctx.lineWidth=3;
 
         ctx.strokeRect(
-            detector.x - detector.w/2,
+
+            detector.x
+            -detector.w/2,
+
             detector.y,
+
             detector.w,
+
             detector.h
         );
     }
+
+    ctx.shadowBlur = 0;
 }
 
 /* =========================
-    PARTICLES
+   PARTICLES
 ========================= */
 
 function drawParticles(){
 
     particles.forEach((p)=>{
 
-        let wave = Math.sin(Date.now()*0.01 + p.phase);
+        let wave =
+        Math.sin(
+        Date.now()*0.01
+        +p.phase
+        );
 
-        let offset = wave * 8;
+        let offset =
+        wave*8;
 
-        /* SUPERPOSITION GHOST */
+        let hue =
+        (
+            Date.now()*0.1
+            +p.phase*100
+        )%360;
+
+        ctx.fillStyle =
+        `hsl(${hue},100%,70%)`;
+
+        /* SUPERPOSITION */
 
         ctx.globalAlpha = 0.25;
 
-        ctx.fillStyle = "white";
-
         ctx.beginPath();
-        ctx.arc(p.x-offset,p.y,p.r,0,Math.PI*2);
+
+        ctx.arc(
+            p.x-offset,
+            p.y,
+            p.r,
+            0,
+            Math.PI*2
+        );
+
         ctx.fill();
 
         ctx.beginPath();
-        ctx.arc(p.x+offset,p.y,p.r,0,Math.PI*2);
+
+        ctx.arc(
+            p.x+offset,
+            p.y,
+            p.r,
+            0,
+            Math.PI*2
+        );
+
         ctx.fill();
 
-        /* REAL PARTICLE */
+        /* REAL */
 
         ctx.globalAlpha = 1;
 
-        if(p.glow > 0){
+        ctx.shadowBlur = 25;
 
-            ctx.shadowBlur = 40;
-            ctx.shadowColor = "white";
-
-            p.glow--;
-
-        } else {
-
-            ctx.shadowBlur = 0;
-        }
+        ctx.shadowColor =
+        `hsl(${hue},100%,70%)`;
 
         ctx.beginPath();
-        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.r,
+            0,
+            Math.PI*2
+        );
+
         ctx.fill();
+
+        ctx.shadowBlur = 0;
 
         /* LABEL */
 
-        ctx.font = "16px Carbon";
+        ctx.fillStyle="white";
+
+        ctx.font="16px Carbon";
 
         ctx.fillText(
+
             p.actual,
-            p.x - 4,
-            p.y + 5
+
+            p.x-4,
+
+            p.y+5
         );
     });
 
     ctx.globalAlpha = 1;
-    ctx.shadowBlur = 0;
 }
 
 /* =========================
-    DRAW
+   DRAW
 ========================= */
 
 function draw(){
@@ -488,7 +1143,7 @@ function draw(){
 }
 
 /* =========================
-    LOOP
+   LOOP
 ========================= */
 
 function loop(){
@@ -503,75 +1158,7 @@ function loop(){
 }
 
 /* =========================
-    BUILD NUCLEONS
-========================= */
-
-function buildProton(){
-
-    if(score.u >= 2 && score.d >= 1){
-
-        alert("⚛ PROTON CONSTRUCTED (uud)");
-
-    } else {
-
-        alert("Not enough quarks!");
-    }
-}
-
-function buildNeutron(){
-
-    if(score.u >= 1 && score.d >= 2){
-
-        alert("⚛ NEUTRON CONSTRUCTED (udd)");
-
-    } else {
-
-        alert("Not enough quarks!");
-    }
-}
-
-/* =========================
-    END GAME
-========================= */
-
-function endGame(){
-
-    running = false;
-
-    bgMusic.pause();
-
-    document.getElementById("gameover").style.display = "flex";
-
-    document.getElementById("summary").innerHTML = `
-
-        <h2>Detected Particles ⚛</h2><br>
-
-        U Quarks: ${score.u}<br>
-        D Quarks: ${score.d}<br>
-        Electrons: ${score.e}<br><br>
-
-        <h2>Construct Matter</h2><br>
-
-        <button onclick="buildProton()">
-            BUILD PROTON (uud)
-        </button>
-
-        <br><br>
-
-        <button onclick="buildNeutron()">
-            BUILD NEUTRON (udd)
-        </button>
-
-        <br><br>
-
-        <button onclick="restartGame()">
-            RESTART DETECTOR
-        </button>
-    `;
-}
-
-/* =========================
-    START
+   START
 ========================= */
 
 function startGame(){
@@ -580,9 +1167,13 @@ function startGame(){
 
     running = true;
 
-    document.getElementById("menu").style.display = "none";
+    document.getElementById(
+    "menu"
+    ).style.display="none";
 
-    document.getElementById("gameover").style.display = "none";
+    document.getElementById(
+    "gameover"
+    ).style.display="none";
 
     bgMusic.play();
 
@@ -590,7 +1181,192 @@ function startGame(){
 }
 
 /* =========================
-    RESTART
+   END GAME
+========================= */
+
+function endGame(){
+
+    running = false;
+
+    bgMusic.pause();
+
+    document.getElementById(
+    "gameover"
+    ).style.display="flex";
+
+    updateInventory();
+}
+
+/* =========================
+   INVENTORY
+========================= */
+
+function updateInventory(){
+
+    document.getElementById(
+    "uCount"
+    ).innerText = score.u;
+
+    document.getElementById(
+    "dCount"
+    ).innerText = score.d;
+
+    document.getElementById(
+    "eCount"
+    ).innerText = score.e;
+
+    document.getElementById(
+    "freeQuarks"
+    ).innerText =
+    score.u + score.d;
+}
+
+/* =========================
+   SELECT PARTICLE
+========================= */
+
+function selectParticle(type){
+
+    if(
+        selectedParticles
+        .length >= 3
+    ) return;
+
+    if(score[type] <= 0) return;
+
+    score[type]--;
+
+    updateInventory();
+
+    selectedParticles.push(type);
+
+    renderSelected();
+
+    if(
+        selectedParticles
+        .length === 3
+    ){
+
+        activateFusion();
+    }
+}
+
+/* =========================
+   RENDER SELECTED
+========================= */
+
+function renderSelected(){
+
+    const container =
+    document.getElementById(
+    "selectedParticles"
+    );
+
+    container.innerHTML = "";
+
+    selectedParticles.forEach(
+    (p)=>{
+
+        let div =
+        document.createElement(
+        "div"
+        );
+
+        div.className =
+        "selectedParticle";
+
+        div.innerText = p;
+
+        div.style.color =
+        ["red","cyan","lime"]
+        [Math.floor(
+        Math.random()*3)];
+
+        container
+        .appendChild(div);
+    });
+}
+
+/* =========================
+   FUSION
+========================= */
+
+function activateFusion(){
+
+    const fusion =
+    document.getElementById(
+    "fusionCircle"
+    );
+
+    fusion.classList
+    .add("active");
+
+    setTimeout(()=>{
+
+        checkNucleon();
+
+        fusion.classList
+        .remove("active");
+
+    },900);
+}
+
+/* =========================
+   CHECK NUCLEON
+========================= */
+
+function checkNucleon(){
+
+    let sorted =
+    [...selectedParticles]
+    .sort()
+    .join("");
+
+    let result = "";
+
+    if(sorted === "duu"){
+
+        protons++;
+
+        result =
+        "⚛ PROTON CREATED";
+    }
+
+    else if(sorted === "ddu"){
+
+        neutrons++;
+
+        result =
+        "⚛ NEUTRON CREATED";
+    }
+
+    else{
+
+        result =
+        "⚠ INVALID HADRON";
+    }
+
+    document.getElementById(
+    "fusionResult"
+    ).innerText = result;
+
+    document.getElementById(
+    "protonCount"
+    ).innerText = protons;
+
+    document.getElementById(
+    "neutronCount"
+    ).innerText = neutrons;
+
+    selectedParticles = [];
+
+    renderSelected();
+
+    updateInventory();
+}
+
+/* =========================
+   RESTART
 ========================= */
 
 function restartGame(){
@@ -599,7 +1375,18 @@ function restartGame(){
 }
 
 /* =========================
-    TIMER
+   DESKTOP MODE
+========================= */
+
+function toggleDesktopMode(){
+
+    document.body
+    .classList
+    .toggle("forceDesktop");
+}
+
+/* =========================
+   TIMER
 ========================= */
 
 setInterval(()=>{
@@ -608,7 +1395,9 @@ setInterval(()=>{
 
         timer--;
 
-        document.getElementById("timer").innerText = timer;
+        document.getElementById(
+        "timer"
+        ).innerText = timer;
 
         if(timer <= 0){
 
@@ -619,7 +1408,7 @@ setInterval(()=>{
 },1000);
 
 /* =========================
-    SPAWNING
+   SPAWN LOOP
 ========================= */
 
 setInterval(()=>{
@@ -635,3 +1424,4 @@ setInterval(()=>{
 
 </body>
 </html>
+```
