@@ -1,272 +1,194 @@
-/* =========================
-   FONT
-   ========================= */
-@font-face {
-    font-family: 'MyCustomFont';
-    src: url('fonts/HoneyRoom.ttf') format('truetype');
-}
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
 /* =========================
-   BASE THEME SYSTEM
-   ========================= */
+   GLOBAL RESET
+========================= */
 
-body {
+* {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
-
-    --bg: #5FA8D3;
-    --text: #ffffff;
-
-    background-color: var(--bg);
-    color: var(--text);
-
-    font-family: 'MyCustomFont', sans-serif;
-    text-align: center;
-
-    cursor: url("assets/pixel-cursor.png") 0 0, auto;
-
-    transition: background-color 0.6s ease, color 0.6s ease;
-}
-
-/* Theme overrides */
-body.theme-black {
-    --bg: #000000;
-    --text: #ffffff;
-}
-
-body.theme-white {
-    --bg: #ffffff;
-    --text: #000000;
-}
-
-body.theme-red {
-    --bg: #e53935;
-    --text: #ffffff;
-}
-
-/* ensure all elements inherit theme color */
-body * {
-    color: inherit;
-}
-
-/* =========================
-   GAME PAGE ISOLATION (IMPORTANT FIX)
-   ========================= */
-body.game-page {
-    background: #111;
-    --bg: #111;
-    --text: #fff;
-
-    overflow: hidden;
-}
-
-/* =========================
-   MAIN LAYOUT
-   ========================= */
-.main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    gap: 60px;
-    padding: 32px;
     box-sizing: border-box;
 }
 
-.left {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.right {
-    max-width: 440px;
-}
-
 /* =========================
-   PHOTO
-   ========================= */
-.photo-card {
-    width: 260px;
-    height: 320px;
-    overflow: hidden;
-    border-radius: 12px;
-    border: 4px solid currentColor;
-    position: relative;
-}
+   GLOBAL FONT LOCK
+========================= */
 
-.profile-photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: opacity 0.3s ease;
-}
-
-.photo-overlay {
-    position: absolute;
-    inset: 0;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background: rgba(0, 0, 0, 0.35);
+html, body {
+    font-family: 'Rajdhani', sans-serif;
+    background-color: black;
     color: white;
-
-    opacity: 0;
-    transition: opacity 0.3s ease;
-
-    pointer-events: none;
+    overflow-x: hidden;
 }
 
-.photo-link:hover .profile-photo {
-    opacity: 0.6;
-}
-
-.photo-link:hover .photo-overlay {
-    opacity: 1;
-}
-
-/* =========================
-   TEXT
-   ========================= */
-h1 {
-    font-size: 2.4rem;
-    margin-bottom: 20px;
-}
-
-.name-link {
-    text-decoration: none;
-}
-
-.name-link:hover {
-    text-decoration: underline;
-}
-
-.tagline {
-    font-size: 1.4rem;
-    margin-bottom: 40px;
-}
-
-.tagline a {
-    text-decoration: none;
-}
-
-.tagline a:hover {
-    text-decoration: underline;
+/* FORCE FONT CONSISTENCY */
+body, h1, h2, h3, h4, p, a, span, button, div {
+    font-family: inherit;
 }
 
 /* =========================
    LINKS
-   ========================= */
-.links {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
+========================= */
 
-.links a {
-    padding: 12px 20px;
-    border: 2px solid currentColor;
-    border-radius: 8px;
-
-    font-size: 1.4rem;
-    font-family: inherit;
+a {
+    color: white;
     text-decoration: none;
-
     transition: 0.2s ease;
 }
 
-.links a:hover {
+a:hover {
     opacity: 0.7;
-    transform: translateY(-2px);
 }
 
 /* =========================
-   BUTTONS
-   ========================= */
-.icon-btn {
-    position: fixed;
-    top: 20px;
-    right: 20px;
+   BUTTONS (GLOBAL STYLE)
+========================= */
 
-    font-size: 1rem;
-    background: none;
-    border: 2px solid currentColor;
-    border-radius: 8px;
-    padding: 8px 12px;
-
+button {
+    font-family: inherit;
+    border: 2px solid white;
+    background: transparent;
+    color: white;
+    padding: 10px 18px;
     cursor: pointer;
-    font-family: 'MyCustomFont';
-
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition: 0.3s ease;
 }
 
-.icon-btn:hover {
-    transform: scale(1.08);
-    opacity: 0.8;
+button:hover {
+    background: white;
+    color: black;
 }
 
 /* =========================
-   FOOTER
-   ========================= */
+   INDEX PAGE LAYOUT
+========================= */
+
+.main {
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    padding: 40px;
+}
+
+/* LEFT PANEL */
+.left {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+/* RIGHT PANEL */
+.right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* PROFILE IMAGE */
+.profile-photo {
+    width: 280px;
+    border: 2px solid white;
+}
+
+/* NAME */
+h1 {
+    font-size: 48px;
+    letter-spacing: 2px;
+}
+
+/* TAGLINE */
+.tagline {
+    font-size: 18px;
+    opacity: 0.8;
+}
+
+/* LINKS GRID */
+.links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* FOOTER */
 footer {
-    margin-top: 40px;
-    font-size: 0.6rem;
-    opacity: 0.8;
+    margin-top: 20px;
+    opacity: 0.6;
+    font-size: 14px;
 }
 
 /* =========================
-   ABOUT PAGE
-   ========================= */
-.about-page {
-    font-family: 'MyCustomFont';
+   SUN COUNTDOWN STYLE
+========================= */
+
+.cosmic-page {
+    background: black;
 }
 
-.about-container {
-    max-width: 900px;
-    margin: 3cm auto;
-    font-size: 30px;
+.cosmic-shell {
+    padding: 40px;
+}
+
+.sun-hero {
+    margin-top: 40px;
+}
+
+.sun-core {
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, #ffcc00, #ff3300);
+    border-radius: 50%;
+    margin: 20px auto;
+    box-shadow: 0 0 60px orange;
+}
+
+.countdown-grid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.time-block {
+    border: 2px solid white;
+    padding: 20px;
+    text-align: center;
+    min-width: 100px;
+}
+
+.fate-line {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+    opacity: 0.7;
+}
+
+/* =========================
+   HUD STYLE (GAME)
+========================= */
+
+#hud {
+    border: 2px solid white;
+    padding: 12px;
+    background: rgba(0,0,0,0.5);
+    font-size: 16px;
     line-height: 1.6;
 }
 
 /* =========================
-   SUN PAGE
-   ========================= */
-.cosmic-page {
-    --bg: #070914;
-    --text: #fff6df;
+   THEME SYSTEM (KEEP YOUR JS)
+========================= */
 
-    background:
-        radial-gradient(circle at 25% 20%, rgba(255, 183, 77, 0.20), transparent 28%),
-        radial-gradient(circle at 80% 10%, rgba(95, 168, 211, 0.18), transparent 24%),
-        #070914;
-
-    font-family: 'MyCustomFont';
+.theme-black {
+    filter: invert(0);
 }
 
-/* =========================
-   MOBILE
-   ========================= */
-@media (max-width: 750px) {
-    .main {
-        flex-direction: column;
-        text-align: center;
-        gap: 32px;
-    }
+.theme-white {
+    filter: invert(1);
+}
 
-    .right {
-        max-width: 90%;
-    }
-
-    .links {
-        justify-content: center;
-    }
-
-    .about-container {
-        width: 90%;
-        font-size: 1.35rem;
-    }
+.theme-red {
+    filter: hue-rotate(320deg);
 }
