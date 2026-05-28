@@ -1,35 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Particle Game</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Particle Catcher</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    overflow:hidden;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:black;
+    color:white;
+    width:100vw;
+    height:100vh;
+}
+
+canvas{
+    display:block;
+    background:black;
+}
+
+#hud{
+    position:absolute;
+    top:20px;
+    left:20px;
+    z-index:10;
+
+    border:4px solid white;
+    padding:15px 20px;
+    background:rgba(0,0,0,0.5);
+
+    font-size:20px;
+    line-height:1.7;
+}
+
+#title{
+    position:absolute;
+    top:20px;
+    right:30px;
+    font-size:32px;
+    font-weight:bold;
+    letter-spacing:3px;
+}
+
+#menu{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:20;
+    background:black;
+}
+
+#startBtn{
+    border:4px solid white;
+    background:black;
+    color:white;
+    font-size:32px;
+    padding:20px 50px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+#startBtn:hover{
+    background:white;
+    color:black;
+}
+
+#gameover{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.95);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    z-index:30;
+    text-align:center;
+}
+
+#gameover h1{
+    font-size:60px;
+    margin-bottom:20px;
+}
+
+#summary{
+    font-size:26px;
+    line-height:2;
+}
+
+</style>
 </head>
 
 <body>
 
-<h1>⚛️ Particle Catcher</h1>
-
 <div id="menu">
-<button onclick="startGame()">Start</button>
+    <button id="startBtn">START DETECTOR</button>
+</div>
+
+<div id="title">
+⚛ PARTICLE CATCHER
 </div>
 
 <div id="hud">
-Time: <span id="timer">30</span><br>
-u: <span id="u">0</span> |
-d: <span id="d">0</span> |
-e: <span id="e">0</span>
+TIME: <span id="timer">30</span><br><br>
+
+u QUARKS: <span id="u">0</span><br>
+d QUARKS: <span id="d">0</span><br>
+ELECTRONS: <span id="e">0</span>
 </div>
 
-<canvas id="game" width="800" height="500"></canvas>
+<div id="gameover">
+    <h1>DETECTION COMPLETE</h1>
 
-<div id="over" style="display:none;">
-Game Over
+    <div id="summary"></div>
+
+    <br><br>
+
+    <button id="startBtn2"
+    style="
+    border:4px solid white;
+    background:black;
+    color:white;
+    padding:15px 40px;
+    font-size:24px;
+    cursor:pointer;">
+    RESTART
+    </button>
 </div>
+
+<canvas id="game"></canvas>
 
 <script>
 
-const c = document.getElementById("game");
-const ctx = c.getContext("2d");
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+window.addEventListener("resize",()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
 
 const bgMusic = new Audio("./assets/untitled.mp3");
 bgMusic.loop = true;
@@ -38,105 +161,271 @@ bgMusic.volume = 0.4;
 const catchSound = new Audio("./assets/hit.mp3");
 catchSound.volume = 0.7;
 
-let player, particles, score;
-let time = 30;
-let running = false;
-let targetX = 350;
+let particles = [];
+let stars = [];
 
-document.addEventListener("mousemove", (e)=>{
-    let rect = c.getBoundingClientRect();
-    targetX = e.clientX - rect.left;
+let detector;
+let score;
+
+let running = false;
+let timer = 30;
+
+let targetX = window.innerWidth/2;
+
+for(let i=0;i<120;i++){
+    stars.push({
+        x:Math.random()*window.innerWidth,
+        y:Math.random()*window.innerHeight,
+        r:Math.random()*2
+    });
+}
+
+document.addEventListener("mousemove",(e)=>{
+    targetX = e.clientX;
 });
 
 function reset(){
-    player = {x:350,y:450,w:100,h:20};
-    particles = [];
-    score = {u:0,d:0,e:0};
 
-    u.innerText = 0;
-    d.innerText = 0;
-    e.innerText = 0;
+    particles=[];
+
+    detector = {
+        x:window.innerWidth/2,
+        y:window.innerHeight-120,
+        w:220,
+        h:100
+    };
+
+    score = {
+        u:0,
+        d:0,
+        e:0
+    };
+
+    timer = 30;
+
+    document.getElementById("timer").innerText=timer;
+    document.getElementById("u").innerText=0;
+    document.getElementById("d").innerText=0;
+    document.getElementById("e").innerText=0;
+
 }
 
-function spawn(){
-    const t = ["u","d","e"];
+function spawnParticle(){
+
+    const types = ["u","d","e"];
+    const t = types[Math.floor(Math.random()*3)];
+
     particles.push({
-        x:Math.random()*760,
-        y:0,
-        t:t[Math.floor(Math.random()*3)],
-        s:2+Math.random()*3
+        x:Math.random()*window.innerWidth,
+        y:-20,
+        r:14,
+        t:t,
+        speed:2+Math.random()*4,
+        glow:0
     });
 }
 
 function update(){
-    player.x += (targetX - player.x)*0.2;
-    player.x = Math.max(0, Math.min(700, player.x));
 
-    for(let i=particles.length-1;i>=0;i--){
-        let p = particles[i];
-        p.y += p.s;
+    detector.x += (targetX - detector.x)*0.1;
+
+    particles.forEach((p,index)=>{
+
+        p.y += p.speed;
+        p.glow += 0.1;
+
+        let left = detector.x - detector.w/2;
+        let right = detector.x + detector.w/2;
 
         if(
-            p.x > player.x &&
-            p.x < player.x + player.w &&
-            p.y > player.y
+            p.x > left+40 &&
+            p.x < right-40 &&
+            p.y > detector.y+20
         ){
-            score[p.t]++;
-            document.getElementById(p.t).innerText = score[p.t];
 
-            catchSound.currentTime = 0;
+            score[p.t]++;
+
+            document.getElementById(p.t).innerText=score[p.t];
+
+            catchSound.currentTime=0;
             catchSound.play();
 
-            particles.splice(i,1);
+            particles.splice(index,1);
+
         }
 
-        if(p.y > 500) particles.splice(i,1);
-    }
+        if(p.y > window.innerHeight+50){
+            particles.splice(index,1);
+        }
+
+    });
+
+}
+
+function drawBackground(){
+
+    ctx.fillStyle="black";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    stars.forEach(s=>{
+        ctx.beginPath();
+        ctx.fillStyle="white";
+        ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        ctx.fill();
+    });
+
+}
+
+function drawDetector(){
+
+    let x = detector.x;
+    let y = detector.y;
+
+    ctx.lineWidth=6;
+    ctx.strokeStyle="white";
+
+    ctx.beginPath();
+
+    ctx.moveTo(x-110,y);
+
+    ctx.quadraticCurveTo(
+        x-80,
+        y+80,
+        x,
+        y+90
+    );
+
+    ctx.quadraticCurveTo(
+        x+80,
+        y+80,
+        x+110,
+        y
+    );
+
+    ctx.stroke();
+
+}
+
+function drawParticles(){
+
+    particles.forEach(p=>{
+
+        ctx.shadowBlur = 20;
+
+        if(p.t==="u"){
+            ctx.fillStyle="#00aaff";
+            ctx.shadowColor="#00aaff";
+        }
+
+        if(p.t==="d"){
+            ctx.fillStyle="#00ff66";
+            ctx.shadowColor="#00ff66";
+        }
+
+        if(p.t==="e"){
+            ctx.fillStyle="#ffaa00";
+            ctx.shadowColor="#ffaa00";
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle="white";
+        ctx.font="16px Arial";
+        ctx.fillText(p.t,p.x-4,p.y+5);
+
+    });
+
 }
 
 function draw(){
-    ctx.clearRect(0,0,800,500);
 
-    ctx.fillStyle="white";
-    ctx.fillRect(player.x,player.y,player.w,player.h);
+    drawBackground();
 
-    particles.forEach(p=>{
-        ctx.fillStyle = p.t==="u"?"blue":p.t==="d"?"green":"orange";
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,15,0,Math.PI*2);
-        ctx.fill();
+    drawDetector();
 
-        ctx.fillStyle="white";
-        ctx.fillText(p.t,p.x-5,p.y+5);
-    });
+    drawParticles();
+
+}
+
+function gameLoop(){
+
+    if(!running) return;
+
+    update();
+
+    draw();
+
+    requestAnimationFrame(gameLoop);
+
+}
+
+function endGame(){
+
+    running=false;
+
+    bgMusic.pause();
+
+    document.getElementById("summary").innerHTML=`
+    u quarks collected: ${score.u}<br>
+    d quarks collected: ${score.d}<br>
+    electrons collected: ${score.e}<br><br>
+
+    PROTONS POSSIBLE:
+    ${Math.min(
+        Math.floor(score.u/2),
+        score.d
+    )}
+    `;
+
+    document.getElementById("gameover").style.display="flex";
+
 }
 
 function startGame(){
 
-    menu.style.display="none";
-    hud.style.display="block";
-
     reset();
+
     running=true;
+
+    document.getElementById("menu").style.display="none";
+
+    document.getElementById("gameover").style.display="none";
 
     bgMusic.currentTime=0;
     bgMusic.play();
 
-    setInterval(()=>{ if(running){update();draw();} },16);
-    setInterval(()=>{ if(running) spawn(); },700);
+    gameLoop();
 
-    setInterval(()=>{
-        if(running){
-            time--;
-            timer.innerText=time;
-
-            if(time<=0){
-                running=false;
-                bgMusic.pause();
-            }
-        }
-    },1000);
 }
+
+document.getElementById("startBtn").onclick=startGame;
+document.getElementById("startBtn2").onclick=startGame;
+
+setInterval(()=>{
+    if(running){
+        spawnParticle();
+    }
+},350);
+
+setInterval(()=>{
+
+    if(running){
+
+        timer--;
+
+        document.getElementById("timer").innerText=timer;
+
+        if(timer<=0){
+            endGame();
+        }
+
+    }
+
+},1000);
 
 </script>
 
