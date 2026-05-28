@@ -1,5 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
-
+@font-face {
+    font-family: 'Carbon';
+    src: url('./fonts/carbon.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 /* =========================
    GLOBAL RESET
 ========================= */
