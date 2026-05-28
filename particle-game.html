@@ -1,9 +1,9 @@
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
@@ -16,7 +16,9 @@ content="width=device-width, initial-scale=1.0">
 ========================= */
 
 @font-face{
+
     font-family:'Carbon';
+
     src:url('./fonts/HoneyRoom.ttf')
     format('truetype');
 }
@@ -26,15 +28,19 @@ content="width=device-width, initial-scale=1.0">
 ========================= */
 
 *{
+
     margin:0;
     padding:0;
+
     box-sizing:border-box;
+
     font-family:'Carbon',sans-serif;
 }
 
 body{
 
     background:black;
+
     color:white;
 
     width:100vw;
@@ -99,6 +105,95 @@ canvas{
 }
 
 /* =========================
+   MENU
+========================= */
+
+#menu{
+
+    position:absolute;
+
+    width:100%;
+    height:100%;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    background:black;
+
+    z-index:30;
+}
+
+#introCard{
+
+    width:min(90%,700px);
+
+    border:1px solid rgba(255,255,255,0.2);
+
+    background:rgba(255,255,255,0.03);
+
+    backdrop-filter:blur(18px);
+
+    padding:50px;
+
+    text-align:center;
+
+    box-shadow:
+    0 0 60px rgba(255,255,255,0.08);
+}
+
+#introCard h1{
+
+    font-size:60px;
+
+    margin-bottom:25px;
+
+    animation:pulse 2s infinite;
+}
+
+#introCard p{
+
+    line-height:1.9;
+
+    font-size:20px;
+
+    opacity:0.9;
+
+    margin-bottom:35px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+button{
+
+    border:2px solid white;
+
+    background:black;
+
+    color:white;
+
+    padding:18px 34px;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+button:hover{
+
+    background:white;
+
+    color:black;
+
+    transform:scale(1.05);
+}
+
+/* =========================
    HUD
 ========================= */
 
@@ -119,7 +214,7 @@ canvas{
 
     z-index:10;
 
-    min-width:190px;
+    min-width:210px;
 
     line-height:1.8;
 
@@ -145,62 +240,8 @@ canvas{
     animation:pulse 2s infinite;
 }
 
-
 /* =========================
-   MENU
-========================= */
-
-#menu{
-
-    position:absolute;
-
-    width:100%;
-    height:100%;
-
-    display:flex;
-
-    justify-content:center;
-    align-items:center;
-
-    background:black;
-
-    z-index:20;
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-button{
-
-    border:2px solid white;
-
-    background:black;
-
-    color:white;
-
-    padding:18px 34px;
-
-    font-size:22px;
-
-    cursor:pointer;
-
-    transition:0.3s;
-
-    letter-spacing:1px;
-}
-
-button:hover{
-
-    background:white;
-
-    color:black;
-
-    transform:scale(1.05);
-}
-
-/* =========================
-   GAMEOVER / LEVEL2
+   LEVEL 2
 ========================= */
 
 #gameover{
@@ -218,16 +259,16 @@ button:hover{
 
     overflow-y:auto;
 
-    background:rgba(0,0,0,0.96);
+    background:rgba(0,0,0,0.97);
 
-    z-index:30;
+    z-index:40;
 
     padding:40px;
 }
 
 #gameover h1{
 
-    font-size:44px;
+    font-size:46px;
 
     margin-bottom:30px;
 }
@@ -249,27 +290,26 @@ button:hover{
 
 .particleBox{
 
-    width:220px;
+    width:240px;
 
-    border:2px solid rgba(255,255,255,0.25);
+    border:2px solid rgba(255,255,255,0.2);
 
     background:rgba(255,255,255,0.03);
 
     backdrop-filter:blur(10px);
 
-    padding:20px;
+    padding:22px;
 
-    cursor:pointer;
+    text-align:center;
 
     transition:0.3s;
 
-    text-align:center;
+    cursor:pointer;
 }
 
 .particleBox:hover{
 
-    transform:translateY(-6px)
-    scale(1.03);
+    transform:translateY(-6px);
 
     background:white;
 
@@ -278,14 +318,14 @@ button:hover{
 
 .particleBox h2{
 
-    margin-bottom:12px;
+    margin-bottom:15px;
 
     font-size:24px;
 }
 
 .particleBox div{
 
-    font-size:42px;
+    font-size:44px;
 }
 
 /* =========================
@@ -301,23 +341,23 @@ button:hover{
 
 #selectedParticles{
 
-    margin-top:20px;
+    margin-top:25px;
 
     display:flex;
 
-    gap:18px;
-
     justify-content:center;
 
-    min-height:80px;
+    gap:18px;
 
     flex-wrap:wrap;
+
+    min-height:80px;
 }
 
 .selectedParticle{
 
-    width:70px;
-    height:70px;
+    width:75px;
+    height:75px;
 
     border-radius:50%;
 
@@ -328,12 +368,12 @@ button:hover{
     justify-content:center;
     align-items:center;
 
-    font-size:30px;
+    font-size:34px;
 
     animation:quantumSpin 3s linear infinite;
 
     box-shadow:
-    0 0 25px rgba(255,255,255,0.2);
+    0 0 25px rgba(255,255,255,0.25);
 }
 
 /* =========================
@@ -376,7 +416,7 @@ button:hover{
     transform:scale(1.08);
 
     box-shadow:
-    0 0 80px white;
+    0 0 90px white;
 }
 
 /* =========================
@@ -413,11 +453,39 @@ button:hover{
     font-size:22px;
 }
 
+.statCard{
+
+    border:1px solid rgba(255,255,255,0.2);
+
+    padding:20px;
+
+    background:rgba(255,255,255,0.03);
+
+    min-width:220px;
+
+    text-align:center;
+}
+
 /* =========================
    MOBILE
 ========================= */
 
 @media(max-width:768px){
+
+    #introCard{
+
+        padding:28px;
+    }
+
+    #introCard h1{
+
+        font-size:38px;
+    }
+
+    #introCard p{
+
+        font-size:16px;
+    }
 
     #hud{
 
@@ -426,7 +494,9 @@ button:hover{
 
         min-width:140px;
 
-        font-size:14px;
+        font-size:13px;
+
+        padding:10px;
     }
 
     #title{
@@ -457,42 +527,69 @@ button:hover{
         font-size:40px;
     }
 
-    #matterStats{
-
-        flex-direction:column;
-
-        gap:16px;
-    }
-
     button{
 
         font-size:16px;
 
         padding:14px 22px;
     }
-}
 
-/* =========================
-   FORCE DESKTOP
-========================= */
+    #matterStats{
 
-.forceDesktop{
-
-    min-width:1400px;
+        flex-direction:column;
+    }
 }
 
 </style>
+
 </head>
 
 <body>
 
-<!-- MENU -->
+<!-- INTRO -->
 
 <div id="menu">
 
-    <button onclick="startGame()">
-        START DETECTOR ⚛
-    </button>
+    <div id="introCard">
+
+        <h1>⚛ DRAVYA</h1>
+
+        <p>
+
+        You have <b>30 seconds</b>
+        to detect particles from the
+        <b>first generation of the Standard Model</b>.
+
+        <br><br>
+
+        Detect:
+        <br>
+        • Up Quarks
+        <br>
+        • Down Quarks
+        <br>
+        • Leptons
+
+        <br><br>
+
+        Then construct
+        <b>HADRONS</b>.
+
+        <br><br>
+
+        Proton = uud
+        <br>
+        Neutron = udd
+
+        </p>
+
+        <button onclick="startGame()">
+
+            START DETECTOR ⚛
+
+        </button>
+
+    </div>
 
 </div>
 
@@ -505,17 +602,17 @@ TIME:
 
 <br><br>
 
-U QUARK:
+UP QUARK:
 <span id="u">0</span>
 
 <br>
 
-D QUARK:
+DOWN QUARK:
 <span id="d">0</span>
 
 <br>
 
-ELECTRON:
+LEPTON:
 <span id="e">0</span>
 
 </div>
@@ -528,21 +625,14 @@ ELECTRON:
 
 </div>
 
-<!-- DESKTOP BUTTON -->
-
-<button id="desktopModeBtn"
-onclick="toggleDesktopMode()">
-
-DESKTOP MODE
-
-</button>
-
 <!-- LEVEL 2 -->
 
 <div id="gameover">
 
     <h1>
-        NUCLEON CONSTRUCTION ⚛
+
+        HADRON CONSTRUCTION ⚛
+
     </h1>
 
     <!-- INVENTORY -->
@@ -568,9 +658,10 @@ DESKTOP MODE
         </div>
 
         <div class="particleBox"
+        id="leptonBox"
         onclick="selectParticle('e')">
 
-            <h2>ELECTRON</h2>
+            <h2>LEPTON</h2>
 
             <div id="eCount">0</div>
 
@@ -583,7 +674,9 @@ DESKTOP MODE
     <div id="selectedArea">
 
         <h2>
-            SELECTED PARTICLES
+
+            SELECTED QUARKS
+
         </h2>
 
         <div id="selectedParticles"></div>
@@ -610,19 +703,56 @@ DESKTOP MODE
 
     <div id="matterStats">
 
-        <div>
-            PROTONS:
+        <div class="statCard">
+
+            PROTONS
+
+            <br><br>
+
             <span id="protonCount">0</span>
+
         </div>
 
-        <div>
-            NEUTRONS:
+        <div class="statCard">
+
+            NEUTRONS
+
+            <br><br>
+
             <span id="neutronCount">0</span>
+
         </div>
 
-        <div>
-            FREE QUARKS:
+        <div class="statCard">
+
+            FREE QUARKS
+
+            <br><br>
+
             <span id="freeQuarks">0</span>
+
+        </div>
+
+        <div class="statCard"
+        onclick="showPossibilities()"
+        style="cursor:pointer;">
+
+            POSSIBLE HADRONS ⚛
+
+        </div>
+
+        <div class="statCard">
+
+            ELEMENT
+
+            <br><br>
+
+            <span id="elementName">
+
+                Hydrogen
+
+            </span>
+
         </div>
 
     </div>
@@ -802,9 +932,7 @@ function spawnParticle(){
         Math.random()*3)],
 
         speed:
-        2 + Math.random()*3,
-
-        glow:0,
+        1 + Math.random()*1.8,
 
         phase:
         Math.random()
@@ -893,7 +1021,7 @@ function drawBackground(){
 
     ctx.lineWidth = 1;
 
-    /* VERTICAL */
+    /* VERTICAL FIELD LINES */
 
     for(
 
@@ -931,7 +1059,7 @@ function drawBackground(){
         ctx.stroke();
     }
 
-    /* HORIZONTAL */
+    /* HORIZONTAL FIELD LINES */
 
     for(
 
@@ -1048,7 +1176,7 @@ function drawParticles(){
 
         /* SUPERPOSITION */
 
-        ctx.globalAlpha = 0.25;
+        ctx.globalAlpha = 0.22;
 
         ctx.beginPath();
 
@@ -1096,21 +1224,6 @@ function drawParticles(){
         ctx.fill();
 
         ctx.shadowBlur = 0;
-
-        /* LABEL */
-
-        ctx.fillStyle="white";
-
-        ctx.font="16px Carbon";
-
-        ctx.fillText(
-
-            p.actual,
-
-            p.x-4,
-
-            p.y+5
-        );
     });
 
     ctx.globalAlpha = 1;
@@ -1214,6 +1327,37 @@ function updateInventory(){
 
 function selectParticle(type){
 
+    if(type === "e"){
+
+        const leptonBox =
+        document.getElementById(
+        "leptonBox"
+        );
+
+        leptonBox.style.background =
+        "red";
+
+        leptonBox.style.color =
+        "white";
+
+        document.getElementById(
+        "fusionResult"
+        ).innerText =
+        "⚠ LEPTONS DO NOT FORM HADRONS";
+
+        setTimeout(()=>{
+
+            leptonBox.style.background =
+            "rgba(255,255,255,0.03)";
+
+            leptonBox.style.color =
+            "white";
+
+        },500);
+
+        return;
+    }
+
     if(
         selectedParticles
         .length >= 3
@@ -1290,7 +1434,7 @@ function activateFusion(){
 
     setTimeout(()=>{
 
-        checkNucleon();
+        checkHadron();
 
         fusion.classList
         .remove("active");
@@ -1299,10 +1443,10 @@ function activateFusion(){
 }
 
 /* =========================
-   CHECK NUCLEON
+   HADRON CHECK
 ========================= */
 
-function checkNucleon(){
+function checkHadron(){
 
     let sorted =
     [...selectedParticles]
@@ -1345,11 +1489,91 @@ function checkNucleon(){
     "neutronCount"
     ).innerText = neutrons;
 
+    updateElement();
+
     selectedParticles = [];
 
     renderSelected();
 
     updateInventory();
+}
+
+/* =========================
+   ELEMENT SYSTEM
+========================= */
+
+function updateElement(){
+
+    let atomicNumber =
+    protons;
+
+    let element =
+    "Hydrogen";
+
+    const elements = {
+
+        1:"Hydrogen",
+        2:"Helium",
+        3:"Lithium",
+        4:"Beryllium",
+        5:"Boron",
+        6:"Carbon",
+        7:"Nitrogen",
+        8:"Oxygen",
+        9:"Fluorine",
+        10:"Neon"
+    };
+
+    if(elements[atomicNumber]){
+
+        element =
+        elements[atomicNumber];
+    }
+
+    document.getElementById(
+    "elementName"
+    ).innerText =
+    element;
+}
+
+/* =========================
+   POSSIBILITIES
+========================= */
+
+function showPossibilities(){
+
+    let possibleProtons =
+
+    Math.min(
+        Math.floor(score.u/2),
+        score.d
+    );
+
+    let possibleNeutrons =
+
+    Math.min(
+        score.u,
+        Math.floor(score.d/2)
+    );
+
+    alert(
+
+`⚛ POSSIBLE HADRONS
+
+Possible Protons:
+${possibleProtons}
+
+Possible Neutrons:
+${possibleNeutrons}
+
+Free Quarks:
+${score.u + score.d}
+
+Current Atomic Number:
+${protons}
+
+`
+    );
 }
 
 /* =========================
@@ -1359,17 +1583,6 @@ function checkNucleon(){
 function restartGame(){
 
     startGame();
-}
-
-/* =========================
-   DESKTOP MODE
-========================= */
-
-function toggleDesktopMode(){
-
-    document.body
-    .classList
-    .toggle("forceDesktop");
 }
 
 /* =========================
@@ -1405,10 +1618,9 @@ setInterval(()=>{
         spawnParticle();
     }
 
-},300);
+},380);
 
 </script>
 
 </body>
 </html>
-```
