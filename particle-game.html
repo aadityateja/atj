@@ -6,12 +6,20 @@
 
 <style>
 
+    @font-face {
+    font-family: 'Carbon';
+    src: url('./fonts/carbon.ttf') format('truetype');
+}
+
+    * {
+    font-family: 'Carbon', sans-serif;
+}
+    
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
     overflow:hidden;
-    font-family:Arial, sans-serif;
 }
 
 body{
@@ -100,15 +108,16 @@ button{
 
 <div id="hud">
 TIME: <span id="timer">30</span><br><br>
-U QUARK (BLUE): <span id="u">0</span><br>
-D QUARK (GREEN): <span id="d">0</span><br>
-ELECTRON (ORANGE): <span id="e">0</span>
+UP QUARK : <span id="u">0</span><br>
+DOWN QUARK : <span id="d">0</span><br>
+ELECTRON : <span id="e">0</span>
 </div>
 
-<div id="title">⚛ QUANTUM DETECTOR</div>
+<div id="title">⚛ DRAVYA</div>
 
 <div id="gameover">
-    <h1>MEASUREMENT COMPLETE</h1>
+    <h1>DAMN! WE'VE GOT SOME QUARKS AND LEPTONS!
+    LET'S BUILD THE NUCLEONS</h1>
     <div id="summary"></div>
     <br>
     <button onclick="startGame()">RESTART</button>
@@ -371,15 +380,24 @@ function endGame(){
 
     bgMusic.pause();
 
-    document.getElementById("gameover").style.display="flex";
+    let proton = Math.floor(score.u / 2);
+let neutron = Math.floor(score.d / 2);
 
-    document.getElementById("summary").innerHTML=`
-        U: ${score.u}<br>
-        D: ${score.d}<br>
-        E: ${score.e}<br><br>
-        Possible Protons: ${Math.min(Math.floor(score.u/2),score.d)}
-    `;
+document.getElementById("summary").innerHTML = `
+    U: ${score.u}<br>
+    D: ${score.d}<br>
+    E: ${score.e}<br><br>
 
+    <b>Level 2 Unlock:</b><br>
+    Protons possible: ${proton}<br>
+    Neutrons possible: ${neutron}
+`;
+    function buildProton(u, d){
+    if(u >= 2 && d >= 1){
+        return "PROTON CREATED ⚛️";
+    }
+    return "INSUFFICIENT QUARKS";
+}
 }
 
 /* START */
