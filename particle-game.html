@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Quantum Particle Detector</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRAVYA — Quantum Particle Detector</title>
 
 <style>
 
@@ -11,21 +12,23 @@
     src: url('./fonts/HoneyRoom.ttf') format('truetype');
 }
 
-/* ⚛️ GLOBAL FONT */
-* {
-    font-family: 'Carbon', sans-serif;
+*{
     margin:0;
     padding:0;
     box-sizing:border-box;
     overflow:hidden;
+    font-family:'Carbon',sans-serif;
 }
 
 body{
     background:black;
     color:white;
+    width:100vw;
+    height:100vh;
 }
 
 /* CANVAS */
+
 canvas{
     position:absolute;
     top:0;
@@ -33,25 +36,31 @@ canvas{
 }
 
 /* HUD */
+
 #hud{
     position:absolute;
     top:20px;
     left:20px;
     border:2px solid white;
-    padding:12px 18px;
-    background:rgba(0,0,0,0.5);
+    padding:14px 18px;
+    background:rgba(0,0,0,0.55);
     z-index:10;
+    line-height:1.7;
+    min-width:180px;
 }
 
 /* TITLE */
+
 #title{
     position:absolute;
     top:20px;
     right:20px;
     font-size:28px;
+    z-index:10;
 }
 
 /* MENU */
+
 #menu{
     position:absolute;
     width:100%;
@@ -63,6 +72,8 @@ canvas{
     z-index:20;
 }
 
+/* BUTTONS */
+
 button{
     border:2px solid white;
     background:black;
@@ -70,9 +81,16 @@ button{
     padding:18px 40px;
     font-size:24px;
     cursor:pointer;
+    transition:0.2s;
+}
+
+button:hover{
+    background:white;
+    color:black;
 }
 
 /* GAMEOVER */
+
 #gameover{
     position:absolute;
     width:100%;
@@ -81,14 +99,52 @@ button{
     justify-content:center;
     align-items:center;
     flex-direction:column;
-    background:rgba(0,0,0,0.95);
+    background:rgba(0,0,0,0.96);
     z-index:30;
     text-align:center;
+    padding:20px;
 }
 
 #gameover h1{
-    font-size:40px;
+    font-size:44px;
     margin-bottom:20px;
+}
+
+#summary{
+    font-size:22px;
+    line-height:1.8;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    #hud{
+        top:10px;
+        left:10px;
+        font-size:14px;
+        padding:10px;
+        min-width:140px;
+    }
+
+    #title{
+        top:10px;
+        right:10px;
+        font-size:18px;
+    }
+
+    button{
+        font-size:18px;
+        padding:14px 24px;
+    }
+
+    #gameover h1{
+        font-size:30px;
+    }
+
+    #summary{
+        font-size:18px;
+    }
 }
 
 </style>
@@ -96,41 +152,63 @@ button{
 
 <body>
 
+<!-- MENU -->
+
 <div id="menu">
-    <button onclick="startGame()">START DETECTOR</button>
+    <button onclick="startGame()">START DETECTOR ⚛</button>
 </div>
+
+<!-- HUD -->
 
 <div id="hud">
 TIME: <span id="timer">30</span><br><br>
+
 U QUARK: <span id="u">0</span><br>
 D QUARK: <span id="d">0</span><br>
 ELECTRON: <span id="e">0</span>
 </div>
 
+<!-- TITLE -->
+
 <div id="title">⚛ DRAVYA</div>
 
+<!-- GAMEOVER -->
+
 <div id="gameover">
+
     <h1>LEVEL COMPLETE ⚛</h1>
+
     <div id="summary"></div>
-    <button onclick="startLevel2()">START LEVEL 2</button>
+
 </div>
+
+<!-- CANVAS -->
 
 <canvas id="game"></canvas>
 
 <script>
 
+/* =========================
+    CANVAS
+========================= */
+
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+function resizeCanvas(){
 
-window.addEventListener("resize",()=>{
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-});
+}
 
-/* AUDIO */
+resizeCanvas();
+
+window.addEventListener("resize",resizeCanvas);
+
+/* =========================
+    AUDIO
+========================= */
+
 const bgMusic = new Audio("./assets/untitled.mp3");
 bgMusic.loop = true;
 bgMusic.volume = 0.4;
@@ -138,54 +216,99 @@ bgMusic.volume = 0.4;
 const catchSound = new Audio("./assets/hit.mp3");
 catchSound.volume = 0.7;
 
-/* STATE */
+/* =========================
+    STATE
+========================= */
+
 let particles = [];
 let score;
 let running = false;
 let timer = 30;
 
-let detector = {x:0,y:0,w:120,h:120};
-let targetX = 0;
+let detector = {};
 
-/* MOUSE */
+let targetX = window.innerWidth/2;
+
+/* =========================
+    CONTROLS
+========================= */
+
 document.addEventListener("mousemove",(e)=>{
     targetX = e.clientX;
 });
 
-/* RESET */
+/* TOUCH */
+
+document.addEventListener("touchmove",(e)=>{
+
+    targetX = e.touches[0].clientX;
+
+},{passive:true});
+
+/* =========================
+    RESET
+========================= */
+
 function reset(){
+
     particles = [];
-    score = {u:0,d:0,e:0};
+
+    score = {
+        u:0,
+        d:0,
+        e:0
+    };
+
     timer = 30;
+
+    const isMobile = window.innerWidth < 768;
 
     detector = {
         x:window.innerWidth/2,
-        y:window.innerHeight-160,
-        w:120,
-        h:120
+        y:window.innerHeight - (isMobile ? 120 : 160),
+        w:isMobile ? 90 : 120,
+        h:isMobile ? 90 : 120,
+        flash:0
     };
 
-    document.getElementById("u").innerText=0;
-    document.getElementById("d").innerText=0;
-    document.getElementById("e").innerText=0;
+    document.getElementById("u").innerText = 0;
+    document.getElementById("d").innerText = 0;
+    document.getElementById("e").innerText = 0;
+
+    document.getElementById("timer").innerText = timer;
 }
 
-/* SPAWN */
+/* =========================
+    PARTICLE SPAWN
+========================= */
+
 function spawnParticle(){
+
     particles.push({
+
         x:Math.random()*window.innerWidth,
+
         y:-20,
+
         r:12,
+
         actual:["u","d","e"][Math.floor(Math.random()*3)],
-        speed:2+Math.random()*3,
-        glow:0
+
+        speed:2 + Math.random()*3,
+
+        glow:0,
+
+        phase:Math.random()*Math.PI*2
     });
 }
 
-/* UPDATE */
+/* =========================
+    UPDATE
+========================= */
+
 function update(){
 
-    detector.x += (targetX - detector.x)*0.08;
+    detector.x += (targetX - detector.x)*0.1;
 
     particles.forEach((p,i)=>{
 
@@ -195,35 +318,53 @@ function update(){
         let right = detector.x + detector.w/2;
         let top = detector.y;
 
-        if(p.x>left && p.x<right && p.y>top){
+        /* COLLISION */
+
+        if(
+            p.x > left &&
+            p.x < right &&
+            p.y > top
+        ){
 
             score[p.actual]++;
+
             document.getElementById(p.actual).innerText = score[p.actual];
 
             p.glow = 30;
 
-            catchSound.currentTime=0;
+            detector.flash = 8;
+
+            catchSound.currentTime = 0;
             catchSound.play();
 
             particles.splice(i,1);
         }
 
-        if(p.y>window.innerHeight) particles.splice(i,1);
+        if(p.y > window.innerHeight){
+
+            particles.splice(i,1);
+        }
     });
 }
 
-/* BACKGROUND GRID */
+/* =========================
+    BACKGROUND
+========================= */
+
 function drawBackground(){
 
-    ctx.fillStyle="black";
+    ctx.fillStyle = "black";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    ctx.strokeStyle="rgba(255,255,255,0.08)";
-    ctx.lineWidth=1;
+    /* GRID */
 
-    let gap=50;
+    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.lineWidth = 1;
+
+    let gap = 50;
 
     for(let x=0;x<canvas.width;x+=gap){
+
         ctx.beginPath();
         ctx.moveTo(x,0);
         ctx.lineTo(x,canvas.height);
@@ -231,6 +372,7 @@ function drawBackground(){
     }
 
     for(let y=0;y<canvas.height;y+=gap){
+
         ctx.beginPath();
         ctx.moveTo(0,y);
         ctx.lineTo(canvas.width,y);
@@ -238,99 +380,255 @@ function drawBackground(){
     }
 }
 
-/* DETECTOR (SQUARE) */
+/* =========================
+    DETECTOR
+========================= */
+
 function drawDetector(){
-    ctx.strokeStyle="white";
-    ctx.lineWidth=3;
-    ctx.strokeRect(
-        detector.x-detector.w/2,
-        detector.y,
-        detector.w,
-        detector.h
-    );
+
+    if(detector.flash > 0){
+
+        ctx.fillStyle = "white";
+
+        ctx.fillRect(
+            detector.x - detector.w/2,
+            detector.y,
+            detector.w,
+            detector.h
+        );
+
+        detector.flash--;
+
+    } else {
+
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 3;
+
+        ctx.strokeRect(
+            detector.x - detector.w/2,
+            detector.y,
+            detector.w,
+            detector.h
+        );
+    }
 }
 
-/* PARTICLES */
+/* =========================
+    PARTICLES
+========================= */
+
 function drawParticles(){
 
-    particles.forEach(p=>{
+    particles.forEach((p)=>{
 
-        if(p.glow>0){
-            ctx.shadowBlur=40;
-            ctx.shadowColor="white";
+        let wave = Math.sin(Date.now()*0.01 + p.phase);
+
+        let offset = wave * 8;
+
+        /* SUPERPOSITION GHOST */
+
+        ctx.globalAlpha = 0.25;
+
+        ctx.fillStyle = "white";
+
+        ctx.beginPath();
+        ctx.arc(p.x-offset,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(p.x+offset,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+
+        /* REAL PARTICLE */
+
+        ctx.globalAlpha = 1;
+
+        if(p.glow > 0){
+
+            ctx.shadowBlur = 40;
+            ctx.shadowColor = "white";
+
             p.glow--;
+
         } else {
-            ctx.shadowBlur=0;
+
+            ctx.shadowBlur = 0;
         }
 
-        ctx.fillStyle="white";
         ctx.beginPath();
         ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
         ctx.fill();
+
+        /* LABEL */
+
+        ctx.font = "16px Carbon";
+
+        ctx.fillText(
+            p.actual,
+            p.x - 4,
+            p.y + 5
+        );
     });
+
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
 }
 
-/* LOOP */
-function loop(){
-    if(!running) return;
-    update();
-    draw();
-    requestAnimationFrame(loop);
-}
+/* =========================
+    DRAW
+========================= */
 
-/* DRAW */
 function draw(){
+
     drawBackground();
+
     drawDetector();
+
     drawParticles();
 }
 
-/* END */
+/* =========================
+    LOOP
+========================= */
+
+function loop(){
+
+    if(!running) return;
+
+    update();
+
+    draw();
+
+    requestAnimationFrame(loop);
+}
+
+/* =========================
+    BUILD NUCLEONS
+========================= */
+
+function buildProton(){
+
+    if(score.u >= 2 && score.d >= 1){
+
+        alert("⚛ PROTON CONSTRUCTED (uud)");
+
+    } else {
+
+        alert("Not enough quarks!");
+    }
+}
+
+function buildNeutron(){
+
+    if(score.u >= 1 && score.d >= 2){
+
+        alert("⚛ NEUTRON CONSTRUCTED (udd)");
+
+    } else {
+
+        alert("Not enough quarks!");
+    }
+}
+
+/* =========================
+    END GAME
+========================= */
+
 function endGame(){
-    running=false;
+
+    running = false;
+
     bgMusic.pause();
 
-    document.getElementById("gameover").style.display="flex";
+    document.getElementById("gameover").style.display = "flex";
 
-    document.getElementById("summary").innerHTML=`
-        U: ${score.u}<br>
-        D: ${score.d}<br>
-        E: ${score.e}<br><br>
-        <b>Ready for nucleon building ⚛</b>
+    document.getElementById("summary").innerHTML = `
+
+        <h2>Detected Particles ⚛</h2><br>
+
+        U Quarks: ${score.u}<br>
+        D Quarks: ${score.d}<br>
+        Electrons: ${score.e}<br><br>
+
+        <h2>Construct Matter</h2><br>
+
+        <button onclick="buildProton()">
+            BUILD PROTON (uud)
+        </button>
+
+        <br><br>
+
+        <button onclick="buildNeutron()">
+            BUILD NEUTRON (udd)
+        </button>
+
+        <br><br>
+
+        <button onclick="restartGame()">
+            RESTART DETECTOR
+        </button>
     `;
 }
 
-/* LEVEL 2 */
-function startLevel2(){
-    reset();
-    running=true;
-    document.getElementById("gameover").style.display="none";
-    bgMusic.play();
-    loop();
-}
+/* =========================
+    START
+========================= */
 
-/* START */
 function startGame(){
+
     reset();
-    running=true;
-    document.getElementById("menu").style.display="none";
-    document.getElementById("gameover").style.display="none";
+
+    running = true;
+
+    document.getElementById("menu").style.display = "none";
+
+    document.getElementById("gameover").style.display = "none";
+
     bgMusic.play();
+
     loop();
 }
 
-/* TIMER */
+/* =========================
+    RESTART
+========================= */
+
+function restartGame(){
+
+    startGame();
+}
+
+/* =========================
+    TIMER
+========================= */
+
 setInterval(()=>{
+
     if(running){
+
         timer--;
-        document.getElementById("timer").innerText=timer;
-        if(timer<=0) endGame();
+
+        document.getElementById("timer").innerText = timer;
+
+        if(timer <= 0){
+
+            endGame();
+        }
     }
+
 },1000);
 
-/* SPAWN */
+/* =========================
+    SPAWNING
+========================= */
+
 setInterval(()=>{
-    if(running) spawnParticle();
+
+    if(running){
+
+        spawnParticle();
+    }
+
 },300);
 
 </script>
