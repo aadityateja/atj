@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>NUCLEAR REACTOR SIMULATOR</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#05070d;
+    overflow:hidden;
+    font-family:'Orbitron',sans-serif;
+    color:white;
+}
+
+/* =========================
+   BACKGROUND
+========================= */
+
+#bg{
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at center,#0b1320 0%,#05070d 70%);
+    z-index:-3;
+}
+
+.grid{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background-image:
+    linear-gradient(rgba(0,255,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,255,0.04) 1px,transparent 1px);
+    background-size:40px 40px;
+    animation:gridMove 10s linear infinite;
+}
+
+@keyframes gridMove{
+    from{transform:translateY(0);}
+    to{transform:translateY(40px);}
+}
+
+/* =========================
+   TOP UI
+========================= */
+
+.topBar{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    padding:14px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(0,0,0,0.4);
+    border-bottom:1px solid rgba(0,255,255,0.2);
+    z-index:10;
+}
+
+.title{
+    font-size:28px;
+    font-weight:900;
+    letter-spacing:3px;
+    color:#00ffff;
+    text-shadow:0 0 10px #00ffff;
+}
+
+.status{
+    display:flex;
+    gap:20px;
+    font-size:14px;
+}
+
+/* =========================
+   MAIN LAYOUT
+========================= */
+
+.container{
+    width:100vw;
+    height:100vh;
+    display:flex;
+}
+
+/* =========================
+   REACTOR AREA
+========================= */
+
+.leftPanel{
+    width:68%;
+    height:100%;
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.reactorShell{
+    width:620px;
+    height:620px;
+    border-radius:50%;
+    border:5px solid #00ffff;
+    position:relative;
+    box-shadow:
+    0 0 30px rgba(0,255,255,0.5),
+    inset 0 0 50px rgba(0,255,255,0.1);
+}
+
+.core{
+    position:absolute;
+    inset:70px;
+    border-radius:50%;
+    background:
+    radial-gradient(circle,#17263d 0%,#08101d 80%);
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    grid-template-rows:repeat(6,1fr);
+    gap:10px;
+    padding:25px;
+}
+
+.fuel{
+    border-radius:12px;
+    background:#1f2d3d;
+    border:2px solid #4cff00;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#4cff00;
+    font-size:13px;
+    position:relative;
+    overflow:hidden;
+    transition:0.15s;
+}
+
+.fuel.active{
+    background:#ff7b00;
+    border-color:#ffcc00;
+    box-shadow:
+    0 0 18px #ff7b00,
+    0 0 35px #ff3300;
+    color:white;
+    transform:scale(1.05);
+}
+
+.fuel.melting{
+    background:#ff0033;
+    border-color:white;
+    animation:danger 0.3s infinite;
+}
+
+@keyframes danger{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.08);}
+    100%{transform:scale(1);}
+}
+
+/* =========================
+   RIGHT PANEL
+========================= */
+
+.rightPanel{
+    width:32%;
+    height:100%;
+    background:rgba(0,0,0,0.35);
+    border-left:1px solid rgba(0,255,255,0.2);
+    padding:90px 20px 20px;
+    overflow-y:auto;
+}
+
+.section{
+    margin-bottom:24px;
+    padding:18px;
+    background:rgba(0,255,255,0.05);
+    border:1px solid rgba(0,255,255,0.15);
+    border-radius:18px;
+    box-shadow:0 0 15px rgba(0,255,255,0.05);
+}
+
+.section h2{
+    margin-bottom:14px;
+    color:#00ffff;
+    font-size:18px;
+}
+
+/* =========================
+   METERS
+========================= */
+
+.meter{
+    margin-bottom:18px;
+}
+
+.meterLabel{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:6px;
+    font-size:13px;
+}
+
+.bar{
+    width:100%;
+    height:16px;
+    background:#111;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.fill{
+    height:100%;
+    width:0%;
+    border-radius:20px;
+    transition:0.2s;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+button{
+    flex:1;
+    min-width:140px;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:#061824;
+    color:#00ffff;
+    border:1px solid #00ffff;
+    font-family:'Orbitron',sans-serif;
+    cursor:pointer;
+    transition:0.2s;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#00ffff;
+    color:black;
+    box-shadow:0 0 15px #00ffff;
+}
+
+.scram{
+    background:#3d0000;
+    color:#ff4444;
+    border-color:#ff4444;
+}
+
+.scram:hover{
+    background:#ff0000;
+    color:white;
+}
+
+/* =========================
+   CITY GRID
+========================= */
+
+.city{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.building{
+    background:#111827;
+    border:1px solid #233044;
+    border-radius:12px;
+    padding:12px;
+    transition:0.2s;
+}
+
+.building.powered{
+    border-color:#00ff99;
+    box-shadow:0 0 18px rgba(0,255,153,0.3);
+    background:#0f2b25;
+}
+
+.building h3{
+    font-size:13px;
+    margin-bottom:8px;
+}
+
+.powerValue{
+    font-size:12px;
+    color:#00ff99;
+}
+
+/* =========================
+   ALERT
+========================= */
+
+.alert{
+    position:absolute;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    padding:14px 24px;
+    border-radius:16px;
+    background:#300;
+    color:#ff5555;
+    font-weight:bold;
+    border:1px solid red;
+    display:none;
+    z-index:20;
+    animation:blink 0.5s infinite;
+}
+
+@keyframes blink{
+    0%{opacity:1;}
+    50%{opacity:0.4;}
+    100%{opacity:1;}
+}
+
+/* =========================
+   NEUTRONS
+========================= */
+
+.neutron{
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:#00ffff;
+    border-radius:50%;
+    box-shadow:0 0 12px #00ffff;
+    pointer-events:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="bg">
+    <div class="grid"></div>
+</div>
+
+<div class="topBar">
+    <div class="title">⚛ NUCLEAR REACTOR SIMULATOR</div>
+
+    <div class="status">
+        <div>THERMAL OUTPUT: <span id="thermalText">0 MW</span></div>
+        <div>ELECTRICAL OUTPUT: <span id="electricText">0 MW</span></div>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- LEFT -->
+
+    <div class="leftPanel">
+
+        <div class="reactorShell">
+            <div class="core" id="core"></div>
+        </div>
+
+        <div class="alert" id="alertBox">
+            ⚠ REACTOR OVERHEATING ⚠
+        </div>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="rightPanel">
+
+        <!-- CONTROLS -->
+
+        <div class="section">
+
+            <h2>REACTOR CONTROL</h2>
+
+            <div class="buttons">
+                <button onclick="startReaction()">INITIATE FISSION</button>
+                <button onclick="insertControlRods()">INSERT CONTROL RODS</button>
+                <button onclick="removeControlRods()">REMOVE CONTROL RODS</button>
+                <button onclick="boostCooling()">BOOST COOLING</button>
+                <button class="scram" onclick="scram()">EMERGENCY SCRAM</button>
+            </div>
+
+        </div>
+
+        <!-- METERS -->
+
+        <div class="section">
+
+            <h2>REACTOR STATUS</h2>
+
+            <div class="meter">
+                <div class="meterLabel">
+                    <span>CORE TEMPERATURE</span>
+                    <span id="tempText">220°C</span>
+                </div>
+
+                <div class="bar">
+                    <div class="fill" id="tempBar"></div>
+                </div>
+            </div>
+
+            <div class="meter">
+                <div class="meterLabel">
+                    <span>NEUTRON FLUX</span>
+                    <span id="fluxText">0%</span>
+                </div>
+
+                <div class="bar">
+                    <div class="fill" id="fluxBar"></div>
+                </div>
+            </div>
+
+            <div class="meter">
+                <div class="meterLabel">
+                    <span>TURBINE SPEED</span>
+                    <span id="turbineText">0 RPM</span>
+                </div>
+
+                <div class="bar">
+                    <div class="fill" id="turbineBar"></div>
+                </div>
+            </div>
+
+            <div class="meter">
+                <div class="meterLabel">
+                    <span>COOLANT FLOW</span>
+                    <span id="coolantText">70%</span>
+                </div>
+
+                <div class="bar">
+                    <div class="fill" id="coolantBar"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- CITY -->
+
+        <div class="section">
+
+            <h2>POWER GRID DISTRIBUTION</h2>
+
+            <div class="city">
+
+                <div class="building" id="home">
+                    <h3>🏠 RESIDENTIAL</h3>
+                    <div class="powerValue" id="homePower">0 MW</div>
+                </div>
+
+                <div class="building" id="industry">
+                    <h3>🏭 INDUSTRY</h3>
+                    <div class="powerValue" id="industryPower">0 MW</div>
+                </div>
+
+                <div class="building" id="lab">
+                    <h3>🔬 RESEARCH LAB</h3>
+                    <div class="powerValue" id="labPower">0 MW</div>
+                </div>
+
+                <div class="building" id="metro">
+                    <h3>🚄 METRO SYSTEM</h3>
+                    <div class="powerValue" id="metroPower">0 MW</div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =========================
+   CORE SETUP
+========================= */
+
+const core = document.getElementById("core");
+
+const rods = [];
+
+for(let i=0;i<36;i++){
+
+    const rod = document.createElement("div");
+    rod.className = "fuel";
+    rod.innerHTML = "U-235";
+
+    core.appendChild(rod);
+
+    rods.push(rod);
+}
+
+/* =========================
+   REACTOR VARIABLES
+========================= */
+
+let reaction = false;
+
+let temp = 220;
+let flux = 0;
+let turbine = 0;
+let coolant = 70;
+
+let thermalPower = 0;
+let electricalPower = 0;
+
+let controlRods = true;
+
+/* =========================
+   START REACTION
+========================= */
+
+function startReaction(){
+
+    reaction = true;
+}
+
+/* =========================
+   CONTROL RODS
+========================= */
+
+function insertControlRods(){
+
+    controlRods = true;
+}
+
+function removeControlRods(){
+
+    controlRods = false;
+}
+
+/* =========================
+   COOLING
+========================= */
+
+function boostCooling(){
+
+    coolant += 15;
+
+    if(coolant > 100) coolant = 100;
+}
+
+/* =========================
+   SCRAM
+========================= */
+
+function scram(){
+
+    reaction = false;
+
+    flux *= 0.2;
+    thermalPower *= 0.3;
+
+    rods.forEach(r=>{
+        r.classList.remove("active");
+        r.classList.remove("melting");
+    });
+}
+
+/* =========================
+   MAIN SIMULATION LOOP
+========================= */
+
+function update(){
+
+    if(reaction){
+
+        if(controlRods){
+
+            flux += Math.random()*1.2;
+            temp += Math.random()*2;
+            thermalPower += Math.random()*8;
+
+        }else{
+
+            flux += Math.random()*4;
+            temp += Math.random()*12;
+            thermalPower += Math.random()*28;
+        }
+
+        rods.forEach(rod=>{
+
+            if(Math.random() < flux/250){
+
+                rod.classList.add("active");
+
+                setTimeout(()=>{
+                    rod.classList.remove("active");
+                },250);
+
+                createNeutron();
+            }
+        });
+    }
+
+    /* COOLING EFFECT */
+
+    temp -= coolant*0.03;
+
+    if(temp < 220) temp = 220;
+
+    /* LIMITS */
+
+    if(flux > 100) flux = 100;
+
+    turbine = thermalPower * 4;
+
+    if(turbine > 5000) turbine = 5000;
+
+    electricalPower = thermalPower * 0.72;
+
+    /* OVERHEAT */
+
+    if(temp > 1200){
+
+        document.getElementById("alertBox").style.display="block";
+
+        rods.forEach(r=>{
+
+            if(Math.random()<0.2){
+
+                r.classList.add("melting");
+            }
+        });
+
+    }else{
+
+        document.getElementById("alertBox").style.display="none";
+    }
+
+    /* NATURAL DECAY */
+
+    thermalPower *= 0.995;
+    flux *= 0.994;
+
+    /* UPDATE UI */
+
+    updateUI();
+
+    requestAnimationFrame(update);
+}
+
+/* =========================
+   UPDATE UI
+========================= */
+
+function updateUI(){
+
+    setBar("tempBar",temp/15,"linear-gradient(90deg,#00ffff,#ff3300)");
+    setBar("fluxBar",flux,"linear-gradient(90deg,#00ff99,#00ffff)");
+    setBar("turbineBar",turbine/50,"linear-gradient(90deg,#ffaa00,#ff3300)");
+    setBar("coolantBar",coolant,"linear-gradient(90deg,#00aaff,#00ffff)");
+
+    document.getElementById("tempText").innerHTML =
+    Math.floor(temp)+"°C";
+
+    document.getElementById("fluxText").innerHTML =
+    Math.floor(flux)+"%";
+
+    document.getElementById("turbineText").innerHTML =
+    Math.floor(turbine)+" RPM";
+
+    document.getElementById("coolantText").innerHTML =
+    Math.floor(coolant)+"%";
+
+    document.getElementById("thermalText").innerHTML =
+    Math.floor(thermalPower)+" MW";
+
+    document.getElementById("electricText").innerHTML =
+    Math.floor(electricalPower)+" MW";
+
+    distributePower();
+}
+
+/* =========================
+   SET BAR
+========================= */
+
+function setBar(id,val,color){
+
+    const bar = document.getElementById(id);
+
+    if(val>100) val=100;
+
+    bar.style.width = val+"%";
+    bar.style.background = color;
+}
+
+/* =========================
+   POWER DISTRIBUTION
+========================= */
+
+function distributePower(){
+
+    const home = electricalPower*0.25;
+    const industry = electricalPower*0.35;
+    const lab = electricalPower*0.18;
+    const metro = electricalPower*0.22;
+
+    updateBuilding("home",home);
+    updateBuilding("industry",industry);
+    updateBuilding("lab",lab);
+    updateBuilding("metro",metro);
+
+    document.getElementById("homePower").innerHTML =
+    Math.floor(home)+" MW";
+
+    document.getElementById("industryPower").innerHTML =
+    Math.floor(industry)+" MW";
+
+    document.getElementById("labPower").innerHTML =
+    Math.floor(lab)+" MW";
+
+    document.getElementById("metroPower").innerHTML =
+    Math.floor(metro)+" MW";
+}
+
+function updateBuilding(id,power){
+
+    const building = document.getElementById(id);
+
+    if(power > 40){
+
+        building.classList.add("powered");
+
+    }else{
+
+        building.classList.remove("powered");
+    }
+}
+
+/* =========================
+   NEUTRONS
+========================= */
+
+function createNeutron(){
+
+    const neutron = document.createElement("div");
+    neutron.className = "neutron";
+
+    const reactor = document.querySelector(".reactorShell");
+
+    const rect = reactor.getBoundingClientRect();
+
+    neutron.style.left =
+    rect.left + rect.width/2 + "px";
+
+    neutron.style.top =
+    rect.top + rect.height/2 + "px";
+
+    document.body.appendChild(neutron);
+
+    const angle = Math.random()*Math.PI*2;
+
+    const speed = 2 + Math.random()*4;
+
+    let x = rect.left + rect.width/2;
+    let y = rect.top + rect.height/2;
+
+    let dx = Math.cos(angle)*speed;
+    let dy = Math.sin(angle)*speed;
+
+    function animate(){
+
+        x += dx;
+        y += dy;
+
+        neutron.style.left = x+"px";
+        neutron.style.top = y+"px";
+
+        if(
+            x<0 || y<0 ||
+            x>window.innerWidth ||
+            y>window.innerHeight
+        ){
+
+            neutron.remove();
+            return;
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+}
+
+/* =========================
+   AUTO COOLANT DECAY
+========================= */
+
+setInterval(()=>{
+
+    coolant -= 0.4;
+
+    if(coolant < 20)
+        coolant = 20;
+
+},100);
+
+/* =========================
+   START LOOP
+========================= */
+
+update();
+
+</script>
+
+</body>
+</html>
