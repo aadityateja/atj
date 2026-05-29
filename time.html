@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ATOMIC CLOCK</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    overflow:hidden;
+    background:black;
+    font-family:'Orbitron',sans-serif;
+    color:white;
+}
+
+/* =========================
+   BACKGROUND
+========================= */
+
+#space{
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at center,#0c1630 0%,#02040a 75%);
+    overflow:hidden;
+    z-index:-10;
+}
+
+.grid{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background-image:
+    linear-gradient(rgba(0,255,255,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,255,0.03) 1px,transparent 1px);
+    background-size:50px 50px;
+    animation:gridMove 12s linear infinite;
+}
+
+@keyframes gridMove{
+
+    from{
+        transform:translateY(0px);
+    }
+
+    to{
+        transform:translateY(50px);
+    }
+}
+
+/* =========================
+   FLOATING PARTICLES
+========================= */
+
+.particle{
+    position:absolute;
+    color:#00ffff;
+    opacity:0.12;
+    animation:float linear infinite;
+    font-weight:bold;
+}
+
+@keyframes float{
+
+    from{
+        transform:translateY(110vh) rotate(0deg);
+    }
+
+    to{
+        transform:translateY(-120vh) rotate(360deg);
+    }
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topBar{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    padding:18px 24px;
+    background:rgba(0,0,0,0.35);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(0,255,255,0.15);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    z-index:100;
+}
+
+.title{
+    font-size:32px;
+    font-weight:900;
+    letter-spacing:4px;
+    color:#00ffff;
+    text-shadow:0 0 20px #00ffff;
+}
+
+.subtitle{
+    margin-top:6px;
+    font-size:11px;
+    color:#8deeff;
+}
+
+.status{
+    text-align:right;
+    font-size:12px;
+    color:#8deeff;
+    line-height:1.8;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.container{
+    width:100vw;
+    height:100vh;
+    display:flex;
+}
+
+/* =========================
+   LEFT PANEL
+========================= */
+
+.leftPanel{
+    width:70%;
+    height:100%;
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* =========================
+   CLOCK
+========================= */
+
+.clockShell{
+
+    width:540px;
+    height:540px;
+    border-radius:50%;
+
+    position:relative;
+
+    background:
+    radial-gradient(circle,
+    rgba(255,255,255,0.15) 0%,
+    rgba(0,255,255,0.05) 40%,
+    rgba(0,0,0,0.8) 100%);
+
+    border:2px solid rgba(0,255,255,0.25);
+
+    backdrop-filter:blur(12px);
+
+    box-shadow:
+    0 0 40px rgba(0,255,255,0.15),
+    inset 0 0 80px rgba(0,255,255,0.08),
+    inset 0 0 150px rgba(255,255,255,0.03);
+
+}
+
+/* =========================
+   CRYSTAL RINGS
+========================= */
+
+.ring{
+    position:absolute;
+    border-radius:50%;
+    border:1px solid rgba(0,255,255,0.12);
+}
+
+.r1{
+    inset:28px;
+    animation:rotate 30s linear infinite;
+}
+
+.r2{
+    inset:58px;
+    animation:rotateReverse 50s linear infinite;
+}
+
+.r3{
+    inset:92px;
+    animation:rotate 70s linear infinite;
+}
+
+@keyframes rotate{
+
+    from{
+        transform:rotate(0deg);
+    }
+
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+@keyframes rotateReverse{
+
+    from{
+        transform:rotate(360deg);
+    }
+
+    to{
+        transform:rotate(0deg);
+    }
+}
+
+/* =========================
+   CLOCK NUMBERS
+========================= */
+
+.number{
+
+    position:absolute;
+
+    width:40px;
+    height:40px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    left:50%;
+    top:50%;
+
+    transform-origin:center center;
+
+    color:#b8f7ff;
+
+    font-size:18px;
+
+    text-shadow:0 0 10px rgba(0,255,255,0.5);
+}
+
+/* =========================
+   CENTER CORE
+========================= */
+
+.centerCore{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    width:26px;
+    height:26px;
+
+    transform:translate(-50%,-50%);
+
+    border-radius:50%;
+
+    background:#00ffff;
+
+    box-shadow:
+    0 0 20px #00ffff,
+    0 0 40px rgba(0,255,255,0.6);
+
+    z-index:20;
+}
+
+/* =========================
+   HANDS
+========================= */
+
+.hand{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform-origin:bottom center;
+
+    border-radius:20px;
+
+    z-index:10;
+}
+
+.hour{
+
+    width:8px;
+    height:120px;
+
+    background:
+    linear-gradient(to top,#00ffff,#ffffff);
+
+    margin-left:-4px;
+    margin-top:-120px;
+
+    box-shadow:0 0 15px #00ffff;
+}
+
+.minute{
+
+    width:5px;
+    height:170px;
+
+    background:
+    linear-gradient(to top,#88ffff,#ffffff);
+
+    margin-left:-2.5px;
+    margin-top:-170px;
+
+    box-shadow:0 0 15px #88ffff;
+}
+
+.second{
+
+    width:2px;
+    height:210px;
+
+    background:
+    linear-gradient(to top,#ff3355,#ffffff);
+
+    margin-left:-1px;
+    margin-top:-210px;
+
+    box-shadow:0 0 20px #ff3355;
+}
+
+/* =========================
+   DIGITAL TIME
+========================= */
+
+.digital{
+
+    position:absolute;
+
+    bottom:75px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    padding:14px 22px;
+
+    border-radius:16px;
+
+    background:rgba(0,255,255,0.06);
+
+    border:1px solid rgba(0,255,255,0.15);
+
+    color:#00ffff;
+
+    font-size:28px;
+
+    letter-spacing:4px;
+
+    text-shadow:0 0 15px #00ffff;
+
+    box-shadow:
+    0 0 20px rgba(0,255,255,0.12);
+}
+
+/* =========================
+   RIGHT PANEL
+========================= */
+
+.rightPanel{
+    width:30%;
+    height:100%;
+    background:rgba(0,0,0,0.35);
+    border-left:1px solid rgba(0,255,255,0.12);
+    padding:100px 22px 20px;
+    overflow-y:auto;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card{
+
+    background:rgba(0,255,255,0.05);
+
+    border:1px solid rgba(0,255,255,0.15);
+
+    border-radius:22px;
+
+    padding:20px;
+
+    margin-bottom:20px;
+
+    backdrop-filter:blur(12px);
+}
+
+.card h2{
+
+    color:#00ffff;
+
+    margin-bottom:14px;
+
+    font-size:18px;
+}
+
+.info{
+
+    line-height:1.9;
+
+    font-size:13px;
+
+    color:#d8f8ff;
+}
+
+.highlight{
+    color:#00ffff;
+}
+
+.equation{
+
+    margin-top:18px;
+
+    padding:14px;
+
+    border-radius:14px;
+
+    background:rgba(0,0,0,0.25);
+
+    text-align:center;
+
+    color:#ffee88;
+
+    font-size:18px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.buttons{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:12px;
+
+    margin-top:18px;
+}
+
+button{
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#071522;
+
+    border:1px solid #00ffff;
+
+    color:#00ffff;
+
+    cursor:pointer;
+
+    font-family:'Orbitron',sans-serif;
+
+    transition:0.2s;
+}
+
+button:hover{
+
+    background:#00ffff;
+
+    color:black;
+
+    box-shadow:0 0 18px #00ffff;
+}
+
+/* =========================
+   KEYWORDS
+========================= */
+
+.keywords{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    margin-top:16px;
+}
+
+.tag{
+
+    padding:10px 14px;
+
+    border-radius:999px;
+
+    background:rgba(0,255,255,0.08);
+
+    border:1px solid rgba(0,255,255,0.15);
+
+    font-size:10px;
+
+    color:#9defff;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer{
+
+    position:absolute;
+
+    bottom:10px;
+
+    width:100%;
+
+    text-align:center;
+
+    font-size:10px;
+
+    letter-spacing:3px;
+
+    color:#667;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="space">
+    <div class="grid"></div>
+</div>
+
+<div class="topBar">
+
+    <div>
+
+        <div class="title">
+            ⚛ ATOMIC CLOCK
+        </div>
+
+        <div class="subtitle">
+            PRECISION • FREQUENCY • OSCILLATION • QUANTUM TIMEKEEPING
+        </div>
+
+    </div>
+
+    <div class="status">
+
+        UTC SYNCHRONIZATION:
+        <span id="syncText">LOCKED</span>
+
+        <br>
+
+        OSCILLATION MODE:
+        <span id="oscText">CESIUM-133</span>
+
+    </div>
+
+</div>
+
+<div class="container">
+
+    <!-- LEFT -->
+
+    <div class="leftPanel">
+
+        <div class="clockShell">
+
+            <!-- RINGS -->
+
+            <div class="ring r1"></div>
+            <div class="ring r2"></div>
+            <div class="ring r3"></div>
+
+            <!-- NUMBERS -->
+
+            <div id="numbers"></div>
+
+            <!-- HANDS -->
+
+            <div class="hand hour" id="hourHand"></div>
+            <div class="hand minute" id="minuteHand"></div>
+            <div class="hand second" id="secondHand"></div>
+
+            <!-- CORE -->
+
+            <div class="centerCore"></div>
+
+            <!-- DIGITAL -->
+
+            <div class="digital" id="digitalClock">
+                00:00:00
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="rightPanel">
+
+        <div class="card">
+
+            <h2>ATOMIC TIMEKEEPING</h2>
+
+            <div class="info">
+
+                Atomic clocks measure time using
+                <span class="highlight">
+                quantum oscillations
+                </span>
+                of atoms such as Cesium-133.
+
+                <br><br>
+
+                They are the most precise clocks ever created and define the international SI second.
+
+                <div class="equation">
+
+                    9,192,631,770 Hz
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h2>REAL TIME DATA</h2>
+
+            <div class="info" id="clockInfo">
+
+                HOURS:
+                <span class="highlight" id="hText">00</span>
+
+                <br><br>
+
+                MINUTES:
+                <span class="highlight" id="mText">00</span>
+
+                <br><br>
+
+                SECONDS:
+                <span class="highlight" id="sText">00</span>
+
+                <br><br>
+
+                MILLISECONDS:
+                <span class="highlight" id="msText">000</span>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h2>TIMEKEEPING KEYWORDS</h2>
+
+            <div class="keywords">
+
+                <div class="tag">OSCILLATION</div>
+                <div class="tag">FREQUENCY</div>
+                <div class="tag">UTC</div>
+                <div class="tag">CESIUM-133</div>
+                <div class="tag">PRECISION</div>
+                <div class="tag">QUANTUM</div>
+                <div class="tag">TEMPORAL</div>
+                <div class="tag">ATOMIC TIME</div>
+                <div class="tag">SECONDS</div>
+                <div class="tag">TIME DILATION</div>
+                <div class="tag">SPACETIME</div>
+                <div class="tag">RELATIVITY</div>
+
+            </div>
+
+            <div class="buttons">
+
+                <button onclick="pulseClock()">
+                    PULSE
+                </button>
+
+                <button onclick="syncClock()">
+                    SYNC
+                </button>
+
+                <button onclick="quantumGlow()">
+                    QUANTUM MODE
+                </button>
+
+                <button onclick="spaceMode()">
+                    SPACE-TIME
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="footer">
+    TIME IS THE MOST FUNDAMENTAL MEASUREMENT OF REALITY
+</div>
+
+<script>
+
+/* =========================
+   FLOATING PARTICLES
+========================= */
+
+const space=document.getElementById("space");
+
+const symbols=[
+"t","Ψ","ν","λ","ω","⏱","⚛","Δt"
+];
+
+for(let i=0;i<60;i++){
+
+    const p=document.createElement("div");
+
+    p.className="particle";
+
+    p.innerHTML=
+    symbols[Math.floor(Math.random()*symbols.length)];
+
+    p.style.left=Math.random()*100+"vw";
+
+    p.style.fontSize=
+    18+Math.random()*30+"px";
+
+    p.style.animationDuration=
+    10+Math.random()*20+"s";
+
+    space.appendChild(p);
+}
+
+/* =========================
+   CLOCK NUMBERS
+========================= */
+
+const numbersContainer=
+document.getElementById("numbers");
+
+for(let i=1;i<=12;i++){
+
+    const num=document.createElement("div");
+
+    num.className="number";
+
+    const angle=(i*30-90)*(Math.PI/180);
+
+    const radius=220;
+
+    const x=Math.cos(angle)*radius;
+    const y=Math.sin(angle)*radius;
+
+    num.style.transform=
+    `translate(${x}px,${y}px)`;
+
+    num.innerHTML=i;
+
+    numbersContainer.appendChild(num);
+}
+
+/* =========================
+   CLOCK UPDATE
+========================= */
+
+function updateClock(){
+
+    const now=new Date();
+
+    const hours=now.getHours()%12;
+    const minutes=now.getMinutes();
+    const seconds=now.getSeconds();
+    const ms=now.getMilliseconds();
+
+    const hourDeg=
+    (hours*30)+(minutes*0.5);
+
+    const minuteDeg=
+    (minutes*6)+(seconds*0.1);
+
+    const secondDeg=
+    (seconds*6)+(ms*0.006);
+
+    document.getElementById("hourHand")
+    .style.transform=
+    `rotate(${hourDeg}deg)`;
+
+    document.getElementById("minuteHand")
+    .style.transform=
+    `rotate(${minuteDeg}deg)`;
+
+    document.getElementById("secondHand")
+    .style.transform=
+    `rotate(${secondDeg}deg)`;
+
+    /* DIGITAL */
+
+    const hh=
+    String(now.getHours()).padStart(2,"0");
+
+    const mm=
+    String(minutes).padStart(2,"0");
+
+    const ss=
+    String(seconds).padStart(2,"0");
+
+    document.getElementById("digitalClock")
+    .innerHTML=
+    `${hh}:${mm}:${ss}`;
+
+    /* INFO */
+
+    document.getElementById("hText")
+    .innerHTML=hh;
+
+    document.getElementById("mText")
+    .innerHTML=mm;
+
+    document.getElementById("sText")
+    .innerHTML=ss;
+
+    document.getElementById("msText")
+    .innerHTML=
+    String(ms).padStart(3,"0");
+
+    requestAnimationFrame(updateClock);
+}
+
+updateClock();
+
+/* =========================
+   BUTTON EFFECTS
+========================= */
+
+function pulseClock(){
+
+    const shell=
+    document.querySelector(".clockShell");
+
+    shell.style.transform=
+    "scale(1.04)";
+
+    shell.style.boxShadow=
+    "0 0 80px rgba(0,255,255,0.35)";
+
+    setTimeout(()=>{
+
+        shell.style.transform=
+        "scale(1)";
+
+        shell.style.boxShadow=
+        "0 0 40px rgba(0,255,255,0.15)";
+
+    },250);
+}
+
+function syncClock(){
+
+    document.getElementById("syncText")
+    .innerHTML="SYNCHRONIZED";
+
+    document.body.style.filter=
+    "brightness(1.3)";
+
+    setTimeout(()=>{
+
+        document.body.style.filter=
+        "brightness(1)";
+
+    },150);
+}
+
+function quantumGlow(){
+
+    document.querySelector(".clockShell")
+    .style.background=
+
+    `radial-gradient(circle,
+    rgba(0,255,255,0.25) 0%,
+    rgba(0,255,255,0.08) 40%,
+    rgba(0,0,0,0.9) 100%)`;
+}
+
+function spaceMode(){
+
+    document.getElementById("oscText")
+    .innerHTML=
+    "RELATIVISTIC";
+
+    document.querySelector(".clockShell")
+    .style.transform=
+    "rotate(2deg)";
+}
+
+</script>
+
+</body>
+</html>
