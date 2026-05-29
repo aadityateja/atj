@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>THE COSMIC PERIODIC TABLE</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#030712;
+    overflow:hidden;
+    font-family:'Orbitron',sans-serif;
+    color:white;
+}
+
+/* =========================
+   BACKGROUND
+========================= */
+
+#space{
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at center,#13203a 0%,#030712 70%);
+    z-index:-5;
+}
+
+.star{
+    position:absolute;
+    background:white;
+    border-radius:50%;
+    opacity:0.8;
+    animation:twinkle linear infinite;
+}
+
+@keyframes twinkle{
+    0%{opacity:0.2;}
+    50%{opacity:1;}
+    100%{opacity:0.2;}
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topBar{
+    width:100%;
+    padding:18px 26px;
+    background:rgba(0,0,0,0.35);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(0,255,255,0.15);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:relative;
+    z-index:20;
+}
+
+.title{
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:3px;
+    color:#00ffff;
+    text-shadow:0 0 18px #00ffff;
+}
+
+.subtitle{
+    font-size:12px;
+    color:#8adfff;
+}
+
+/* =========================
+   MAIN LAYOUT
+========================= */
+
+.container{
+    display:flex;
+    width:100vw;
+    height:calc(100vh - 85px);
+}
+
+/* =========================
+   TABLE SIDE
+========================= */
+
+.leftPanel{
+    width:72%;
+    height:100%;
+    overflow:auto;
+    padding:30px;
+}
+
+.periodicTable{
+    display:grid;
+    grid-template-columns:repeat(18,72px);
+    gap:8px;
+    justify-content:center;
+}
+
+/* =========================
+   ELEMENT BOX
+========================= */
+
+.element{
+    height:72px;
+    border-radius:14px;
+    position:relative;
+    cursor:pointer;
+    transition:0.2s;
+    border:1px solid rgba(255,255,255,0.15);
+    overflow:hidden;
+    backdrop-filter:blur(8px);
+}
+
+.element:hover{
+    transform:scale(1.1);
+    z-index:10;
+    box-shadow:0 0 25px rgba(255,255,255,0.5);
+}
+
+.atomic{
+    position:absolute;
+    top:6px;
+    left:7px;
+    font-size:10px;
+    opacity:0.8;
+}
+
+.symbol{
+    position:absolute;
+    top:22px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:24px;
+    font-weight:bold;
+}
+
+.name{
+    position:absolute;
+    bottom:6px;
+    width:100%;
+    text-align:center;
+    font-size:8px;
+}
+
+/* =========================
+   CATEGORIES
+========================= */
+
+.alkali{
+    background:#451010;
+    border-color:#ff5555;
+}
+
+.alkaline{
+    background:#4a2d10;
+    border-color:#ffaa55;
+}
+
+.transition{
+    background:#102f4a;
+    border-color:#55bbff;
+}
+
+.metalloid{
+    background:#21401b;
+    border-color:#88ff66;
+}
+
+.nonmetal{
+    background:#1d1450;
+    border-color:#aa88ff;
+}
+
+.noble{
+    background:#4b1040;
+    border-color:#ff66dd;
+}
+
+.lanth{
+    background:#13403d;
+    border-color:#55ffee;
+}
+
+.act{
+    background:#40340f;
+    border-color:#ffee55;
+}
+
+/* =========================
+   RIGHT PANEL
+========================= */
+
+.rightPanel{
+    width:28%;
+    height:100%;
+    background:rgba(0,0,0,0.35);
+    border-left:1px solid rgba(0,255,255,0.15);
+    padding:24px;
+    overflow-y:auto;
+}
+
+.card{
+    background:rgba(0,255,255,0.05);
+    border:1px solid rgba(0,255,255,0.15);
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:20px;
+}
+
+.card h2{
+    margin-bottom:16px;
+    color:#00ffff;
+}
+
+/* =========================
+   BIG ELEMENT DISPLAY
+========================= */
+
+.bigElement{
+    width:180px;
+    height:180px;
+    margin:auto;
+    border-radius:24px;
+    position:relative;
+    margin-bottom:24px;
+    border:2px solid rgba(255,255,255,0.2);
+    box-shadow:0 0 30px rgba(255,255,255,0.15);
+}
+
+.bigAtomic{
+    position:absolute;
+    top:14px;
+    left:16px;
+    font-size:20px;
+}
+
+.bigSymbol{
+    position:absolute;
+    top:52px;
+    width:100%;
+    text-align:center;
+    font-size:64px;
+    font-weight:900;
+}
+
+.bigName{
+    position:absolute;
+    bottom:16px;
+    width:100%;
+    text-align:center;
+    font-size:16px;
+}
+
+/* =========================
+   INFO
+========================= */
+
+.info{
+    line-height:1.9;
+    font-size:13px;
+}
+
+.highlight{
+    color:#00ffff;
+}
+
+.mass{
+    color:#ffee55;
+}
+
+/* =========================
+   LEGEND
+========================= */
+
+.legend{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.legendItem{
+    padding:10px;
+    border-radius:12px;
+    font-size:10px;
+    text-align:center;
+}
+
+/* =========================
+   FLOATING PARTICLES
+========================= */
+
+.floating{
+    position:absolute;
+    opacity:0.15;
+    animation:float linear infinite;
+    font-size:20px;
+}
+
+@keyframes float{
+
+    from{
+        transform:translateY(110vh) rotate(0deg);
+    }
+
+    to{
+        transform:translateY(-120vh) rotate(360deg);
+    }
+}
+
+.footer{
+    position:absolute;
+    bottom:10px;
+    width:100%;
+    text-align:center;
+    font-size:10px;
+    color:#666;
+    letter-spacing:3px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="space"></div>
+
+<div class="topBar">
+
+    <div>
+        <div class="title">⚛ THE COSMIC PERIODIC TABLE</div>
+        <div class="subtitle">
+            Explore the building blocks of the universe
+        </div>
+    </div>
+
+</div>
+
+<div class="container">
+
+    <!-- LEFT -->
+
+    <div class="leftPanel">
+
+        <div class="periodicTable" id="table"></div>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="rightPanel">
+
+        <!-- BIG DISPLAY -->
+
+        <div class="card">
+
+            <h2>ELEMENT VISUALIZER</h2>
+
+            <div class="bigElement noble" id="bigBox">
+
+                <div class="bigAtomic" id="bigAtomic">1</div>
+
+                <div class="bigSymbol" id="bigSymbol">H</div>
+
+                <div class="bigName" id="bigName">
+                    Hydrogen
+                </div>
+
+            </div>
+
+            <div class="info" id="info">
+
+                Click any element from the periodic table to explore its atomic properties.
+
+            </div>
+
+        </div>
+
+        <!-- LEGEND -->
+
+        <div class="card">
+
+            <h2>ELEMENT GROUPS</h2>
+
+            <div class="legend">
+
+                <div class="legendItem alkali">
+                    ALKALI METALS
+                </div>
+
+                <div class="legendItem alkaline">
+                    ALKALINE EARTH
+                </div>
+
+                <div class="legendItem transition">
+                    TRANSITION METALS
+                </div>
+
+                <div class="legendItem metalloid">
+                    METALLOIDS
+                </div>
+
+                <div class="legendItem nonmetal">
+                    NON METALS
+                </div>
+
+                <div class="legendItem noble">
+                    NOBLE GASES
+                </div>
+
+                <div class="legendItem lanth">
+                    LANTHANIDES
+                </div>
+
+                <div class="legendItem act">
+                    ACTINIDES
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="footer">
+    HYDROGEN TO OGANESSON • STARDUST TO LIFE
+</div>
+
+<script>
+
+/* =========================
+   STARS
+========================= */
+
+const space=document.getElementById("space");
+
+for(let i=0;i<250;i++){
+
+    const star=document.createElement("div");
+
+    star.className="star";
+
+    const size=Math.random()*3;
+
+    star.style.width=size+"px";
+    star.style.height=size+"px";
+
+    star.style.left=Math.random()*100+"vw";
+    star.style.top=Math.random()*100+"vh";
+
+    star.style.animationDuration=
+    2+Math.random()*5+"s";
+
+    space.appendChild(star);
+}
+
+/* =========================
+   FLOATING PARTICLES
+========================= */
+
+const symbols=["H","He","C","O","Fe","U","⚛","e⁻","γ","ν"];
+
+for(let i=0;i<40;i++){
+
+    const f=document.createElement("div");
+
+    f.className="floating";
+
+    f.innerHTML=
+    symbols[Math.floor(Math.random()*symbols.length)];
+
+    f.style.left=Math.random()*100+"vw";
+
+    f.style.animationDuration=
+    10+Math.random()*20+"s";
+
+    f.style.fontSize=
+    18+Math.random()*40+"px";
+
+    space.appendChild(f);
+}
+
+/* =========================
+   ELEMENT DATA
+========================= */
+
+const elements=[
+
+{
+n:1,
+s:"H",
+name:"Hydrogen",
+mass:"1.008",
+group:"nonmetal",
+fact:"The most abundant element in the universe."
+},
+
+{
+n:2,
+s:"He",
+name:"Helium",
+mass:"4.0026",
+group:"noble",
+fact:"Produced in stars through nuclear fusion."
+},
+
+{
+n:3,
+s:"Li",
+name:"Lithium",
+mass:"6.94",
+group:"alkali",
+fact:"Used in modern batteries."
+},
+
+{
+n:4,
+s:"Be",
+name:"Beryllium",
+mass:"9.0122",
+group:"alkaline",
+fact:"Extremely lightweight and strong."
+},
+
+{
+n:5,
+s:"B",
+name:"Boron",
+mass:"10.81",
+group:"metalloid",
+fact:"Used in control rods of reactors."
+},
+
+{
+n:6,
+s:"C",
+name:"Carbon",
+mass:"12.011",
+group:"nonmetal",
+fact:"Foundation of all known life."
+},
+
+{
+n:7,
+s:"N",
+name:"Nitrogen",
+mass:"14.007",
+group:"nonmetal",
+fact:"Makes up most of Earth's atmosphere."
+},
+
+{
+n:8,
+s:"O",
+name:"Oxygen",
+mass:"15.999",
+group:"nonmetal",
+fact:"Essential for respiration."
+},
+
+{
+n:10,
+s:"Ne",
+name:"Neon",
+mass:"20.180",
+group:"noble",
+fact:"Glows brightly in neon signs."
+},
+
+{
+n:11,
+s:"Na",
+name:"Sodium",
+mass:"22.990",
+group:"alkali",
+fact:"Highly reactive with water."
+},
+
+{
+n:12,
+s:"Mg",
+name:"Magnesium",
+mass:"24.305",
+group:"alkaline",
+fact:"Burns with bright white light."
+},
+
+{
+n:14,
+s:"Si",
+name:"Silicon",
+mass:"28.085",
+group:"metalloid",
+fact:"Core material of computer chips."
+},
+
+{
+n:17,
+s:"Cl",
+name:"Chlorine",
+mass:"35.45",
+group:"nonmetal",
+fact:"Used in water purification."
+},
+
+{
+n:18,
+s:"Ar",
+name:"Argon",
+mass:"39.948",
+group:"noble",
+fact:"Third most abundant gas in atmosphere."
+},
+
+{
+n:26,
+s:"Fe",
+name:"Iron",
+mass:"55.845",
+group:"transition",
+fact:"Main component of Earth's core."
+},
+
+{
+n:29,
+s:"Cu",
+name:"Copper",
+mass:"63.546",
+group:"transition",
+fact:"Excellent electrical conductor."
+},
+
+{
+n:47,
+s:"Ag",
+name:"Silver",
+mass:"107.87",
+group:"transition",
+fact:"Highest electrical conductivity."
+},
+
+{
+n:79,
+s:"Au",
+name:"Gold",
+mass:"196.97",
+group:"transition",
+fact:"Does not corrode easily."
+},
+
+{
+n:82,
+s:"Pb",
+name:"Lead",
+mass:"207.2",
+group:"transition",
+fact:"Dense metal used in shielding radiation."
+},
+
+{
+n:92,
+s:"U",
+name:"Uranium",
+mass:"238.03",
+group:"act",
+fact:"Used in nuclear reactors and weapons."
+}
+
+];
+
+/* =========================
+   CREATE TABLE
+========================= */
+
+const table=document.getElementById("table");
+
+elements.forEach(el=>{
+
+    const div=document.createElement("div");
+
+    div.className=
+    `element ${el.group}`;
+
+    div.innerHTML=`
+
+    <div class="atomic">${el.n}</div>
+
+    <div class="symbol">${el.s}</div>
+
+    <div class="name">${el.name}</div>
+
+    `;
+
+    div.onclick=()=>showElement(el);
+
+    table.appendChild(div);
+});
+
+/* =========================
+   SHOW ELEMENT
+========================= */
+
+function showElement(el){
+
+    document.getElementById("bigAtomic")
+    .innerHTML=el.n;
+
+    document.getElementById("bigSymbol")
+    .innerHTML=el.s;
+
+    document.getElementById("bigName")
+    .innerHTML=el.name;
+
+    const box=document.getElementById("bigBox");
+
+    box.className=`bigElement ${el.group}`;
+
+    document.getElementById("info")
+    .innerHTML=`
+
+    <span class="highlight">
+        ${el.name}
+    </span>
+
+    <br><br>
+
+    Atomic Number:
+    <span class="highlight">${el.n}</span>
+
+    <br>
+
+    Atomic Mass:
+    <span class="mass">${el.mass} u</span>
+
+    <br><br>
+
+    ${el.fact}
+
+    <br><br>
+
+    Protons:
+    <span class="highlight">${el.n}</span>
+
+    <br>
+
+    Electrons:
+    <span class="highlight">${el.n}</span>
+
+    <br><br>
+
+    Every element in the periodic table was forged inside stars through nuclear processes.
+
+    `;
+}
+
+</script>
+
+</body>
+</html>
