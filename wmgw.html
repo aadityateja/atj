@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gravity Lab V1</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#020611;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    color:white;
+}
+
+canvas{
+    display:block;
+}
+
+#ui{
+    position:absolute;
+    top:15px;
+    left:15px;
+    z-index:100;
+    background:rgba(0,0,0,0.6);
+    padding:15px;
+    border-radius:12px;
+    backdrop-filter:blur(10px);
+}
+
+button{
+    margin:4px;
+    padding:8px 12px;
+    cursor:pointer;
+    border:none;
+    border-radius:8px;
+}
+
+.info{
+    margin-top:10px;
+    font-size:14px;
+}
+
+h2{
+    margin-bottom:8px;
+}
+</style>
+</head>
+<body>
+
+<div id="ui">
+    <h2>🌌 Gravity Lab</h2>
+
+    <button id="emBtn">EM Wave</button>
+    <button id="gwBtn">Gravitational Wave</button>
+    <button id="clearBtn">Clear</button>
+
+    <div class="info">
+        Drag Earth 🌍<br>
+        Observe wave propagation
+    </div>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize",resize);
+
+const sun = {
+    x:0,
+    y:0,
+    r:40
+};
+
+const earth = {
+    x:0,
+    y:0,
+    r:15
+};
+
+function initializeBodies(){
+    sun.x = canvas.width/2;
+    sun.y = canvas.height/2;
+
+    earth.x = sun.x + 250;
+    earth.y = sun.y;
+}
+initializeBodies();
+
+let dragging = false;
+
+canvas.addEventListener("mousedown",(e)=>{
+    const dx=e.clientX-earth.x;
+    const dy=e.clientY-earth.y;
+
+    if(Math.sqrt(dx*dx+dy*dy)<earth.r+10){
+        dragging=true;
+    }
+});
+
+window.addEventListener("mouseup",()=>{
+    dragging=false;
+});
+
+window.addEventListener("mousemove",(e)=>{
+    if(dragging){
+        earth.x=e.clientX;
+        earth.y=e.clientY;
+    }
+});
+
+let emWaves=[];
+let gwWaves=[];
+
+document.getElementById("emBtn").onclick=()=>{
+    emWaves.push({
+        radius:0
+    });
+};
+
+document.getElementById("gwBtn").onclick=()=>{
+    gwWaves.push({
+        phase:0,
+        age:0
+    });
+};
+
+document.getElementById("clearBtn").onclick=()=>{
+    emWaves=[];
+    gwWaves=[];
+};
+
+function drawSun(){
+
+    const grad=ctx.createRadialGradient(
+        sun.x,sun.y,0,
+        sun.x,sun.y,70
+    );
+
+    grad.addColorStop(0,"#fff7aa");
+    grad.addColorStop(0.3,"#ffd700");
+    grad.addColorStop(1,"rgba(255,150,0,0)");
+
+    ctx.fillStyle=grad;
+
+    ctx.beginPath();
+    ctx.arc(sun.x,sun.y,70,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(sun.x,sun.y,sun.r,0,Math.PI*2);
+    ctx.fillStyle="#FFD700";
+    ctx.fill();
+}
+
+function drawEarth(){
+
+    ctx.beginPath();
+    ctx.arc(earth.x,earth.y,earth.r,0,Math.PI*2);
+    ctx.fillStyle="#4aa3ff";
+    ctx.fill();
+
+    ctx.fillStyle="white";
+    ctx.font="14px Arial";
+    ctx.fillText("Earth",earth.x-18,earth.y-25);
+}
+
+function drawEMWaves(){
+
+    for(let i=emWaves.length-1;i>=0;i--){
+
+        const wave=emWaves[i];
+
+        wave.radius+=2.5;
+
+        ctx.beginPath();
+        ctx.arc(
+            sun.x,
+            sun.y,
+            wave.radius,
+            0,
+            Math.PI*2
+        );
+
+        ctx.strokeStyle=
+        `rgba(0,180,255,${
+            Math.max(0,1-wave.radius/1000)
+        })`;
+
+        ctx.lineWidth=3;
+        ctx.stroke();
+
+        if(wave.radius>1200){
+            emWaves.splice(i,1);
+        }
+    }
+}
+
+function drawSpacetimeGrid(){
+
+    const spacing=40;
+
+    ctx.lineWidth=1;
+
+    for(let x=0;x<canvas.width;x+=spacing){
+
+        ctx.beginPath();
+
+        for(let y=0;y<canvas.height;y+=5){
+
+            let offset=0;
+
+            gwWaves.forEach(gw=>{
+
+                const dx=x-sun.x;
+                const dy=y-sun.y;
+
+                const dist=Math.sqrt(dx*dx+dy*dy);
+
+                offset+=
+                Math.sin(
+                    dist*0.03
+                    -gw.phase
+                )*
+                10*
+                Math.exp(-dist/700);
+            });
+
+            ctx.lineTo(x+offset,y);
+        }
+
+        ctx.strokeStyle="rgba(100,100,255,0.3)";
+        ctx.stroke();
+    }
+
+    for(let y=0;y<canvas.height;y+=spacing){
+
+        ctx.beginPath();
+
+        for(let x=0;x<canvas.width;x+=5){
+
+            let offset=0;
+
+            gwWaves.forEach(gw=>{
+
+                const dx=x-sun.x;
+                const dy=y-sun.y;
+
+                const dist=Math.sqrt(dx*dx+dy*dy);
+
+                offset+=
+                Math.sin(
+                    dist*0.03
+                    -gw.phase
+                )*
+                10*
+                Math.exp(-dist/700);
+            });
+
+            ctx.lineTo(x,y+offset);
+        }
+
+        ctx.strokeStyle="rgba(100,100,255,0.3)";
+        ctx.stroke();
+    }
+}
+
+function updateGW(){
+
+    for(let i=gwWaves.length-1;i>=0;i--){
+
+        gwWaves[i].phase+=0.08;
+        gwWaves[i].age++;
+
+        if(gwWaves[i].age>800){
+            gwWaves.splice(i,1);
+        }
+    }
+}
+
+function drawOrbit(){
+
+    ctx.beginPath();
+    ctx.arc(
+        sun.x,
+        sun.y,
+        Math.hypot(
+            earth.x-sun.x,
+            earth.y-sun.y
+        ),
+        0,
+        Math.PI*2
+    );
+
+    ctx.strokeStyle="rgba(255,255,255,0.08)";
+    ctx.stroke();
+}
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    drawSpacetimeGrid();
+
+    updateGW();
+
+    drawOrbit();
+
+    drawEMWaves();
+
+    drawSun();
+
+    drawEarth();
+
+}
+
+animate();
+
+</script>
+</body>
+</html>
