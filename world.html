@@ -70,12 +70,12 @@ loader.load("./assets/tree.glb", (gltf) => {
 
   const baseTree = gltf.scene;
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 100; i++) {
     const tree = baseTree.clone();
 
     tree.position.set(
       (Math.random() - 0.5) * 80,
-      5,
+      10,
       (Math.random() - 0.5) * 80
     );
 
