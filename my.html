@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Floating Mountain World</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: black; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+let scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000000);
+
+let camera = new THREE.PerspectiveCamera(
+  60,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  2000
+);
+camera.position.set(0, 30, 80);
+
+let renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+document.body.appendChild(renderer.domElement);
+
+// Controls
+let controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+// Lights
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+
+let dirLight = new THREE.DirectionalLight(0xffffff, 1);
+dirLight.position.set(50, 100, 20);
+scene.add(dirLight);
+
+// ----------------------
+// 🌌 STARFIELD
+// ----------------------
+function createStars() {
+  const starGeo = new THREE.BufferGeometry();
+  const starCount = 3000;
+
+  const positions = [];
+
+  for (let i = 0; i < starCount; i++) {
+    const x = (Math.random() - 0.5) * 2000;
+    const y = (Math.random() - 0.5) * 2000;
+    const z = (Math.random() - 0.5) * 2000;
+    positions.push(x, y, z);
+  }
+
+  starGeo.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(positions, 3)
+  );
+
+  const starMat = new THREE.PointsMaterial({
+    color: 0xffffff,
+    size: 1.2
+  });
+
+  const stars = new THREE.Points(starGeo, starMat);
+  scene.add(stars);
+}
+
+createStars();
+
+// ----------------------
+// 🏔️ LOAD MOUNTAIN
+// ----------------------
+const loader = new GLTFLoader();
+
+let mountainMesh;
+let treeModel;
+
+loader.load("assets/mountain.glb", (gltf) => {
+  mountainMesh = gltf.scene;
+  mountainMesh.scale.set(10, 10, 10);
+  mountainMesh.position.y = 0;
+
+  scene.add(mountainMesh);
+
+  // after mountain loads → scatter trees
+  if (treeModel) scatterTrees();
+});
+
+// ----------------------
+// 🌲 LOAD TREE MODEL
+// ----------------------
+loader.load("assets/tree.glb", (gltf) => {
+  treeModel = gltf.scene;
+  treeModel.scale.set(1, 1, 1);
+
+  if (mountainMesh) scatterTrees();
+});
+
+// ----------------------
+// 🌿 TREE PLACEMENT
+// ----------------------
+function scatterTrees() {
+  const raycaster = new THREE.Raycaster();
+
+  const bounds = 80; // area spread
+  const treeCount = 80;
+
+  for (let i = 0; i < treeCount; i++) {
+    const x = (Math.random() - 0.5) * bounds;
+    const z = (Math.random() - 0.5) * bounds;
+
+    raycaster.set(new THREE.Vector3(x, 100, z), new THREE.Vector3(0, -1, 0));
+
+    const hits = raycaster.intersectObject(mountainMesh, true);
+
+    if (hits.length > 0) {
+      const pos = hits[0].point;
+
+      const tree = treeModel.clone();
+      tree.position.copy(pos);
+
+      // slight random rotation + scale variation
+      tree.rotation.y = Math.random() * Math.PI * 2;
+      const s = 0.8 + Math.random() * 0.5;
+      tree.scale.set(s, s, s);
+
+      scene.add(tree);
+    }
+  }
+}
+
+// ----------------------
+// 🌍 FLOATING EFFECT
+// ----------------------
+function animate() {
+  requestAnimationFrame(animate);
+
+  if (mountainMesh) {
+    mountainMesh.rotation.y += 0.0005;
+    mountainMesh.position.y = Math.sin(Date.now() * 0.0003) * 2;
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+animate();
+
+// Resize
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+
+</body>
+</html>
