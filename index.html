@@ -1,75 +1,578 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Aditya S - researcher, storyteller, and science enthusiast." />
-    <title>Aditya S</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="icon" href="assets/android-icon-192x192.png" type="image/png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="description" content="Aditya S - researcher, storyteller, and science enthusiast.">
+
+<title>Aditya S</title>
+
+<link rel="icon" href="assets/android-icon-192x192.png" type="image/png">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#050816;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+}
+
+/* ===========================
+   STARFIELD
+=========================== */
+
+#stars{
+    position:fixed;
+    inset:0;
+    z-index:-3;
+}
+
+.nebula{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+
+    background:
+    radial-gradient(circle at 20% 30%,
+    rgba(0,150,255,.15),
+    transparent 30%),
+
+    radial-gradient(circle at 80% 70%,
+    rgba(128,0,255,.15),
+    transparent 35%),
+
+    radial-gradient(circle at 50% 50%,
+    rgba(255,255,255,.03),
+    transparent 60%);
+}
+
+/* ===========================
+   THEME BUTTON
+=========================== */
+
+.icon-btn{
+    position:fixed;
+    top:20px;
+    right:20px;
+
+    border:none;
+    cursor:pointer;
+
+    padding:12px 18px;
+
+    color:white;
+
+    border-radius:12px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(10px);
+
+    transition:.3s;
+}
+
+.icon-btn:hover{
+    transform:translateY(-2px);
+}
+
+/* ===========================
+   MAIN CARD
+=========================== */
+
+.main{
+    width:min(900px,95%);
+    display:flex;
+    gap:50px;
+
+    align-items:center;
+
+    padding:40px;
+
+    background:rgba(255,255,255,.05);
+
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:30px;
+
+    box-shadow:
+    0 0 60px rgba(0,0,0,.4);
+}
+
+/* ===========================
+   PHOTO
+=========================== */
+
+.left{
+    flex-shrink:0;
+}
+
+.photo-link{
+    position:relative;
+    display:block;
+}
+
+.profile-photo{
+    width:260px;
+    height:260px;
+    object-fit:cover;
+
+    border-radius:50%;
+
+    border:2px solid rgba(255,255,255,.15);
+
+    animation:float 6s ease-in-out infinite;
+}
+
+@keyframes float{
+    0%,100%{
+        transform:translateY(0px);
+    }
+    50%{
+        transform:translateY(-15px);
+    }
+}
+
+.photo-overlay{
+    position:absolute;
+    inset:0;
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:rgba(0,0,0,.6);
+
+    opacity:0;
+    transition:.3s;
+}
+
+.photo-link:hover .photo-overlay{
+    opacity:1;
+}
+
+/* ===========================
+   ORBIT PARTICLE
+=========================== */
+
+.photo-card{
+    position:relative;
+}
+
+.photo-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:10px;
+    height:10px;
+
+    background:#7df9ff;
+
+    border-radius:50%;
+
+    box-shadow:0 0 15px #7df9ff;
+
+    top:50%;
+    left:50%;
+
+    margin-left:-5px;
+    margin-top:-5px;
+
+    animation:orbit 8s linear infinite;
+}
+
+@keyframes orbit{
+
+    from{
+        transform:
+        rotate(0deg)
+        translateX(150px)
+        rotate(0deg);
+    }
+
+    to{
+        transform:
+        rotate(360deg)
+        translateX(150px)
+        rotate(-360deg);
+    }
+}
+
+/* ===========================
+   TEXT
+=========================== */
+
+.right{
+    flex:1;
+}
+
+h1{
+    font-size:3rem;
+    letter-spacing:8px;
+    margin-bottom:10px;
+}
+
+.name-link{
+    color:white;
+    text-decoration:none;
+}
+
+.tagline{
+    color:#c7d3ff;
+    margin-bottom:20px;
+}
+
+.taglink{
+    color:#c7d3ff;
+    text-decoration:none;
+}
+
+.taglink:hover{
+    color:white;
+}
+
+.intro{
+    color:#b5c2eb;
+    line-height:1.8;
+    margin-bottom:25px;
+}
+
+/* ===========================
+   LINKS
+=========================== */
+
+.links{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.links a{
+    text-decoration:none;
+    color:white;
+
+    background:rgba(255,255,255,.05);
+
+    border:1px solid rgba(255,255,255,.05);
+
+    padding:12px 16px;
+
+    border-radius:12px;
+
+    transition:.3s;
+}
+
+.links a:hover{
+
+    transform:translateX(8px);
+
+    background:rgba(255,255,255,.09);
+
+    box-shadow:
+    0 0 20px rgba(125,249,255,.2);
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+
+footer{
+    margin-top:25px;
+    color:#94a1c6;
+    font-size:.9rem;
+}
+
+/* ===========================
+   THEMES
+=========================== */
+
+.theme-black{
+    background:black;
+}
+
+.theme-white{
+    background:#f5f5f5;
+    color:black;
+}
+
+.theme-white .main{
+    background:rgba(255,255,255,.75);
+    color:black;
+}
+
+.theme-white .links a{
+    color:black;
+}
+
+.theme-red{
+    background:#120000;
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media(max-width:800px){
+
+.main{
+    flex-direction:column;
+    text-align:center;
+}
+
+.profile-photo{
+    width:220px;
+    height:220px;
+}
+
+h1{
+    font-size:2.3rem;
+}
+}
+
+.particle{
+    position:fixed;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:white;
+    pointer-events:none;
+    animation:fade .8s linear forwards;
+}
+
+@keyframes fade{
+    to{
+        opacity:0;
+        transform:scale(0);
+    }
+}
+
+</style>
 </head>
 
 <body>
-<button id="bgBtn" class="icon-btn" aria-label="Change theme">
-    Theme
+
+<canvas id="stars"></canvas>
+<div class="nebula"></div>
+
+<button id="bgBtn" class="icon-btn">
+Theme
 </button>
 
-    <div class="main">
+<div class="main">
 
-        <div class="left">
-           <div class="photo-card">
-    <a href="assets/Gemini_Generated_Image_ttqomittqomittqo.png"
-       target="_blank"
-       class="photo-link">
+<div class="left">
 
-        <img src="assets/Gemini_Generated_Image_ttqomittqomittqo.png"
-             class="profile-photo"
-             alt="Aditya S" />
+<div class="photo-card">
 
-        <div class="photo-overlay">
-            View Picture
-        </div>
+<a href="assets/Gemini_Generated_Image_ttqomittqomittqo.png"
+target="_blank"
+class="photo-link">
 
-    </a>
+<img
+src="assets/Gemini_Generated_Image_ttqomittqomittqo.png"
+class="profile-photo"
+alt="Aditya S">
+
+<div class="photo-overlay">
+View Picture
 </div>
-        </div>
 
-        <div class="right">
-            <h1><a href="about.html" class="name-link">Aditya S</a></h1>
-            <p class="tagline">
-                <a href="researcher.html" class="taglink">Researcher</a> -
-                <a href="storyteller.html" class="taglink">Storyteller</a>
-            </p>
+</a>
 
-            <div class="links">
-                <a href="sun-countdown.html">Sun Countdown</a>
-                <a href="https://www.linkedin.com/in/aadityateja/">LinkedIn</a>
-<a href="assets/aditya-s-cv.pdf" target="_blank" rel="noopener">CV</a>
-                <a href="particle-game.html" target="_blank">Play Particle Catcher ⚛️ </a>
-            </div>
-            
+</div>
 
-            <footer>
-                © 2025 Aditya S
-            </footer>
-        </div>
+</div>
 
-    </div>
-    <script>
+<div class="right">
 
-const themes = ["", "theme-black", "theme-white", "theme-red"];
-    let currentThemeIndex = 0;
+<h1>
+<a href="about.html" class="name-link">
+ADITYA
+</a>
+</h1>
 
-    const bgBtn = document.getElementById("bgBtn");
+<p class="tagline">
+<a href="researcher.html" class="taglink">Researcher</a>
+•
+<a href="storyteller.html" class="taglink">Storyteller</a>
+</p>
 
-    bgBtn.addEventListener("click", () => {
-        document.body.className = "";
-        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+<p class="intro">
+Exploring particles, detectors,
+worlds and stories.
+</p>
 
-        if (themes[currentThemeIndex] !== "") {
-            document.body.classList.add(themes[currentThemeIndex]);
-        }
-    });
-    </script>
+<div class="links">
+
+<a href="sun-countdown.html">
+☀️ Sun Countdown
+</a>
+
+<a href="assets/aditya-s-cv.pdf" target="_blank">
+📄 CV
+</a>
+
+<a href="particle-game.html" target="_blank">
+⚛️ Particle Catcher
+</a>
+
+<a href="https://www.linkedin.com/in/aadityateja/" target="_blank">
+💼 LinkedIn
+</a>
+
+</div>
+
+<footer>
+Built between particles, stories and starlight.
+</footer>
+
+</div>
+
+</div>
+
+<script>
+
+/* =====================
+   STARS
+===================== */
+
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+
+function resize(){
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+}
+
+resize();
+
+window.addEventListener("resize",resize);
+
+const stars=[];
+
+for(let i=0;i<300;i++){
+
+stars.push({
+x:Math.random()*innerWidth,
+y:Math.random()*innerHeight,
+r:Math.random()*2,
+s:Math.random()*0.5
+});
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="white";
+
+for(const star of stars){
+
+ctx.beginPath();
+
+ctx.arc(
+star.x,
+star.y,
+star.r,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+star.y += star.s;
+
+if(star.y > innerHeight){
+
+star.y=0;
+star.x=Math.random()*innerWidth;
+
+}
+
+}
+
+requestAnimationFrame(animate);
+}
+
+animate();
+
+/* =====================
+   THEME SWITCHER
+===================== */
+
+const themes = [
+"",
+"theme-black",
+"theme-white",
+"theme-red"
+];
+
+let currentThemeIndex = 0;
+
+document.getElementById("bgBtn")
+.addEventListener("click",()=>{
+
+document.body.className="";
+
+currentThemeIndex =
+(currentThemeIndex+1)
+% themes.length;
+
+if(themes[currentThemeIndex]){
+
+document.body.classList.add(
+themes[currentThemeIndex]
+);
+
+}
+
+});
+
+/* =====================
+   PARTICLE TRAIL
+===================== */
+
+document.addEventListener("mousemove",(e)=>{
+
+const p=document.createElement("div");
+
+p.className="particle";
+
+p.style.left=e.clientX+"px";
+p.style.top=e.clientY+"px";
+
+document.body.appendChild(p);
+
+setTimeout(()=>{
+p.remove();
+},800);
+
+});
+
+</script>
+
 </body>
 </html>
