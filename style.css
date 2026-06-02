@@ -19,7 +19,7 @@
 ========================= */
 
 html, body {
-    font-family: 'Carbon', sans-serif;
+    font-family: "Carbon";
     background-color: black;
     color: white;
     overflow-x: hidden;
