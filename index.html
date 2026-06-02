@@ -7,40 +7,39 @@
 
 <style>
 
-*{margin:0;padding:0;box-sizing:border-box;}
-
-
-@font-face {
-    font-family: "Honey";
-    src: url("./fonts/HoneyRoom.ttf") format("truetype");
-    font-weight: normal;
-    font-style: normal;
+/* ================= RESET ================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
-    
+
 body{
     overflow:hidden;
     background:#02040a;
+    font-family:Arial;
     color:white;
     cursor:none;
 }
 
-/* ================= QUANTUM FIELD ================= */
+/* ================= FIELD ================= */
 
 canvas{
     position:fixed;
     inset:0;
-    z-index:-2;
+    z-index:-3;
+    transform: perspective(900px) rotateX(18deg);
 }
 
-/* soft cosmic haze */
+/* cosmic haze */
 body::before{
     content:"";
     position:fixed;
     inset:0;
-    z-index:-1;
+    z-index:-2;
     background:
-    radial-gradient(circle at 50% 50%, rgba(0,120,255,0.08), transparent 60%),
-    radial-gradient(circle at 20% 80%, rgba(180,0,255,0.06), transparent 50%);
+    radial-gradient(circle at 30% 40%, rgba(0,140,255,0.10), transparent 60%),
+    radial-gradient(circle at 70% 60%, rgba(140,0,255,0.08), transparent 55%);
 }
 
 /* ================= CURSOR ================= */
@@ -54,10 +53,9 @@ body::before{
     box-shadow:0 0 20px #4fc3ff;
     pointer-events:none;
     z-index:9999;
-    transition:background .15s;
 }
 
-/* ================= CONTENT (NO BOX) ================= */
+/* ================= CENTER CONTENT ================= */
 
 .center{
     position:absolute;
@@ -67,20 +65,7 @@ body::before{
     text-align:center;
 }
 
-/* FLOATING IDENTITY */
-
-h1{
-    letter-spacing:10px;
-    font-size:3rem;
-    text-shadow:0 0 20px rgba(120,200,255,0.4);
-}
-
-p{
-    opacity:0.8;
-    margin-top:10px;
-}
-
-/* PROFILE IMAGE (floating in space) */
+/* FLOATING IMAGE */
 
 img{
     width:240px;
@@ -88,13 +73,24 @@ img{
     object-fit:cover;
     border-radius:18px;
     margin-bottom:20px;
-
     animation:float 6s ease-in-out infinite;
 }
 
 @keyframes float{
     0%,100%{transform:translateY(0px);}
     50%{transform:translateY(-12px);}
+}
+
+/* TEXT */
+
+h1{
+    letter-spacing:10px;
+    font-size:3rem;
+    text-shadow:0 0 25px rgba(120,200,255,0.4);
+}
+
+p{
+    opacity:0.8;
 }
 
 /* LINKS */
@@ -108,20 +104,8 @@ a{
 }
 
 a:hover{
-    color:white;
     transform:translateX(6px);
-}
-
-/* CLICK FLASH */
-
-.flash{
-    animation:flash .2s ease;
-}
-
-@keyframes flash{
-    0%{background:#4fc3ff;}
-    50%{background:red;}
-    100%{background:#4fc3ff;}
+    color:white;
 }
 
 </style>
@@ -139,9 +123,9 @@ a:hover{
 <h1>ADITYA</h1>
 <p>Researcher • Storyteller</p>
 
-<a href="#">DRAVYA Universe</a>
-<a href="#">Particle Catcher</a>
-<a href="#">Sun Countdown</a>
+<a href="#">🌌 DRAVYA Universe</a>
+<a href="#">⚛️ Particle Catcher</a>
+<a href="#">☀️ Sun Countdown</a>
 
 </div>
 
@@ -161,14 +145,18 @@ document.addEventListener("mousemove",(e)=>{
     cursor.style.top = mouse.y + "px";
 });
 
-/* CLICK EFFECT */
+/* CLICK → RED FLASH + SPIN */
 
 document.addEventListener("click",()=>{
-    cursor.classList.add("flash");
 
-    setTimeout(()=>{
-        cursor.classList.remove("flash");
-    },200);
+cursor.style.background="red";
+cursor.style.transform="rotate(225deg)";
+
+setTimeout(()=>{
+cursor.style.background="#4fc3ff";
+cursor.style.transform="rotate(45deg)";
+},150);
+
 });
 
 /* ================= QUANTUM FIELD ================= */
@@ -184,63 +172,90 @@ window.addEventListener("resize",()=>{
     canvas.height = innerHeight;
 });
 
-/* FIELD GRID */
+const nodes = [];
+const spacing = 16;
 
-const grid = [];
-const spacing = 18;
-
+/* grid */
 for(let x=0;x<innerWidth;x+=spacing){
 for(let y=0;y<innerHeight;y+=spacing){
-    grid.push({
-        x,y,
-        ox:x,
-        oy:y
-    });
+nodes.push({
+x,y,
+ox:x,oy:y,
+vx:0,vy:0
+});
 }
 }
 
-/* SIMPLE WAVE FUNCTION */
+/* ripples */
+const ripples = [];
 
-function noise(t,x,y){
-    return Math.sin(x*0.01 + t) + Math.cos(y*0.01 + t*0.8);
-}
+document.addEventListener("click",(e)=>{
+ripples.push({
+x:e.clientX,
+y:e.clientY,
+r:0
+});
+});
 
-/* ANIMATE FIELD */
-
-let t = 0;
+/* animation */
 
 function animate(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height);
 
-t += 0.01;
+for(let n of nodes){
 
-/* gravity source = cursor */
-let gx = mouse.x;
-let gy = mouse.y;
+/* slow quantum jitter */
+n.vx += (Math.random()-0.5)*0.02;
+n.vy += (Math.random()-0.5)*0.02;
 
-for(let p of grid){
+n.vx *= 0.96;
+n.vy *= 0.96;
 
-let dx = gx - p.x;
-let dy = gy - p.y;
-let dist = Math.sqrt(dx*dx + dy*dy);
+n.x += n.vx;
+n.y += n.vy;
 
-/* gravitational distortion */
-let force = 120 / (dist+80);
+/* restore */
+n.x += (n.ox - n.x)*0.02;
+n.y += (n.oy - n.y)*0.02;
 
-let offsetX = dx * force * 0.08;
-let offsetY = dy * force * 0.08;
+/* ripple interaction */
+for(let r of ripples){
 
-/* quantum fluctuation */
-let w = noise(t,p.ox,p.oy) * 6;
+let dx = n.x - r.x;
+let dy = n.y - r.y;
+let d = Math.sqrt(dx*dx+dy*dy);
 
-let x = p.ox + offsetX + w;
-let y = p.oy + offsetY + w;
+if(d < r.r || r.r===0){
+let f = 80/(d+60);
+n.vx += dx * f * 0.02;
+n.vy += dy * f * 0.02;
+}
+}
 
-/* draw field node */
-ctx.fillStyle = "rgba(120,200,255,0.35)";
-ctx.fillRect(x,y,1.5,1.5);
+/* bright quantum dots */
+ctx.beginPath();
+ctx.fillStyle="rgba(120,220,255,0.95)";
+ctx.shadowBlur=12;
+ctx.shadowColor="#66ccff";
+ctx.arc(n.x,n.y,1.6,0,Math.PI*2);
+ctx.fill();
 
+}
+
+/* ripple expand */
+for(let r of ripples){
+r.r += 6;
+
+ctx.beginPath();
+ctx.strokeStyle="rgba(120,200,255,0.3)";
+ctx.arc(r.x,r.y,r.r,0,Math.PI*2);
+ctx.stroke();
+}
+
+/* cleanup */
+for(let i=ripples.length-1;i>=0;i--){
+if(ripples[i].r > 400) ripples.splice(i,1);
 }
 
 requestAnimationFrame(animate);
