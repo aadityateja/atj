@@ -4,13 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="description" content="Aditya S - researcher, storyteller, and science enthusiast.">
-
 <title>Aditya S</title>
 
-<link rel="icon" href="assets/android-icon-192x192.png" type="image/png">
-
 <style>
+
+/* ================= GLOBAL ================= */
 
 *{
     margin:0;
@@ -18,585 +16,204 @@
     box-sizing:border-box;
 }
 
-html,body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    font-family:'Carbon';
-}
-
 body{
+    overflow:hidden;
     background:#050816;
+    font-family:Arial, sans-serif;
     color:white;
     display:flex;
     justify-content:center;
     align-items:center;
-    position:relative;
+    height:100vh;
+    cursor:none;
 }
 
-/* ===========================
-   STARFIELD
-=========================== */
+/* ================= FIELD BACKGROUND ================= */
 
-#stars{
+canvas{
     position:fixed;
     inset:0;
     z-index:-3;
 }
 
+/* ================= NEBULA ================= */
+
 .nebula{
     position:fixed;
     inset:0;
     z-index:-2;
-
     background:
-    radial-gradient(circle at 20% 30%,
-    rgba(0,150,255,.15),
-    transparent 30%),
-
-    radial-gradient(circle at 80% 70%,
-    rgba(128,0,255,.15),
-    transparent 35%),
-
-    radial-gradient(circle at 50% 50%,
-    rgba(255,255,255,.03),
-    transparent 60%);
+    radial-gradient(circle at 20% 30%, rgba(0,150,255,.15), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(120,0,255,.15), transparent 40%);
 }
 
-/* ===========================
-   THEME BUTTON
-=========================== */
+/* ================= CURSOR ================= */
 
-.icon-btn{
+#cursor{
     position:fixed;
-    top:20px;
-    right:20px;
-
-    border:none;
-    cursor:pointer;
-
-    padding:12px 18px;
-
-    color:white;
-
-    border-radius:12px;
-
-    background:rgba(255,255,255,.08);
-
-    backdrop-filter:blur(10px);
-
-    transition:.3s;
+    width:14px;
+    height:14px;
+    background:#4fc3ff;
+    transform:rotate(45deg);
+    box-shadow:0 0 15px #4fc3ff;
+    pointer-events:none;
+    z-index:9999;
 }
 
-.icon-btn:hover{
-    transform:translateY(-2px);
-}
-
-/* ===========================
-   MAIN CARD
-=========================== */
+/* ================= MAIN ================= */
 
 .main{
-    width:min(900px,95%);
     display:flex;
-    gap:50px;
-
-    align-items:center;
-
+    gap:40px;
     padding:40px;
-
-    background:rgba(255,255,255,.05);
-
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:24px;
     backdrop-filter:blur(20px);
-
-    border:1px solid rgba(255,255,255,.08);
-
-    border-radius:30px;
-
-    box-shadow:
-    0 0 60px rgba(0,0,0,.4);
 }
 
-/* ===========================
-   PHOTO
-=========================== */
-
-.left{
-    flex-shrink:0;
-}
-
-.photo-link{
-    position:relative;
-    display:block;
-}
-
-.profile-photo{
-    width:260px;
-    height:260px;
-    object-fit:cover;
-
-    border-radius:50%;
-
-    border:2px solid rgba(255,255,255,.15);
-
-    animation:float 6s ease-in-out infinite;
-}
-
-@keyframes float{
-    0%,100%{
-        transform:translateY(0px);
-    }
-    50%{
-        transform:translateY(-15px);
-    }
-}
-
-.photo-overlay{
-    position:absolute;
-    inset:0;
-
-    border-radius:50%;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    background:rgba(0,0,0,.6);
-
-    opacity:0;
-    transition:.3s;
-}
-
-.photo-link:hover .photo-overlay{
-    opacity:1;
-}
-
-/* ===========================
-   ORBIT PARTICLE
-=========================== */
+/* ================= PHOTO ================= */
 
 .photo-card{
     position:relative;
 }
 
+.profile-photo{
+    width:240px;
+    height:340px;
+    object-fit:cover;
+    border-radius:18px;
+}
+
+/* ORBIT RECTANGLE */
+
 .photo-card::after{
-
     content:"";
-
     position:absolute;
-
     width:10px;
     height:10px;
-
-    background:#7df9ff;
-
-    border-radius:50%;
-
-    box-shadow:0 0 15px #7df9ff;
-
-    top:50%;
-    left:50%;
-
-    margin-left:-5px;
-    margin-top:-5px;
-
-    animation:orbit 8s linear infinite;
+    background:#6fd3ff;
+    box-shadow:0 0 10px #6fd3ff;
+    animation:rectOrbit 6s linear infinite;
 }
 
-@keyframes orbit{
-
-    from{
-        transform:
-        rotate(0deg)
-        translateX(150px)
-        rotate(0deg);
-    }
-
-    to{
-        transform:
-        rotate(360deg)
-        translateX(150px)
-        rotate(-360deg);
-    }
+@keyframes rectOrbit{
+    0%{top:0;left:0;}
+    25%{top:0;left:100%;}
+    50%{top:100%;left:100%;}
+    75%{top:100%;left:0;}
+    100%{top:0;left:0;}
 }
 
-/* ===========================
-   TEXT
-=========================== */
-
-.right{
-    flex:1;
-}
+/* ================= TEXT ================= */
 
 h1{
-    font-size:3rem;
     letter-spacing:8px;
-    margin-bottom:10px;
+    font-size:2.5rem;
 }
 
-.name-link{
-    color:white;
-    text-decoration:none;
-}
-
-.tagline{
-    color:#c7d3ff;
-    margin-bottom:20px;
-}
-
-.taglink{
-    color:#c7d3ff;
-    text-decoration:none;
-}
-
-.taglink:hover{
-    color:white;
-}
-
-.intro{
-    color:#b5c2eb;
-    line-height:1.8;
-    margin-bottom:25px;
-}
-
-/* ===========================
-   LINKS
-=========================== */
-
-.links{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-}
+/* ================= LINKS ================= */
 
 .links a{
-    text-decoration:none;
+    display:block;
     color:white;
-
-    background:rgba(255,255,255,.05);
-
-    border:1px solid rgba(255,255,255,.05);
-
-    padding:12px 16px;
-
-    border-radius:12px;
-
-    transition:.3s;
+    text-decoration:none;
+    margin-top:10px;
 }
 
-.links a:hover{
-
-    transform:translateX(8px);
-
-    background:rgba(255,255,255,.09);
-
-    box-shadow:
-    0 0 20px rgba(125,249,255,.2);
-}
-
-/* ===========================
-   FOOTER
-=========================== */
-
-footer{
-    margin-top:25px;
-    color:#94a1c6;
-    font-size:.9rem;
-}
-
-/* ===========================
-   THEMES
-=========================== */
-
-.theme-black{
-    background:black;
-}
-
-.theme-white{
-    background:#f5f5f5;
-    color:black;
-}
-
-.theme-white .main{
-    background:rgba(255,255,255,.75);
-    color:black;
-}
-
-.theme-white .links a{
-    color:black;
-}
-
-.theme-red{
-    background:#120000;
-}
-
-/* ===========================
-   MOBILE
-=========================== */
-
-@media(max-width:800px){
-
-.main{
-    flex-direction:column;
-    text-align:center;
-}
-
-.profile-photo{
-    width:220px;
-    height:220px;
-}
-
-h1{
-    font-size:2.3rem;
-}
-}
+/* ================= PARTICLES ================= */
 
 .particle{
     position:fixed;
     width:6px;
     height:6px;
-    border-radius:50%;
     background:white;
+    border-radius:50%;
     pointer-events:none;
-    animation:fade .8s linear forwards;
+    animation:fade 0.8s forwards;
 }
 
 @keyframes fade{
-    to{
-        opacity:0;
-        transform:scale(0);
-    }
+    to{opacity:0; transform:scale(0);}
 }
 
 </style>
 </head>
 
 <body>
-<canvas id="field"></canvas>
-    canvas{
-    position:fixed;
-    inset:0;
-    z-index:-2;
-    background:#05060a;
-}
-<canvas id="stars"></canvas>
+
 <div class="nebula"></div>
 
-<button id="bgBtn" class="icon-btn">
-Theme
-</button>
+<canvas id="field"></canvas>
+
+<div id="cursor"></div>
 
 <div class="main">
 
-<div class="left">
+    <div class="photo-card">
+        <img class="profile-photo"
+        src="assets/Gemini_Generated_Image_ttqomittqomittqo.png">
+    </div>
 
-<div class="photo-card">
+    <div>
+        <h1>ADITYA</h1>
+        <p>Researcher • Storyteller</p>
 
-<a href="assets/Gemini_Generated_Image_ttqomittqomittqo.png"
-target="_blank"
-class="photo-link">
-
-<img
-src="assets/Gemini_Generated_Image_ttqomittqomittqo.png"
-class="profile-photo"
-alt="Aditya S">
-
-<div class="photo-overlay">
-View Picture
-</div>
-
-</a>
-
-</div>
-
-</div>
-
-<div class="right">
-
-<h1>
-<a href="about.html" class="name-link">
-ADITYA
-</a>
-</h1>
-
-<p class="tagline">
-<a href="researcher.html" class="taglink">Researcher</a>
-•
-<a href="storyteller.html" class="taglink">Storyteller</a>
-</p>
-
-<p class="intro">
-Exploring particles, detectors,
-worlds and stories.
-</p>
-
-<div class="links">
-
-<a href="sun-countdown.html">
-☀️ Sun Countdown
-</a>
-
-<a href="assets/aditya-s-cv.pdf" target="_blank">
-📄 CV
-</a>
-
-<a href="particle-game.html" target="_blank">
-⚛️ Particle Catcher
-</a>
-
-<a href="https://www.linkedin.com/in/aadityateja/" target="_blank">
-💼 LinkedIn
-</a>
-
-</div>
-
-<footer>
-Built between particles, stories and starlight.
-</footer>
-
-</div>
+        <div class="links">
+            <a href="#">DRAVYA Universe</a>
+            <a href="#">Particle Catcher</a>
+            <a href="#">Sun Countdown</a>
+        </div>
+    </div>
 
 </div>
 
 <script>
 
-/* =====================
-   STARS
-===================== */
+/* ================= CURSOR ================= */
 
-const canvas = document.getElementById("stars");
+const cursor = document.getElementById("cursor");
+
+document.addEventListener("mousemove",(e)=>{
+    cursor.style.left = e.clientX+"px";
+    cursor.style.top = e.clientY+"px";
+});
+
+/* CLICK EFFECT (YOUR REQUEST FIXED) */
+
+document.addEventListener("click",()=>{
+
+cursor.style.background="red";
+cursor.style.transform="rotate(225deg)";
+
+setTimeout(()=>{
+cursor.style.background="#4fc3ff";
+cursor.style.transform="rotate(45deg)";
+},150);
+
+});
+
+/* ================= FIELD BACKGROUND ================= */
+
+const canvas = document.getElementById("field");
 const ctx = canvas.getContext("2d");
 
 function resize(){
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 }
-
 resize();
-
 window.addEventListener("resize",resize);
 
-const stars=[];
-
-for(let i=0;i<300;i++){
-
-stars.push({
-x:Math.random()*innerWidth,
-y:Math.random()*innerHeight,
-r:Math.random()*2,
-s:Math.random()*0.5
-});
-
-}
-
-function animate(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-ctx.fillStyle="white";
-
-for(const star of stars){
-
-ctx.beginPath();
-
-ctx.arc(
-star.x,
-star.y,
-star.r,
-0,
-Math.PI*2
-);
-
-ctx.fill();
-
-star.y += star.s;
-
-if(star.y > innerHeight){
-
-star.y=0;
-star.x=Math.random()*innerWidth;
-
-}
-
-}
-
-requestAnimationFrame(animate);
-}
-
-animate();
-
-/* =====================
-   THEME SWITCHER
-===================== */
-
-const themes = [
-"",
-"theme-black",
-"theme-white",
-"theme-red"
-];
-
-let currentThemeIndex = 0;
-
-document.getElementById("bgBtn")
-.addEventListener("click",()=>{
-
-document.body.className="";
-
-currentThemeIndex =
-(currentThemeIndex+1)
-% themes.length;
-
-if(themes[currentThemeIndex]){
-
-document.body.classList.add(
-themes[currentThemeIndex]
-);
-
-}
-
-});
-
-/* =====================
-   PARTICLE TRAIL
-===================== */
-
-document.addEventListener("mousemove",(e)=>{
-
-const p=document.createElement("div");
-
-p.className="particle";
-
-p.style.left=e.clientX+"px";
-p.style.top=e.clientY+"px";
-
-document.body.appendChild(p);
-
-setTimeout(()=>{
-p.remove();
-},800);
-
-});
-<script>
-const canvas = document.getElementById("field");
-const ctx = canvas.getContext("2d");
-
-function resize(){
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
-
-const points = [];
+const points=[];
 
 for(let i=0;i<120;i++){
-    points.push({
-        x:Math.random()*innerWidth,
-        y:Math.random()*innerHeight,
-        vx:(Math.random()-0.5)*0.3,
-        vy:(Math.random()-0.5)*0.3
-    });
+points.push({
+x:Math.random()*innerWidth,
+y:Math.random()*innerHeight,
+vx:(Math.random()-0.5)*0.4,
+vy:(Math.random()-0.5)*0.4
+});
 }
 
 function draw(){
@@ -605,20 +222,17 @@ ctx.clearRect(0,0,canvas.width,canvas.height);
 
 for(let p of points){
 
-p.x += p.vx;
-p.y += p.vy;
+p.x+=p.vx;
+p.y+=p.vy;
 
-// wrap
 if(p.x<0) p.x=innerWidth;
 if(p.x>innerWidth) p.x=0;
 if(p.y<0) p.y=innerHeight;
 if(p.y>innerHeight) p.y=0;
 
-// draw point
 ctx.fillStyle="rgba(120,200,255,0.8)";
 ctx.fillRect(p.x,p.y,2,2);
 
-// connect lines (field lines)
 for(let q of points){
 
 let dx=p.x-q.x;
@@ -641,6 +255,7 @@ requestAnimationFrame(draw);
 }
 
 draw();
+
 </script>
 
 </body>
