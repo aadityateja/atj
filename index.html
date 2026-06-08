@@ -282,7 +282,15 @@ setLoad(50);
 function makeCastle(cx,cz){
   const g = new THREE.Group();
   // Base platform
-  g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(10,.6,10),M(0x3a3050)),{position:new THREE.Vector3(0,.3,0)}));
+const platform = new THREE.Mesh(
+  new THREE.BoxGeometry(10,0.6,10),
+  M(0x3a3050)
+);
+
+platform.position.set(0,0.3,0);
+
+g.add(platform);
+  
   // Main keep
   const keep = new THREE.Mesh(new THREE.BoxGeometry(7,6,7),M(0x4a3a6a));
   keep.position.y=3.3; keep.castShadow=true; g.add(keep);
