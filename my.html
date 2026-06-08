@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Pixel World</title>
+  <title>Cartoon World</title>
   <style>
-    body { margin: 0; overflow: hidden; background: #111; }
-    canvas { display: block; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(#87ceeb, #dff6ff);
+    }
+    canvas {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -17,79 +23,144 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// 🌍 World settings
+// 🌍 WORLD
 const world = {
   width: 3000,
   height: 3000
 };
 
-// 💠 Player (blue jewel avatar)
+// 🧍 PLAYER (cartoon blob)
 const player = {
   x: 1500,
   y: 1500,
-  size: 20,
-  speed: 5
+  r: 18,
+  speed: 4,
+  vx: 0,
+  vy: 0
 };
 
-// ⌨️ Controls
+// ⌨️ controls
 const keys = {};
 window.addEventListener("keydown", e => keys[e.key] = true);
 window.addEventListener("keyup", e => keys[e.key] = false);
 
-// 🎮 Update loop
+// 🌿 simple world objects
+const trees = Array.from({length: 25}, () => ({
+  x: Math.random() * world.width,
+  y: Math.random() * world.height
+}));
+
+const houses = Array.from({length: 8}, () => ({
+  x: Math.random() * world.width,
+  y: Math.random() * world.height
+}));
+
+// 🎮 update
 function update() {
-  if (keys["ArrowUp"] || keys["w"]) player.y -= player.speed;
-  if (keys["ArrowDown"] || keys["s"]) player.y += player.speed;
-  if (keys["ArrowLeft"] || keys["a"]) player.x -= player.speed;
-  if (keys["ArrowRight"] || keys["d"]) player.x += player.speed;
+  player.vx = 0;
+  player.vy = 0;
+
+  if (keys["w"] || keys["ArrowUp"]) player.vy = -player.speed;
+  if (keys["s"] || keys["ArrowDown"]) player.vy = player.speed;
+  if (keys["a"] || keys["ArrowLeft"]) player.vx = -player.speed;
+  if (keys["d"] || keys["ArrowRight"]) player.vx = player.speed;
+
+  player.x += player.vx;
+  player.y += player.vy;
 }
 
-// 🎨 Draw world + player
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+// 🎥 camera
+function getCamera() {
+  return {
+    x: player.x - canvas.width / 2,
+    y: player.y - canvas.height / 2
+  };
+}
 
-  // camera follows player
-  const camX = player.x - canvas.width / 2;
-  const camY = player.y - canvas.height / 2;
+// 🎨 DRAW FUNCTIONS
 
-  // 🌿 background grid (pixel map feel)
-  ctx.fillStyle = "#1a1a1a";
+function drawSky() {
+  const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  grad.addColorStop(0, "#6ec6ff");
+  grad.addColorStop(1, "#e0f7ff");
+  ctx.fillStyle = grad;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
 
-  ctx.strokeStyle = "#222";
-  for (let i = -camX % 50; i < canvas.width; i += 50) {
-    ctx.beginPath();
-    ctx.moveTo(i, 0);
-    ctx.lineTo(i, canvas.height);
-    ctx.stroke();
-  }
-  for (let j = -camY % 50; j < canvas.height; j += 50) {
-    ctx.beginPath();
-    ctx.moveTo(0, j);
-    ctx.lineTo(canvas.width, j);
-    ctx.stroke();
-  }
+function drawTree(x, y, cam) {
+  const sx = x - cam.x;
+  const sy = y - cam.y;
 
-  // 💠 BLUE JEWEL PLAYER
+  // trunk
+  ctx.fillStyle = "#8b5a2b";
+  ctx.fillRect(sx - 5, sy, 10, 25);
+
+  // leaves (cartoon blob)
+  ctx.fillStyle = "#3cb371";
+  ctx.beginPath();
+  ctx.arc(sx, sy, 20, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawHouse(x, y, cam) {
+  const sx = x - cam.x;
+  const sy = y - cam.y;
+
+  // base
+  ctx.fillStyle = "#ffcc80";
+  ctx.fillRect(sx - 25, sy - 20, 50, 40);
+
+  // roof
+  ctx.fillStyle = "#ff7043";
+  ctx.beginPath();
+  ctx.moveTo(sx - 30, sy - 20);
+  ctx.lineTo(sx, sy - 50);
+  ctx.lineTo(sx + 30, sy - 20);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawPlayer(cam) {
+  const sx = player.x - cam.x;
+  const sy = player.y - cam.y;
+
+  // soft glow
+  ctx.shadowBlur = 25;
+  ctx.shadowColor = "#4fc3ff";
+
   ctx.fillStyle = "#4fc3ff";
   ctx.beginPath();
-  ctx.arc(
-    player.x - camX,
-    player.y - camY,
-    player.size,
-    0,
-    Math.PI * 2
-  );
+  ctx.arc(sx, sy, player.r, 0, Math.PI * 2);
   ctx.fill();
 
-  // glow effect
-  ctx.shadowBlur = 20;
-  ctx.shadowColor = "#4fc3ff";
-  ctx.fill();
   ctx.shadowBlur = 0;
+
+  // face (cartoon vibe 😄)
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+  ctx.arc(sx - 5, sy - 3, 3, 0, Math.PI * 2);
+  ctx.arc(sx + 5, sy - 3, 3, 0, Math.PI * 2);
+  ctx.fill();
 }
 
-// 🔁 Game loop
+// 🎬 main draw
+function draw() {
+  const cam = getCamera();
+
+  drawSky();
+
+  // ground
+  ctx.fillStyle = "#b7e4c7";
+  ctx.fillRect(0, canvas.height/2, canvas.width, canvas.height/2);
+
+  // objects
+  for (let t of trees) drawTree(t.x, t.y, cam);
+  for (let h of houses) drawHouse(h.x, h.y, cam);
+
+  drawPlayer(cam);
+}
+
+// 🔁 loop
 function loop() {
   update();
   draw();
