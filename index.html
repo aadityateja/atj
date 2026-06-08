@@ -3,44 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aditya S — Dravya World</title>
+<title>Dravya World — Playable Portfolio</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:#0a0e1a;font-family:monospace}
-#c{width:100vw;height:100vh;display:block}
+html,body{
+  margin:0;
+  overflow:hidden;
+  background:#0a0e1a;
+  font-family:monospace;
+}
+canvas{display:block}
+
+/* 💬 Story UI */
+#story{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#0a0e1acc;
+  border:1px solid #4fc3ff;
+  color:#cfe8ff;
+  padding:12px 16px;
+  max-width:520px;
+  display:none;
+  font-size:13px;
+  line-height:1.5;
+}
 </style>
 </head>
 
 <body>
 
+<div id="story"></div>
 <canvas id="c"></canvas>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <script>
 (() => {
-'use strict';
 
 /* ─────────────────────────────
    SETUP
 ───────────────────────────── */
-const canvas = document.getElementById('c');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true;
-
 const scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0x0a0e1a, 20, 80);
 
-const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 200);
+const camera = new THREE.PerspectiveCamera(70, innerWidth/innerHeight, 0.1, 200);
+
+const renderer = new THREE.WebGLRenderer({canvas:document.getElementById("c"), antialias:true});
+renderer.setSize(innerWidth, innerHeight);
 
 /* ─────────────────────────────
    LIGHTING
 ───────────────────────────── */
-scene.add(new THREE.AmbientLight(0x334466, 1.2));
+scene.add(new THREE.AmbientLight(0x334466,1.2));
 
-const sun = new THREE.DirectionalLight(0x88aaff, 0.8);
+const sun = new THREE.DirectionalLight(0x88aaff,0.9);
 sun.position.set(20,30,10);
 scene.add(sun);
 
@@ -49,7 +67,7 @@ scene.add(sun);
 ───────────────────────────── */
 const playerPos = new THREE.Vector3(0,1,0);
 
-const playerMesh = new THREE.Mesh(
+const player = new THREE.Mesh(
   new THREE.OctahedronGeometry(0.7),
   new THREE.MeshStandardMaterial({
     color:0x4fc3ff,
@@ -59,28 +77,26 @@ const playerMesh = new THREE.Mesh(
     roughness:0.3
   })
 );
-scene.add(playerMesh);
+scene.add(player);
 
 /* ─────────────────────────────
    INPUT
 ───────────────────────────── */
 const keys = {};
-window.addEventListener('keydown',e=>keys[e.code]=true);
-window.addEventListener('keyup',e=>keys[e.code]=false);
+addEventListener("keydown",e=>keys[e.code]=true);
+addEventListener("keyup",e=>keys[e.code]=false);
 
 /* ─────────────────────────────
-   WORLD BUILDING (RESTORED)
+   WORLD
 ───────────────────────────── */
-
-/* ground */
 const ground = new THREE.Mesh(
   new THREE.PlaneGeometry(120,120),
-  new THREE.MeshLambertMaterial({color:0x2a5a2a})
+  new THREE.MeshStandardMaterial({color:0x2a5a2a})
 );
 ground.rotation.x = -Math.PI/2;
 scene.add(ground);
 
-/* castle */
+/* 🏰 Castle */
 const castle = new THREE.Mesh(
   new THREE.BoxGeometry(8,6,8),
   new THREE.MeshStandardMaterial({color:0x555577})
@@ -88,21 +104,17 @@ const castle = new THREE.Mesh(
 castle.position.set(15,3,0);
 scene.add(castle);
 
-/* forest */
-for(let i=0;i<25;i++){
+/* 🌲 Forest */
+for(let i=0;i<30;i++){
   const tree = new THREE.Mesh(
     new THREE.ConeGeometry(0.8,2.5,6),
     new THREE.MeshStandardMaterial({color:0x1f7a3a})
   );
-  tree.position.set(
-    -20 + Math.random()*15,
-    1.2,
-    -10 + Math.random()*20
-  );
+  tree.position.set(-20+Math.random()*15,1.2,-10+Math.random()*25);
   scene.add(tree);
 }
 
-/* lake */
+/* 🌊 Lake */
 const lake = new THREE.Mesh(
   new THREE.CircleGeometry(6,32),
   new THREE.MeshStandardMaterial({
@@ -115,7 +127,7 @@ lake.rotation.x = -Math.PI/2;
 lake.position.set(-15,0.01,15);
 scene.add(lake);
 
-/* shrine */
+/* ⛩ Shrine */
 const shrine = new THREE.Mesh(
   new THREE.CylinderGeometry(2,2,4,8),
   new THREE.MeshStandardMaterial({color:0x8888aa})
@@ -123,7 +135,7 @@ const shrine = new THREE.Mesh(
 shrine.position.set(0,2,-18);
 scene.add(shrine);
 
-/* altar */
+/* 🗿 Altar */
 const altar = new THREE.Mesh(
   new THREE.BoxGeometry(4,1,3),
   new THREE.MeshStandardMaterial({color:0x444455})
@@ -132,10 +144,79 @@ altar.position.set(10,0.5,15);
 scene.add(altar);
 
 /* ─────────────────────────────
+   ZONES (STORY SYSTEM)
+───────────────────────────── */
+const zones = [
+  {
+    name:"Castle",
+    pos:[15,0],
+    r:8,
+    story:[
+      "🏰 Castle — About Me",
+      "I am Aditya S.",
+      "I build physics + storytelling worlds."
+    ]
+  },
+  {
+    name:"Forest",
+    pos:[-15,-5],
+    r:10,
+    story:[
+      "🌲 Forest — Projects",
+      "This is where experiments grow.",
+      "Each tree is an idea in development."
+    ]
+  },
+  {
+    name:"Lake",
+    pos:[-15,15],
+    r:9,
+    story:[
+      "🌊 Lake — Reflection",
+      "Calm space for thinking.",
+      "Where chaos becomes clarity."
+    ]
+  }
+];
+
+const storyBox = document.getElementById("story");
+let currentZone = null;
+let storyIndex = 0;
+
+/* ─────────────────────────────
+   STORY CHECK
+───────────────────────────── */
+function checkZones(){
+  let found = null;
+
+  for(const z of zones){
+    const dx = playerPos.x - z.pos[0];
+    const dz = playerPos.z - z.pos[1];
+    const d = Math.sqrt(dx*dx + dz*dz);
+
+    if(d < z.r){
+      found = z;
+      break;
+    }
+  }
+
+  if(found && currentZone !== found){
+    currentZone = found;
+    storyIndex = 0;
+    storyBox.style.display = "block";
+    storyBox.innerText = found.story[0];
+  }
+
+  if(!found){
+    currentZone = null;
+    storyBox.style.display = "none";
+  }
+}
+
+/* ─────────────────────────────
    MOVEMENT
 ───────────────────────────── */
 const clock = new THREE.Clock();
-const worldLimit = 50;
 
 function animate(){
   requestAnimationFrame(animate);
@@ -143,26 +224,24 @@ function animate(){
 
   const speed = 10;
 
-  if(keys['KeyW']) playerPos.z -= speed*dt;
-  if(keys['KeyS']) playerPos.z += speed*dt;
-  if(keys['KeyA']) playerPos.x -= speed*dt;
-  if(keys['KeyD']) playerPos.x += speed*dt;
+  if(keys["KeyW"]) playerPos.z -= speed*dt;
+  if(keys["KeyS"]) playerPos.z += speed*dt;
+  if(keys["KeyA"]) playerPos.x -= speed*dt;
+  if(keys["KeyD"]) playerPos.x += speed*dt;
 
-  playerPos.x = Math.max(-worldLimit, Math.min(worldLimit, playerPos.x));
-  playerPos.z = Math.max(-worldLimit, Math.min(worldLimit, playerPos.z));
+  /* clamp */
+  playerPos.x = Math.max(-50,Math.min(50,playerPos.x));
+  playerPos.z = Math.max(-50,Math.min(50,playerPos.z));
 
-  /* player visual */
-  playerMesh.position.set(playerPos.x,1.2,playerPos.z);
-  playerMesh.rotation.y += 0.02;
+  /* player */
+  player.position.set(playerPos.x,1.2,playerPos.z);
+  player.rotation.y += 0.02;
 
   /* 🎥 TOP-DOWN CAMERA */
-  camera.position.set(
-    playerPos.x + 15,
-    25,
-    playerPos.z + 15
-  );
-
+  camera.position.set(playerPos.x+15,25,playerPos.z+15);
   camera.lookAt(playerPos.x,0,playerPos.z);
+
+  checkZones();
 
   renderer.render(scene,camera);
 }
@@ -172,9 +251,9 @@ animate();
 /* ─────────────────────────────
    RESIZE
 ───────────────────────────── */
-window.addEventListener('resize',()=>{
-  renderer.setSize(window.innerWidth,window.innerHeight);
-  camera.aspect = window.innerWidth/window.innerHeight;
+addEventListener("resize",()=>{
+  renderer.setSize(innerWidth,innerHeight);
+  camera.aspect = innerWidth/innerHeight;
   camera.updateProjectionMatrix();
 });
 
