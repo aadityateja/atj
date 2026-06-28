@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Dravya Archives | A Digital Observatory</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <style>
+        :root { --bg: #050508; --accent: #4a9eff; --text: #e0e0e0; --gold: #d4af37; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; }
+        
+        section { min-height: 100vh; padding: 100px 10%; display: flex; flex-direction: column; justify-content: center; border-bottom: 1px solid #1a1a24; }
+        h1, h2 { font-family: 'Playfair Display', serif; color: var(--accent); }
+        .hero { text-align: center; justify-content: center; }
+        .diary-page { background: rgba(255,255,255,0.03); padding: 40px; border-left: 5px solid var(--gold); margin: 20px 0; }
+        
+        .nav { position: fixed; right: 40px; top: 40px; z-index: 100; cursor: pointer; }
+        .glitch-text { letter-spacing: 5px; text-transform: uppercase; font-weight: 100; }
+    </style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="nav">DRAVYA_ARCHIVE_v.01</div>
+
+<section class="hero">
+    <h1>THE DRAVYA MANUSCRIPTS</h1>
+    <p>Some say the world waits to be seen - not to be understood, but to be witnessed.</p>
+    <div id="scroll-prompt">Scroll to witness the journey</div>
+</section>
+
+<section>
+    <h2>PHILOSOPHY: THE OBSERVER</h2>
+    <p>In the quiet of the mountains, I learned that research is not just about finding answers; it is about documenting the mystery. Like a diary that becomes a friend, science is my dialogue with the universe.</p>
+</section>
+
+<section>
+    <h2>RESEARCH: PARTICLE DYNAMICS</h2>
+    <div class="diary-page">
+        <h3>ePIC Zero Degree Calorimeter</h3>
+        <p>Designing the architecture of the future. Mapping the path of spectator neutrons, capturing the remnants of high-energy collisions, and transforming raw signal into physical insight.</p>
+    </div>
+</section>
+
+<script>
+    // Three.js Background - Particle System representing "Dravya" dust/stars
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg'), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const geometry = new THREE.BufferGeometry();
+    const vertices = [];
+    for(let i=0; i<5000; i++) {
+        vertices.push(THREE.MathUtils.randFloatSpread(1000), THREE.MathUtils.randFloatSpread(1000), THREE.MathUtils.randFloatSpread(1000));
+    }
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    const material = new THREE.PointsMaterial({ color: 0x4a9eff, size: 0.5 });
+    const stars = new THREE.Points(geometry, material);
+    scene.add(stars);
+
+    camera.position.z = 5;
+
+    function animate() {
+        requestAnimationFrame(animate);
+        stars.rotation.y += 0.0002;
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    // GSAP Scroll Animations
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.from(".hero h1", { opacity: 0, y: 50, duration: 2 });
+    gsap.utils.toArray("section").forEach(section => {
+        gsap.from(section, {
+            scrollTrigger: { trigger: section, start: "top 80%", toggleActions: "play none none reverse" },
+            opacity: 0, y: 100, duration: 1
+        });
+    });
+</script>
+</body>
+</html>
