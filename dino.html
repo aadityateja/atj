@@ -1,28 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Square Runner</title>
+<title>Jungle Castle Adventure</title>
 
 <style>
 body{
     margin:0;
-    overflow:hidden;
-    background:#eee;
+    background:#111;
+    text-align:center;
     font-family:Arial;
 }
 
 canvas{
-    display:block;
-    margin:auto;
-    background:white;
-    border:3px solid black;
+    background:#7ddcff;
+    border:4px solid black;
+    margin-top:20px;
 }
 
-#info{
-    text-align:center;
-    font-size:22px;
-    margin-top:15px;
+h2{
+    color:white;
 }
 </style>
 
@@ -30,180 +26,432 @@ canvas{
 
 <body>
 
-<div id="info">
-Press SPACE to Jump | R to Restart
-</div>
+<h2>Jungle Castle Adventure</h2>
+<p style="color:white">
+Arrow Keys = Move | Space = Jump | Reach the Castle
+</p>
 
-<canvas id="game" width="900" height="300"></canvas>
+<canvas id="game" width="900" height="400"></canvas>
+
 
 <script>
 
 const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
 
-const ground=250;
+
+let keys={};
+
+document.addEventListener("keydown",e=>{
+    keys[e.code]=true;
+});
+
+document.addEventListener("keyup",e=>{
+    keys[e.code]=false;
+});
+
+
+let level=1;
+let win=false;
+
+let camera=0;
+
 
 let player={
-    x:80,
-    y:ground,
-    w:35,
-    h:35,
+    x:100,
+    y:300,
+    w:30,
+    h:40,
+    vx:0,
     vy:0,
-    jumping:false
+    speed:5,
+    jump:-14,
+    ground:false
 };
 
-let gravity=1;
-let jumpPower=-18;
 
-let obstacles=[];
+let gravity=0.7;
 
-let frame=0;
-let speed=6;
-let score=0;
-let gameOver=false;
 
-function spawnObstacle(){
 
-    obstacles.push({
-        x:canvas.width,
-        y:ground,
-        w:25+Math.random()*20,
-        h:25+Math.random()*40
-    });
+let rocks=[
+ {x:400,y:350,w:30,h:30},
+ {x:650,y:350,w:30,h:30},
+ {x:1000,y:350,w:30,h:30}
+];
 
-}
+
+let castle={
+    x:1300,
+    y:220,
+    w:120,
+    h:130
+};
+
+
+let treasure={
+    x:700,
+    y:300,
+    collected:false
+};
+
+
 
 function update(){
 
-    if(gameOver) return;
 
-    frame++;
+if(win)return;
 
-    score++;
 
-    if(frame%90==0){
-        spawnObstacle();
-    }
 
-    if(frame%400==0){
-        speed+=0.5;
-    }
+// movement
 
-    player.vy+=gravity;
-    player.y+=player.vy;
+if(keys["ArrowRight"]){
+    player.vx=player.speed;
+}
 
-    if(player.y>ground){
-        player.y=ground;
-        player.vy=0;
-        player.jumping=false;
-    }
+else if(keys["ArrowLeft"]){
+    player.vx=-player.speed;
+}
 
-    for(let i=0;i<obstacles.length;i++){
+else{
+    player.vx=0;
+}
 
-        obstacles[i].x-=speed;
 
-        if(
-            player.x<obstacles[i].x+obstacles[i].w &&
-            player.x+player.w>obstacles[i].x &&
-            player.y<obstacles[i].y+obstacles[i].h &&
-            player.y+player.h>obstacles[i].y
-        ){
-            gameOver=true;
-        }
 
-    }
+player.x+=player.vx;
 
-    obstacles=obstacles.filter(o=>o.x+o.w>0);
+
+// jump
+
+if(keys["Space"] && player.ground){
+
+    player.vy=player.jump;
+    player.ground=false;
 
 }
+
+
+
+player.vy+=gravity;
+
+player.y+=player.vy;
+
+
+
+// ground
+
+if(player.y+player.h>=350){
+
+    player.y=350-player.h;
+    player.vy=0;
+    player.ground=true;
+
+}
+
+
+
+
+// level 1 castle
+
+if(level==1){
+
+    if(player.x+player.w>castle.x){
+
+        level=2;
+
+        player.x=100;
+        player.y=300;
+
+    }
+
+}
+
+
+
+// level 2 treasure
+
+if(level==2){
+
+    if(
+    player.x<treasure.x+30 &&
+    player.x+player.w>treasure.x &&
+    player.y<treasure.y+30 &&
+    player.y+player.h>treasure.y
+    ){
+
+        treasure.collected=true;
+        win=true;
+
+    }
+
+}
+
+
+
+camera=player.x-300;
+
+if(camera<0)camera=0;
+
+
+
+}
+
+
+
+
 
 function draw(){
 
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    // Sky
-    ctx.fillStyle="#dff5ff";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    // Ground
-    ctx.fillStyle="#444";
-    ctx.fillRect(0,285,canvas.width,15);
 
-    // Player
-    ctx.fillStyle="red";
-    ctx.fillRect(player.x,player.y-player.h,player.w,player.h);
+if(level==1){
 
-    // Obstacles
-    ctx.fillStyle="black";
-
-    obstacles.forEach(o=>{
-        ctx.fillRect(o.x,o.y-o.h,o.w,o.h);
-    });
-
-    // Score
-    ctx.fillStyle="black";
-    ctx.font="24px Arial";
-    ctx.fillText("Score: "+score,20,35);
-
-    if(gameOver){
-
-        ctx.fillStyle="rgba(255,255,255,0.8)";
-        ctx.fillRect(180,70,540,120);
-
-        ctx.fillStyle="red";
-        ctx.font="40px Arial";
-        ctx.fillText("GAME OVER",310,125);
-
-        ctx.font="24px Arial";
-        ctx.fillText("Press R to Restart",320,165);
-
-    }
+drawJungle();
 
 }
 
-function loop(){
+else{
 
-    update();
-    draw();
-
-    requestAnimationFrame(loop);
+drawCastle();
 
 }
 
-document.addEventListener("keydown",function(e){
 
-    if(e.code==="Space"){
 
-        if(!player.jumping){
+}
 
-            player.vy=jumpPower;
-            player.jumping=true;
 
-        }
 
-    }
 
-    if(e.key==="r" || e.key==="R"){
+function drawJungle(){
 
-        if(gameOver){
 
-            player.y=ground;
-            player.vy=0;
-            player.jumping=false;
+ctx.fillStyle="#7ddcff";
+ctx.fillRect(0,0,900,400);
 
-            obstacles=[];
-            frame=0;
-            score=0;
-            speed=6;
-            gameOver=false;
 
-        }
+// clouds
 
-    }
+ctx.fillStyle="white";
+
+ctx.fillRect(100-camera*0.2,70,80,20);
+ctx.fillRect(140-camera*0.2,55,50,30);
+
+ctx.fillRect(500-camera*0.2,90,90,20);
+
+
+
+// mountains
+
+ctx.fillStyle="#65a765";
+
+ctx.beginPath();
+ctx.moveTo(0,300);
+ctx.lineTo(200,100);
+ctx.lineTo(400,300);
+ctx.fill();
+
+
+
+// trees
+
+for(let i=0;i<1600;i+=200){
+
+drawTree(i-camera,250);
+
+}
+
+
+
+// ground
+
+ctx.fillStyle="#3c8c3c";
+ctx.fillRect(0,350,900,50);
+
+
+
+// rocks
+
+ctx.fillStyle="#555";
+
+rocks.forEach(r=>{
+
+ctx.fillRect(r.x-camera,r.y,r.w,r.h);
 
 });
 
+
+
+// castle
+
+drawCastleOutside();
+
+
+
+drawPlayer();
+
+
+}
+
+
+
+function drawTree(x,y){
+
+ctx.fillStyle="#5b3315";
+ctx.fillRect(x+35,y,20,100);
+
+ctx.fillStyle="#087f23";
+
+ctx.fillRect(x,y-40,90,70);
+
+ctx.fillRect(x+20,y-80,50,50);
+
+}
+
+
+
+
+function drawCastleOutside(){
+
+
+let x=castle.x-camera;
+
+
+ctx.fillStyle="#777";
+
+ctx.fillRect(x,castle.y,castle.w,castle.h);
+
+
+ctx.fillStyle="#222";
+
+ctx.fillRect(x+45,castle.y+70,35,60);
+
+
+
+ctx.fillStyle="#555";
+
+ctx.fillRect(x-20,castle.y-40,40,40);
+ctx.fillRect(x+100,castle.y-40,40,40);
+
+
+}
+
+
+
+
+function drawCastle(){
+
+
+// dark room
+
+ctx.fillStyle="#222";
+ctx.fillRect(0,0,900,400);
+
+
+// bricks
+
+ctx.fillStyle="#555";
+
+for(let x=0;x<900;x+=50){
+
+ctx.fillRect(x,50,40,10);
+
+}
+
+
+
+// floor
+
+ctx.fillStyle="#777";
+
+ctx.fillRect(0,350,900,50);
+
+
+
+// treasure
+
+if(!treasure.collected){
+
+ctx.fillStyle="gold";
+
+ctx.fillRect(treasure.x,300,30,30);
+
+}
+
+
+
+// player
+
+drawPlayer();
+
+
+
+}
+
+
+
+
+function drawPlayer(){
+
+
+let x=player.x-camera;
+let y=player.y;
+
+
+// shadow
+
+ctx.fillStyle="black";
+ctx.fillRect(x,y+40,30,5);
+
+
+// head
+
+ctx.fillStyle="#ffcc99";
+ctx.fillRect(x+8,y,15,15);
+
+
+// hair
+
+ctx.fillStyle="#552200";
+ctx.fillRect(x+5,y-3,20,8);
+
+
+// body
+
+ctx.fillStyle="#ff3366";
+
+ctx.fillRect(x+5,y+15,20,18);
+
+
+// legs
+
+ctx.fillStyle="#222";
+
+ctx.fillRect(x+5,y+33,8,10);
+ctx.fillRect(x+18,y+33,8,10);
+
+
+
+}
+
+
+
+function loop(){
+
+update();
+draw();
+
+requestAnimationFrame(loop);
+
+}
+
+
 loop();
+
 
 </script>
 
