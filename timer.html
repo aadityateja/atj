@@ -3,31 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Dystopian Countdown</title>
 
+<!-- Digital Font -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+
 <style>
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Consolas, monospace;
 }
 
 body{
-    background:#050505;
-    color:#ff3333;
+
+    background:#030303;
+    color:#ff2b2b;
+    font-family:Consolas, monospace;
     display:flex;
-    justify-content:center;
-    align-items:center;
     height:100vh;
     overflow:hidden;
+
 }
 
+/* Scanlines */
+
 body::before{
+
     content:"";
+
     position:absolute;
+
     width:100%;
     height:100%;
+
     background:
     repeating-linear-gradient(
         0deg,
@@ -36,78 +47,257 @@ body::before{
         transparent 2px,
         transparent 4px
     );
+
     pointer-events:none;
+
 }
 
-.container{
-    text-align:center;
+/* LEFT PANEL */
+
+.sidebar{
+
+    width:300px;
+
+    padding:45px;
+
+    border-right:1px solid #222;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
     z-index:2;
+
 }
 
 h1{
-    color:#777;
+
+    color:#666;
+
+    font-size:14px;
+
     letter-spacing:6px;
-    margin-bottom:25px;
+
+    margin-bottom:35px;
+
+}
+
+label{
+
+    font-size:12px;
+
+    color:#888;
+
+    margin-bottom:10px;
+
 }
 
 input{
-    width:180px;
+
+    width:100%;
+
     padding:12px;
-    background:#000;
-    color:#ff4444;
-    border:1px solid #ff4444;
+
+    background:black;
+
+    color:#ff3333;
+
+    border:1px solid #ff3333;
+
     font-size:20px;
+
     text-align:center;
+
+    margin-bottom:25px;
+
     outline:none;
+
 }
 
 button{
-    margin:10px 5px;
-    padding:12px 20px;
+
+    width:100%;
+
+    padding:12px;
+
+    margin:6px 0;
+
     background:#111;
+
     color:#ff4444;
+
     border:1px solid #ff4444;
+
     cursor:pointer;
+
     transition:.3s;
+
+    font-size:12px;
+
+    letter-spacing:2px;
+
 }
 
 button:hover{
-    background:#ff4444;
-    color:#000;
+
+    background:#ff3333;
+
+    color:black;
+
+}
+
+#status{
+
+    margin-top:25px;
+
+    font-size:12px;
+
+    color:#999;
+
+    letter-spacing:2px;
+
+}
+
+/* TIMER AREA */
+
+.main{
+
+    flex:1;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    position:relative;
+
 }
 
 #timer{
-    margin-top:40px;
-    font-size:110px;
+
+    font-family:'Orbitron', monospace;
+
+    font-size:18vw;
+
+    color:#ff2222;
+
+    user-select:none;
+
     text-shadow:
-        0 0 10px red,
-        0 0 20px red,
-        0 0 40px darkred;
+    0 0 8px red,
+    0 0 20px red,
+    0 0 40px red,
+    0 0 80px darkred;
+
+    animation:pulse 2s infinite;
+
+}
+
+@keyframes pulse{
+
+0%{
+
+text-shadow:
+0 0 10px red,
+0 0 20px red,
+0 0 40px red;
+
+}
+
+50%{
+
+text-shadow:
+0 0 20px red,
+0 0 40px red,
+0 0 80px red,
+0 0 120px red;
+
+}
+
+100%{
+
+text-shadow:
+0 0 10px red,
+0 0 20px red,
+0 0 40px red;
+
+}
+
+}
+
+.expired{
+
+    animation:flash .5s infinite;
+
+}
+
+@keyframes flash{
+
+0%{opacity:1;}
+
+50%{opacity:.3;}
+
+100%{opacity:1;}
+
 }
 
 #message{
-    margin-top:25px;
+
+    position:absolute;
+
+    bottom:60px;
+
+    width:100%;
+
+    text-align:center;
+
     color:white;
-    letter-spacing:3px;
+
     font-size:24px;
+
+    letter-spacing:6px;
+
 }
+
 </style>
 
 </head>
+
 <body>
 
-<div class="container">
+<div class="sidebar">
 
 <h1>COUNTDOWN PROTOCOL</h1>
 
-<input type="number" id="minutes" placeholder="Minutes">
+<label>MINUTES</label>
 
-<br>
+<input
+type="number"
+id="minutes"
+placeholder="15"
+min="1"
+>
 
-<button onclick="startTimer()">START</button>
-<button onclick="pauseTimer()">PAUSE</button>
-<button onclick="resumeTimer()">RESUME</button>
-<button onclick="resetTimer()">RESET</button>
+<button onclick="startTimer()">▶ START</button>
+
+<button onclick="pauseTimer()">⏸ PAUSE</button>
+
+<button onclick="resumeTimer()">▶ RESUME</button>
+
+<button onclick="resetTimer()">■ RESET</button>
+
+<div id="status">
+
+STATUS : IDLE
+
+</div>
+
+</div>
+
+<div class="main">
 
 <div id="timer">00:00</div>
 
@@ -117,97 +307,131 @@ button:hover{
 
 <script>
 
-let totalSeconds = 0;
-let timer = null;
-let running = false;
+let totalSeconds=0;
+
+let interval=null;
+
+let running=false;
 
 function updateDisplay(){
 
-    let mins = Math.floor(totalSeconds/60);
-    let secs = totalSeconds%60;
+let m=Math.floor(totalSeconds/60);
 
-    document.getElementById("timer").innerHTML =
-        String(mins).padStart(2,'0') + ":" +
-        String(secs).padStart(2,'0');
+let s=totalSeconds%60;
+
+document.getElementById("timer").innerHTML=
+String(m).padStart(2,'0')+":"+
+String(s).padStart(2,'0');
 
 }
 
 function tick(){
 
-    if(totalSeconds>0){
+if(totalSeconds>0){
 
-        totalSeconds--;
-        updateDisplay();
+totalSeconds--;
 
-    }else{
+updateDisplay();
 
-        clearInterval(timer);
-        running=false;
+if(totalSeconds<=10){
 
-        document.getElementById("message").innerHTML=
-        "TIME HAS EXPIRED";
+document.getElementById("timer").style.color="#ff0000";
 
-    }
+}
+
+}else{
+
+clearInterval(interval);
+
+running=false;
+
+document.getElementById("status").innerHTML="STATUS : EXPIRED";
+
+document.getElementById("message").innerHTML="TIME HAS EXPIRED";
+
+document.getElementById("timer").classList.add("expired");
+
+}
 
 }
 
 function startTimer(){
 
-    clearInterval(timer);
+clearInterval(interval);
 
-    let mins=parseFloat(document.getElementById("minutes").value);
+document.getElementById("timer").classList.remove("expired");
 
-    if(isNaN(mins)||mins<=0){
+document.getElementById("message").innerHTML="";
 
-        alert("Enter minutes.");
-        return;
+let mins=parseFloat(document.getElementById("minutes").value);
 
-    }
+if(isNaN(mins)||mins<=0){
 
-    totalSeconds=Math.round(mins*60);
+alert("Enter minutes.");
 
-    document.getElementById("message").innerHTML="";
+return;
 
-    updateDisplay();
+}
 
-    timer=setInterval(tick,1000);
+totalSeconds=Math.round(mins*60);
 
-    running=true;
+updateDisplay();
+
+interval=setInterval(tick,1000);
+
+running=true;
+
+document.getElementById("status").innerHTML="STATUS : RUNNING";
 
 }
 
 function pauseTimer(){
 
-    if(running){
+if(running){
 
-        clearInterval(timer);
-        running=false;
+clearInterval(interval);
 
-    }
+running=false;
+
+document.getElementById("status").innerHTML="STATUS : PAUSED";
+
+}
 
 }
 
 function resumeTimer(){
 
-    if(!running && totalSeconds>0){
+if(!running && totalSeconds>0){
 
-        timer=setInterval(tick,1000);
-        running=true;
+interval=setInterval(tick,1000);
 
-    }
+running=true;
+
+document.getElementById("status").innerHTML="STATUS : RUNNING";
+
+}
 
 }
 
 function resetTimer(){
 
-    clearInterval(timer);
+clearInterval(interval);
 
-    running=false;
-    totalSeconds=0;
+running=false;
 
-    document.getElementById("timer").innerHTML="00:00";
-    document.getElementById("message").innerHTML="";
-    document.getElementById("minutes").value="";
+totalSeconds=0;
+
+updateDisplay();
+
+document.getElementById("minutes").value="";
+
+document.getElementById("message").innerHTML="";
+
+document.getElementById("status").innerHTML="STATUS : IDLE";
+
+document.getElementById("timer").style.color="#ff2222";
+
+document.getElementById("timer").classList.remove("expired");
 
 }
 
