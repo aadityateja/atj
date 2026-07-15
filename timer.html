@@ -18,163 +18,104 @@
 }
 
 body{
-
     background:#030303;
     color:#ff2b2b;
     font-family:Consolas, monospace;
     display:flex;
     height:100vh;
     overflow:hidden;
-
 }
 
 /* Scanlines */
-
 body::before{
-
     content:"";
-
     position:absolute;
-
     width:100%;
     height:100%;
-
     background:
     repeating-linear-gradient(
         0deg,
-        rgba(255,255,255,.02) 0px,
-        rgba(255,255,255,.02) 1px,
+        rgba(255,255,255,.015) 0px,
+        rgba(255,255,255,.015) 1px,
         transparent 2px,
         transparent 4px
     );
-
     pointer-events:none;
-
 }
 
 /* LEFT PANEL */
 
 .sidebar{
-
     width:300px;
-
     padding:45px;
-
     border-right:1px solid #222;
-
     display:flex;
-
     flex-direction:column;
-
     justify-content:center;
-
     z-index:2;
-
 }
 
 h1{
-
     color:#666;
-
     font-size:14px;
-
     letter-spacing:6px;
-
     margin-bottom:35px;
-
 }
 
 label{
-
     font-size:12px;
-
     color:#888;
-
     margin-bottom:10px;
-
 }
 
 input{
-
     width:100%;
-
     padding:12px;
-
     background:black;
-
     color:#ff3333;
-
     border:1px solid #ff3333;
-
     font-size:20px;
-
     text-align:center;
-
     margin-bottom:25px;
-
     outline:none;
-
 }
 
 button{
-
     width:100%;
-
     padding:12px;
-
     margin:6px 0;
-
     background:#111;
-
     color:#ff4444;
-
     border:1px solid #ff4444;
-
     cursor:pointer;
-
     transition:.3s;
-
     font-size:12px;
-
     letter-spacing:2px;
-
 }
 
 button:hover{
-
     background:#ff3333;
-
     color:black;
-
 }
 
 #status{
-
     margin-top:25px;
-
     font-size:12px;
-
     color:#999;
-
     letter-spacing:2px;
-
 }
 
 /* TIMER AREA */
 
 .main{
-
     flex:1;
-
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
     position:relative;
-
 }
+
+/* BIG TIMER */
 
 #timer{
 
@@ -182,17 +123,17 @@ button:hover{
 
     font-size:18vw;
 
-    color:#ff2222;
+    color:#ff3333;
 
     user-select:none;
 
     text-shadow:
-    0 0 8px red,
-    0 0 20px red,
-    0 0 40px red,
-    0 0 80px darkred;
+        0 0 3px rgba(255,0,0,0.30),
+        0 0 8px rgba(255,0,0,0.18);
 
-    animation:pulse 2s infinite;
+    animation:pulse 2.5s ease-in-out infinite;
+
+    transition:.4s;
 
 }
 
@@ -200,46 +141,38 @@ button:hover{
 
 0%{
 
-text-shadow:
-0 0 10px red,
-0 0 20px red,
-0 0 40px red;
+    text-shadow:
+        0 0 3px rgba(255,0,0,0.30),
+        0 0 8px rgba(255,0,0,0.18);
 
 }
 
 50%{
 
-text-shadow:
-0 0 20px red,
-0 0 40px red,
-0 0 80px red,
-0 0 120px red;
+    text-shadow:
+        0 0 5px rgba(255,0,0,0.45),
+        0 0 12px rgba(255,0,0,0.25);
 
 }
 
 100%{
 
-text-shadow:
-0 0 10px red,
-0 0 20px red,
-0 0 40px red;
+    text-shadow:
+        0 0 3px rgba(255,0,0,0.30),
+        0 0 8px rgba(255,0,0,0.18);
 
 }
 
 }
 
 .expired{
-
     animation:flash .5s infinite;
-
 }
 
 @keyframes flash{
 
 0%{opacity:1;}
-
-50%{opacity:.3;}
-
+50%{opacity:.35;}
 100%{opacity:1;}
 
 }
@@ -247,17 +180,11 @@ text-shadow:
 #message{
 
     position:absolute;
-
     bottom:60px;
-
     width:100%;
-
     text-align:center;
-
     color:white;
-
     font-size:24px;
-
     letter-spacing:6px;
 
 }
@@ -278,8 +205,7 @@ text-shadow:
 type="number"
 id="minutes"
 placeholder="15"
-min="1"
->
+min="1">
 
 <button onclick="startTimer()">▶ START</button>
 
@@ -290,9 +216,7 @@ min="1"
 <button onclick="resetTimer()">■ RESET</button>
 
 <div id="status">
-
 STATUS : IDLE
-
 </div>
 
 </div>
@@ -308,130 +232,140 @@ STATUS : IDLE
 <script>
 
 let totalSeconds=0;
-
 let interval=null;
-
 let running=false;
 
 function updateDisplay(){
 
-let m=Math.floor(totalSeconds/60);
+    let m=Math.floor(totalSeconds/60);
+    let s=totalSeconds%60;
 
-let s=totalSeconds%60;
-
-document.getElementById("timer").innerHTML=
-String(m).padStart(2,'0')+":"+
-String(s).padStart(2,'0');
+    document.getElementById("timer").innerHTML=
+    String(m).padStart(2,'0')+":"+
+    String(s).padStart(2,'0');
 
 }
 
 function tick(){
 
-if(totalSeconds>0){
+    if(totalSeconds>0){
 
-totalSeconds--;
+        totalSeconds--;
 
-updateDisplay();
+        updateDisplay();
 
-if(totalSeconds<=10){
+        if(totalSeconds<=10){
 
-document.getElementById("timer").style.color="#ff0000";
+            document.getElementById("timer").style.color="#ff5555";
 
-}
+            document.getElementById("timer").style.textShadow=
+            "0 0 5px rgba(255,0,0,.45), 0 0 12px rgba(255,0,0,.25)";
 
-}else{
+        }
 
-clearInterval(interval);
+    }
 
-running=false;
+    else{
 
-document.getElementById("status").innerHTML="STATUS : EXPIRED";
+        clearInterval(interval);
 
-document.getElementById("message").innerHTML="TIME HAS EXPIRED";
+        running=false;
 
-document.getElementById("timer").classList.add("expired");
+        document.getElementById("status").innerHTML="STATUS : EXPIRED";
 
-}
+        document.getElementById("message").innerHTML="TIME HAS EXPIRED";
+
+        document.getElementById("timer").classList.add("expired");
+
+    }
 
 }
 
 function startTimer(){
 
-clearInterval(interval);
+    clearInterval(interval);
 
-document.getElementById("timer").classList.remove("expired");
+    document.getElementById("timer").classList.remove("expired");
 
-document.getElementById("message").innerHTML="";
+    document.getElementById("message").innerHTML="";
 
-let mins=parseFloat(document.getElementById("minutes").value);
+    document.getElementById("timer").style.color="#ff3333";
 
-if(isNaN(mins)||mins<=0){
+    document.getElementById("timer").style.textShadow=
+    "0 0 3px rgba(255,0,0,.30), 0 0 8px rgba(255,0,0,.18)";
 
-alert("Enter minutes.");
+    let mins=parseFloat(document.getElementById("minutes").value);
 
-return;
+    if(isNaN(mins)||mins<=0){
 
-}
+        alert("Enter the number of minutes.");
 
-totalSeconds=Math.round(mins*60);
+        return;
 
-updateDisplay();
+    }
 
-interval=setInterval(tick,1000);
+    totalSeconds=Math.round(mins*60);
 
-running=true;
+    updateDisplay();
 
-document.getElementById("status").innerHTML="STATUS : RUNNING";
+    interval=setInterval(tick,1000);
+
+    running=true;
+
+    document.getElementById("status").innerHTML="STATUS : RUNNING";
 
 }
 
 function pauseTimer(){
 
-if(running){
+    if(running){
 
-clearInterval(interval);
+        clearInterval(interval);
 
-running=false;
+        running=false;
 
-document.getElementById("status").innerHTML="STATUS : PAUSED";
+        document.getElementById("status").innerHTML="STATUS : PAUSED";
 
-}
+    }
 
 }
 
 function resumeTimer(){
 
-if(!running && totalSeconds>0){
+    if(!running && totalSeconds>0){
 
-interval=setInterval(tick,1000);
+        interval=setInterval(tick,1000);
 
-running=true;
+        running=true;
 
-document.getElementById("status").innerHTML="STATUS : RUNNING";
+        document.getElementById("status").innerHTML="STATUS : RUNNING";
 
-}
+    }
 
 }
 
 function resetTimer(){
 
-clearInterval(interval);
+    clearInterval(interval);
 
-running=false;
+    running=false;
 
-totalSeconds=0;
+    totalSeconds=0;
 
-updateDisplay();
+    updateDisplay();
 
-document.getElementById("minutes").value="";
+    document.getElementById("minutes").value="";
 
-document.getElementById("message").innerHTML="";
+    document.getElementById("message").innerHTML="";
 
-document.getElementById("status").innerHTML="STATUS : IDLE";
+    document.getElementById("status").innerHTML="STATUS : IDLE";
 
-document.getElementById("timer").style.color="#ff2222";
+    document.getElementById("timer").style.color="#ff3333";
 
-document.getElementById("timer").classList.remove("expired");
+    document.getElementById("timer").style.textShadow=
+    "0 0 3px rgba(255,0,0,.30), 0 0 8px rgba(255,0,0,.18)";
+
+    document.getElementById("timer").classList.remove("expired");
 
 }
 
