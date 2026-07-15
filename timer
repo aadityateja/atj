@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dystopian Countdown</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Consolas, monospace;
+}
+
+body{
+    background:#050505;
+    color:#ff2b2b;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    overflow:hidden;
+}
+
+body::before{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,0.02) 0px,
+            rgba(255,255,255,0.02) 1px,
+            transparent 2px,
+            transparent 4px
+        );
+    pointer-events:none;
+}
+
+.container{
+    text-align:center;
+    z-index:2;
+}
+
+h1{
+    letter-spacing:8px;
+    margin-bottom:30px;
+    font-size:18px;
+    color:#666;
+}
+
+input{
+    width:220px;
+    padding:12px;
+    background:black;
+    color:#ff4444;
+    border:1px solid #ff4444;
+    text-align:center;
+    font-size:20px;
+    outline:none;
+}
+
+button{
+    margin-left:10px;
+    padding:12px 25px;
+    background:#111;
+    color:#ff4444;
+    border:1px solid #ff4444;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    background:#ff4444;
+    color:black;
+}
+
+#timer{
+    margin-top:60px;
+    font-size:120px;
+    text-shadow:
+        0 0 10px #ff0000,
+        0 0 20px #ff0000,
+        0 0 40px #990000;
+}
+
+#message{
+    margin-top:30px;
+    font-size:24px;
+    color:white;
+    letter-spacing:4px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>COUNTDOWN PROTOCOL</h1>
+
+<input type="number" id="seconds" placeholder="Seconds">
+
+<button onclick="startTimer()">START</button>
+
+<div id="timer">00</div>
+
+<div id="message"></div>
+
+</div>
+
+<script>
+
+let countdown;
+
+function startTimer(){
+
+    clearInterval(countdown);
+
+    let time=parseInt(document.getElementById("seconds").value);
+
+    if(isNaN(time)||time<0){
+        alert("Enter a valid number.");
+        return;
+    }
+
+    document.getElementById("message").innerHTML="";
+
+    updateDisplay(time);
+
+    countdown=setInterval(()=>{
+
+        time--;
+
+        updateDisplay(time);
+
+        if(time<=0){
+            clearInterval(countdown);
+
+            document.getElementById("timer").innerHTML="00";
+
+            document.getElementById("message").innerHTML=
+            "TIME HAS EXPIRED";
+        }
+
+    },1000);
+
+}
+
+function updateDisplay(sec){
+
+    if(sec<0) sec=0;
+
+    let mins=Math.floor(sec/60);
+    let secs=sec%60;
+
+    mins=String(mins).padStart(2,'0');
+    secs=String(secs).padStart(2,'0');
+
+    document.getElementById("timer").innerHTML=
+    mins+":"+secs;
+
+}
+
+</script>
+
+</body>
+</html>
