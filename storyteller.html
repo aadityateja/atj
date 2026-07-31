@@ -1,210 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Aditya S | Physicist</title>
+<title>Aditya's Physics Journey</title>
 
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
 body{
-    background:#050505;
-    color:#e8e8e8;
-    font-family:"Inter","Helvetica Neue",Arial,sans-serif;
-    overflow-x:hidden;
+    margin:0;
+    overflow:hidden;
+    background:black;
+    font-family:monospace;
 }
-
-
-/* Particle canvas */
 
 canvas{
-    position:fixed;
-    top:0;
-    left:0;
-    z-index:-1;
+    display:block;
 }
 
-
-/* Main */
-
-.container{
-    max-width:1100px;
-    margin:auto;
-    padding:60px 30px;
-}
-
-
-/* Header */
-
-header{
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-}
-
-
-h1{
-    font-size:clamp(50px,8vw,100px);
-    font-weight:700;
-    letter-spacing:-5px;
-}
-
-
-.subtitle{
-    margin-top:20px;
-    font-size:25px;
-    color:#aaa;
-    max-width:700px;
-}
-
-
-.highlight{
-    color:#6ee7ff;
-}
-
-
-.scroll{
-    margin-top:80px;
-    color:#777;
-    animation:pulse 2s infinite;
-}
-
-
-@keyframes pulse{
-    50%{
-        opacity:.3;
-    }
-}
-
-
-/* Sections */
-
-section{
-    margin:150px 0;
-}
-
-
-h2{
-    font-size:40px;
-    margin-bottom:40px;
-    letter-spacing:-2px;
-}
-
-
-p{
-    line-height:1.8;
-    color:#bbb;
+#info{
+    position:absolute;
+    top:20px;
+    left:20px;
+    color:white;
     font-size:18px;
+    z-index:10;
 }
-
-
-/* Cards */
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:25px;
-}
-
-
-.card{
-
-    border:1px solid #222;
-    padding:30px;
-    border-radius:20px;
-
-    background:rgba(255,255,255,0.03);
-
-    transition:.4s;
-
-}
-
-
-.card:hover{
-
-    transform:translateY(-10px);
-
-    border-color:#6ee7ff;
-
-}
-
-
-.card h3{
-    margin-bottom:15px;
-    font-size:22px;
-}
-
-
-.tag{
-
-    display:inline-block;
-    margin-top:15px;
-    padding:6px 12px;
-
-    border-radius:20px;
-
-    background:#111;
-
-    color:#6ee7ff;
-
-    font-size:13px;
-
-}
-
-
-/* Timeline */
-
-.timeline{
-
-border-left:2px solid #333;
-padding-left:30px;
-
-}
-
-
-.event{
-
-margin-bottom:40px;
-
-}
-
-
-.year{
-
-color:#6ee7ff;
-font-size:20px;
-
-}
-
-
-
-/* Footer */
-
-footer{
-
-padding:80px 0;
-color:#777;
-
-}
-
-
-
-a{
-
-color:#6ee7ff;
-text-decoration:none;
-
-}
-
-
 </style>
 
 </head>
@@ -213,400 +31,18 @@ text-decoration:none;
 <body>
 
 
-<canvas id="particles"></canvas>
-
-
-<div class="container">
-
-
-<header>
-
-
-<h1>
-ADITYA S.
-</h1>
-
-
-<div class="subtitle">
-
-Physicist exploring the invisible architecture of matter.
-
-<br><br>
-
-From <span class="highlight">particles</span>,
-to <span class="highlight">detectors</span>,
-to <span class="highlight">intelligence</span>.
-
+<div id="info">
+← → Move | SPACE Jump
 </div>
 
 
-<div class="scroll">
-
-↓ Scroll through my universe
-
-</div>
-
-
-</header>
-
-
-
-
-
-<section>
-
-
-<h2>About</h2>
-
-
-<p>
-
-I am a physics researcher interested in nuclear physics,
-particle detectors, accelerator science and artificial intelligence.
-
-My fascination lies in transforming invisible interactions
-into measurable signals.
-
-</p>
-
-
-</section>
-
-
-
-
-
-<section>
-
-
-<h2>Research</h2>
-
-
-<div class="grid">
-
-
-<div class="card">
-
-<h3>
-⚛ Zero Degree Calorimeter
-</h3>
-
-<p>
-
-Machine learning based neutron energy reconstruction
-for Electron Ion Collider physics.
-
-</p>
-
-
-<span class="tag">
-GEANT4 • ROOT • XGBoost
-</span>
-
-</div>
-
-
-
-<div class="card">
-
-<h3>
-🔬 Detector Physics
-</h3>
-
-<p>
-
-Understanding how particles travel,
-interact and leave signatures inside detectors.
-
-</p>
-
-
-<span class="tag">
-Particle Physics
-</span>
-
-</div>
-
-
-
-<div class="card">
-
-<h3>
-🤖 AI + Physics
-</h3>
-
-<p>
-
-Using computational intelligence
-to solve scientific problems.
-
-</p>
-
-
-<span class="tag">
-Machine Learning
-</span>
-
-</div>
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-
-<h2>Experiments & Simulations</h2>
-
-
-<div class="grid">
-
-
-<div class="card">
-
-<h3>
-Particle Playground
-</h3>
-
-<p>
-
-Interactive simulations of quantum mechanics,
-oscillations and particle interactions.
-
-</p>
-
-</div>
-
-
-
-<div class="card">
-
-<h3>
-Detector Visualizations
-</h3>
-
-<p>
-
-Turning scientific data into
-visual experiences.
-
-</p>
-
-</div>
-
-
-
-<div class="card">
-
-<h3>
-Scientific Computing
-</h3>
-
-<p>
-
-Python • ROOT • Data Analysis • Visualization
-
-</p>
-
-</div>
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-
-<h2>Journey</h2>
-
-
-<div class="timeline">
-
-
-<div class="event">
-
-<div class="year">
-2024
-</div>
-
-<p>
-Returned to physics through MSc Nuclear Physics.
-</p>
-
-</div>
-
-
-<div class="event">
-
-<div class="year">
-2026
-</div>
-
-<p>
-Researching neutron induced shower development
-and ML based detector reconstruction.
-</p>
-
-</div>
-
-
-
-<div class="event">
-
-<div class="year">
-Future
-</div>
-
-<p>
-Exploring accelerator physics,
-particle detectors and the universe.
-</p>
-
-</div>
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-
-
-<section>
-
-
-<h2>Beyond Research</h2>
-
-
-<div class="grid">
-
-
-<div class="card">
-
-<h3>
-🎥 Science Communication
-</h3>
-
-<p>
-
-Creating stories and experiences
-that make science alive.
-
-</p>
-
-</div>
-
-
-
-<div class="card">
-
-<h3>
-🌌 Creative Physics
-</h3>
-
-<p>
-
-Blender, simulations,
-visual storytelling and scientific art.
-
-</p>
-
-</div>
-
-
-
-<div class="card">
-
-<h3>
-🚀 Teaching
-</h3>
-
-<p>
-
-Designing curiosity-driven
-science experiences.
-
-</p>
-
-</div>
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-<footer>
-
-
-Connect:
-
-<br><br>
-
-<a href="#">
-GitHub
-</a>
-
-&nbsp; |
-
-<a href="#">
-LinkedIn
-</a>
-
-&nbsp; |
-
-<a href="#">
-Email
-</a>
-
-
-<br><br>
-
-© Aditya S
-
-
-</footer>
-
-
-
-</div>
-
-
-
-
+<canvas id="game"></canvas>
 
 
 <script>
 
 
-const canvas=document.getElementById("particles");
-
+const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
 
 
@@ -614,74 +50,621 @@ canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
 
-let particles=[];
+
+let keys={};
 
 
-for(let i=0;i<120;i++){
+document.addEventListener("keydown",e=>{
 
-particles.push({
-
-x:Math.random()*canvas.width,
-
-y:Math.random()*canvas.height,
-
-vx:(Math.random()-.5)*0.5,
-
-vy:(Math.random()-.5)*0.5,
-
-size:Math.random()*2
+keys[e.code]=true;
 
 });
+
+
+document.addEventListener("keyup",e=>{
+
+keys[e.code]=false;
+
+});
+
+
+
+// WORLD
+
+let camera=0;
+
+
+let player={
+
+x:200,
+y:400,
+vx:0,
+vy:0,
+width:30,
+height:50,
+ground:false
+
+};
+
+
+
+let gravity=0.7;
+
+
+
+let worldWidth=9000;
+
+
+
+
+// TIME
+
+let scene="night";
+
+
+
+function updateScene(){
+
+
+if(player.x<2500)
+scene="night";
+
+
+else if(player.x<4500)
+scene="physics";
+
+
+else if(player.x<7000)
+scene="ramaiah";
+
+
+else
+scene="stars";
+
 
 }
 
 
 
-function animate(){
 
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+// PLAYER
+
+
+function updatePlayer(){
+
+
+player.vx=0;
+
+
+if(keys["ArrowRight"])
+player.vx=5;
+
+
+if(keys["ArrowLeft"])
+player.vx=-5;
 
 
 
-particles.forEach(p=>{
+if(keys["Space"] && player.ground)
+{
+player.vy=-15;
+player.ground=false;
+}
 
 
-p.x+=p.vx;
-p.y+=p.vy;
+
+player.x+=player.vx;
+
+player.y+=player.vy;
+
+
+player.vy+=gravity;
 
 
 
-if(p.x<0||p.x>canvas.width)
-p.vx*=-1;
+let ground=canvas.height-120;
 
 
-if(p.y<0||p.y>canvas.height)
-p.vy*=-1;
+if(player.y+player.height>ground)
+{
 
+player.y=ground-player.height;
+
+player.vy=0;
+
+player.ground=true;
+
+}
+
+
+
+camera=player.x-300;
+
+
+if(camera<0)
+camera=0;
+
+
+}
+
+
+
+
+// DRAW BACKGROUND
+
+
+function sky(){
+
+
+if(scene=="night")
+{
+
+let g=ctx.createLinearGradient(0,0,0,canvas.height);
+
+g.addColorStop(0,"#020617");
+
+g.addColorStop(1,"#111827");
+
+ctx.fillStyle=g;
+
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+
+// moon
+
+ctx.fillStyle="#eee";
+
+ctx.beginPath();
+
+ctx.arc(800,120,40,0,Math.PI*2);
+
+ctx.fill();
+
+
+}
+
+
+else if(scene=="physics")
+{
+
+let g=ctx.createLinearGradient(0,0,0,canvas.height);
+
+g.addColorStop(0,"#ff9966");
+
+g.addColorStop(1,"#87ceeb");
+
+ctx.fillStyle=g;
+
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+
+// sun
+
+ctx.fillStyle="yellow";
+
+ctx.beginPath();
+
+ctx.arc(800,120,50,0,Math.PI*2);
+
+ctx.fill();
+
+
+}
+
+
+
+else if(scene=="ramaiah")
+{
+
+ctx.fillStyle="#87ceeb";
+
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+
+}
+
+
+
+else{
+
+
+ctx.fillStyle="#020617";
+
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+
+stars();
+
+
+}
+
+
+}
+
+
+
+
+function stars(){
+
+
+for(let i=0;i<100;i++)
+{
+
+ctx.fillStyle="white";
+
+ctx.fillRect(
+Math.random()*canvas.width,
+Math.random()*300,
+2,
+2
+);
+
+}
+
+
+}
+
+
+
+
+
+
+// OFFICE
+
+
+function office(){
+
+
+let start=0-camera;
+
+
+ctx.fillStyle="#222";
+
+ctx.fillRect(start,250,700,250);
+
+
+
+// windows
+
+
+for(let x=0;x<700;x+=70)
+{
+
+ctx.fillStyle="#334155";
+
+ctx.fillRect(start+x,280,50,70);
+
+
+}
+
+
+
+// workers
+
+
+for(let i=0;i<6;i++)
+{
+
+ctx.fillStyle="#64748b";
+
+ctx.fillRect(
+start+80+i*100,
+420,
+50,
+40
+);
+
+
+ctx.fillStyle="#f1c27d";
+
+ctx.beginPath();
+
+ctx.arc(
+start+105+i*100,
+390,
+15,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+
+}
+
+
+}
+
+
+
+
+
+// COLLEGE
+
+
+function college(){
+
+
+let x=3000-camera;
+
+
+ctx.fillStyle="#f8fafc";
+
+ctx.fillRect(x,200,600,300);
+
+
+
+ctx.fillStyle="black";
+
+ctx.font="30px monospace";
+
+ctx.fillText(
+"B.Sc PHYSICS",
+x+120,
+280
+);
+
+
+
+// electrons
+
+for(let i=0;i<5;i++)
+{
+
+ctx.strokeStyle="#00ffff";
+
+ctx.beginPath();
+
+ctx.arc(
+x+300,
+350,
+60+i*15,
+0,
+Math.PI*2
+);
+
+ctx.stroke();
+
+}
+
+
+}
+
+
+
+
+
+// RAMAIAH
+
+
+function ramaiah(){
+
+
+let x=5000-camera;
+
+
+ctx.fillStyle="#ddd";
+
+ctx.fillRect(x,180,700,320);
+
+
+
+ctx.fillStyle="black";
+
+ctx.font="30px monospace";
+
+
+ctx.fillText(
+"RAMAIAH UNIVERSITY",
+x+80,
+260
+);
+
+
+ctx.fillText(
+"MSc NUCLEAR PHYSICS",
+x+80,
+320
+);
+
+
+ctx.fillStyle="#00ffff";
 
 
 ctx.beginPath();
 
-ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+ctx.arc(x+350,420,50,0,Math.PI*2);
 
-ctx.fillStyle="#6ee7ff";
+ctx.fill();
+
+
+ctx.fillStyle="black";
+
+ctx.fillText(
+"n → p + e⁻ + ν",
+x+100,
+450
+);
+
+
+
+}
+
+
+
+
+
+// FINAL
+
+
+function finalScene(){
+
+
+ctx.fillStyle="white";
+
+ctx.font="40px monospace";
+
+
+ctx.fillText(
+"NAAXATRA",
+500-camera,
+250
+);
+
+
+ctx.font="25px monospace";
+
+
+ctx.fillText(
+"Looking at stars...",
+500-camera,
+320
+);
+
+
+}
+
+
+
+
+
+
+
+// CHARACTER
+
+
+function drawPlayer(){
+
+
+let x=player.x-camera;
+
+
+ctx.fillStyle="#2563eb";
+
+ctx.fillRect(
+x,
+player.y,
+30,
+50
+);
+
+
+// head
+
+ctx.fillStyle="#f1c27d";
+
+ctx.beginPath();
+
+ctx.arc(
+x+15,
+player.y-10,
+15,
+0,
+Math.PI*2
+);
 
 ctx.fill();
 
 
 
-});
+}
 
 
 
-requestAnimationFrame(animate);
+
+// TEXT
+
+
+function timelineText(){
+
+
+ctx.fillStyle="white";
+
+ctx.font="24px monospace";
+
+
+let text="";
+
+
+if(scene=="night")
+text="2020 | Night shifts | Searching for physics";
+
+
+if(scene=="physics")
+text="Physics returned | Electrons, mathematics, curiosity";
+
+
+if(scene=="ramaiah")
+text="2024-2026 | MSc Nuclear Physics | Detector science";
+
+
+if(scene=="stars")
+text="2026 | Naxxatra | Building curiosity";
+
+
+ctx.fillText(text,40,80);
 
 
 }
 
 
-animate();
+
+
+
+
+function draw(){
+
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+
+updateScene();
+
+
+sky();
+
+
+if(scene=="night")
+office();
+
+
+if(scene=="physics")
+college();
+
+
+if(scene=="ramaiah")
+ramaiah();
+
+
+if(scene=="stars")
+finalScene();
+
+
+
+drawPlayer();
+
+timelineText();
+
+
+}
+
+
+
+
+
+function loop(){
+
+updatePlayer();
+
+draw();
+
+requestAnimationFrame(loop);
+
+}
+
+
+loop();
 
 
 
@@ -694,7 +677,6 @@ canvas.height=window.innerHeight;
 
 
 </script>
-
 
 
 </body>
