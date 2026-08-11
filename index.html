@@ -1462,21 +1462,30 @@ body {
    AVATAR
 ========================================================= */
 
-const avatarFrames = [
-
-    "avatar/ava1.png",
+// WALKING ANIMATION
+// ava2 → ava3 → ava4 → ava3 → ava2
+const walkFrames = [
     "avatar/ava2.png",
     "avatar/ava3.png",
     "avatar/ava4.png",
+    "avatar/ava3.png",
+    "avatar/ava2.png"
+];
+
+let walkFrame = 0;
+let lastWalkTime = 0;
+
+
+// JUMPING ANIMATION
+// ava6 → ava7 → ava8
+const jumpFrames = [
     "avatar/ava6.png",
     "avatar/ava7.png",
     "avatar/ava8.png"
-
 ];
 
-let frame = 0;
-
-let animationTimer = 0;
+let jumpFrame = 0;
+let jumpStartTime = 0;
 
 const avatar =
     document.getElementById("avatar");
@@ -1538,24 +1547,25 @@ document.addEventListener(
 
         }
 
-        if (event.key === "ArrowRight") {
-
-            keys.right = true;
-
-        }
-
         if (
-            event.code === "Space"
-            &&
-            !jumping
-        ) {
+    (
+        event.code === "Space"
+        ||
+        event.key === "ArrowUp"
+    )
+    &&
+    !jumping
+) {
 
-            jumping = true;
+    jumping = true;
 
-            velocityY =
-                jumpPower;
+    velocityY =
+        jumpPower;
 
-        }
+    jumpStartTime =
+        performance.now();
+
+}
 
     }
 );
@@ -1614,39 +1624,78 @@ document
    UPDATE AVATAR
 ========================================================= */
 
-function animateAvatar() {
+function animateAvatar(timestamp) {
+
+    // ==========================================
+    // WALKING
+    // ==========================================
 
     if (
-        keys.left ||
-        keys.right
+        (keys.left || keys.right)
+        &&
+        !jumping
     ) {
 
-        animationTimer++;
-
+        // Change frame every 0.5 second
         if (
-            animationTimer % 7 === 0
+            timestamp - lastWalkTime >= 500
         ) {
 
-            frame++;
+            walkFrame++;
 
             if (
-                frame >=
-                avatarFrames.length
+                walkFrame >= walkFrames.length
             ) {
 
-                frame = 0;
+                walkFrame = 0;
 
             }
 
             avatar.src =
-                avatarFrames[frame];
+                walkFrames[walkFrame];
+
+            lastWalkTime =
+                timestamp;
+        }
+
+    }
+
+
+    // ==========================================
+    // JUMPING
+    // ==========================================
+
+    if (jumping) {
+
+        const elapsed =
+            timestamp - jumpStartTime;
+
+        // 0–0.5 sec → ava6
+        // 0.5–1.0 sec → ava7
+        // 1.0–1.5 sec → ava8
+
+        if (elapsed < 500) {
+
+            avatar.src =
+                "avatar/ava6.png";
+
+        }
+        else if (elapsed < 1000) {
+
+            avatar.src =
+                "avatar/ava7.png";
+
+        }
+        else {
+
+            avatar.src =
+                "avatar/ava8.png";
 
         }
 
     }
 
 }
-
 
 /* =========================================================
    DATE SYSTEM
@@ -1873,11 +1922,11 @@ function updatePhysics() {
    MAIN LOOP
 ========================================================= */
 
-function gameLoop() {
+function gameLoop(timestamp) {
 
     updatePhysics();
 
-    animateAvatar();
+    animateAvatar(timestamp);
 
     updateCamera();
 
@@ -1891,8 +1940,9 @@ function gameLoop() {
 
 }
 
-
-gameLoop();
+requestAnimationFrame(
+    gameLoop
+);
 
 </script>
 
